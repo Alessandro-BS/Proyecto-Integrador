@@ -12,5 +12,5 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
 
     List<Notificacion> findByUsuarioId(Long usuarioId); // Método para buscar notificaciones por usuario.
 
-    List<Notificacion> findByEnviadaFalse(); // Método para buscar notificaciones no enviadas.
+    List<Notificacion> findByEnviadoFalse(); // Método para buscar notificaciones no enviadas.
 }
