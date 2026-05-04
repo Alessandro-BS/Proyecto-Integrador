@@ -44,7 +44,7 @@ public class Usuario {
     private String apellido;
 
     @Column(nullable = false, unique = true, length = 150) // Correo
-    private String correo;
+    private String email;
 
     @Column(nullable = false) // Password
     private String password;
