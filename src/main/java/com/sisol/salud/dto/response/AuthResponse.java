@@ -1,4 +1,4 @@
-package com.sisol.salud.dto.request;
+package com.sisol.salud.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
