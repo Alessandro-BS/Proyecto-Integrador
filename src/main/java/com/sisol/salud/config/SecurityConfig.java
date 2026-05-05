@@ -53,9 +53,15 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/img/**",
                                 "/webjars/**",
-                                "/v3/api-docs/**", // Swagger UI
+                                "/api-docs",
+                                "/api-docs/**",
+                                "/swagger-resources",
+                                "/swagger-resources/**",
+                                "/configuration/ui",
+                                "/configuration/security",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html")
+                                "/swagger-ui.html",
+                                "/error")
                         .permitAll()
 
                         // Rutas protegidas (necesitan estar autenticados)
