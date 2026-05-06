@@ -23,6 +23,9 @@ public interface CitaMapper {
 
     // El estado es un Enum, lo pasamos a String
     @Mapping(target = "estado", expression = "java(cita.getEstado().name())")
+
+    // Combina la fecha y horaInicio en LocalDateTime
+    @Mapping(target = "fechaHora", expression = "java(cita.getFecha() != null && cita.getHoraInicio() != null ? cita.getFecha().atTime(cita.getHoraInicio()) : null)")
     CitaResponse toResponse(Cita cita);
 
     List<CitaResponse> toResponseList(List<Cita> citas);
