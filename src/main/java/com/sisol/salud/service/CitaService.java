@@ -10,6 +10,8 @@ import com.sisol.salud.model.entity.Medico;
 import com.sisol.salud.model.entity.Paciente;
 import com.sisol.salud.model.enums.EstadoCita;
 import com.sisol.salud.repository.CitaRepository;
+import com.sisol.salud.exception.RecursoNoEncontradoException;
+import com.sisol.salud.exception.ReglaNegocioException;
 import com.sisol.salud.repository.MedicoRepository;
 import com.sisol.salud.repository.PacienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,11 +37,11 @@ public class CitaService {
 
         // 1. Validar que el paciente existe
         Paciente paciente = pacienteRepository.findById(request.getPacienteId())
-                .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Paciente no encontrado"));
 
         // 2. Validar que el médico existe
         Medico medico = medicoRepository.findById(request.getMedicoId())
-                .orElseThrow(() -> new RuntimeException("Médico no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Médico no encontrado"));
 
         // Extraer fecha y hora de la solicitud
         LocalDate fechaDeseada = request.getFechaHora().toLocalDate();
@@ -78,11 +80,11 @@ public class CitaService {
     public void cancelarCita(Long citaId, Long usuarioQueCancelaId, boolean esAdmin) {
         
         Cita cita = citaRepository.findById(citaId)
-                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Cita no encontrada"));
 
         // Validar que la cita no esté ya cancelada o completada
         if (cita.getEstado() != EstadoCita.PENDIENTE) {
-            throw new RuntimeException("Solo se pueden cancelar citas pendientes");
+            throw new ReglaNegocioException("Solo se pueden cancelar citas pendientes");
         }
 
         // Regla de Negocio: Si el que cancela NO es un administrador (es un paciente), 
@@ -95,12 +97,12 @@ public class CitaService {
             long horasDeDiferencia = java.time.Duration.between(ahora, fechaHoraCita).toHours();
 
             if (horasDeDiferencia < 2) {
-                throw new RuntimeException("No se puede cancelar una cita con menos de 2 horas de anticipación. Por favor comuníquese con la clínica.");
+                throw new ReglaNegocioException("No se puede cancelar una cita con menos de 2 horas de anticipación. Por favor comuníquese con la clínica.");
             }
             
             // Validar que el paciente que cancela es el dueño de la cita
             if (!cita.getPaciente().getUsuario().getId().equals(usuarioQueCancelaId)) {
-                throw new RuntimeException("No tienes permisos para cancelar esta cita");
+                throw new ReglaNegocioException("No tienes permisos para cancelar esta cita");
             }
         }
 
@@ -116,15 +118,15 @@ public class CitaService {
     @Transactional
     public void completarCita(Long citaId, Long medicoId, String observaciones) {
         Cita cita = citaRepository.findById(citaId)
-                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Cita no encontrada"));
 
         // Validar que el médico que está completando la cita sea el médico asignado a ella
         if (!cita.getMedico().getUsuario().getId().equals(medicoId)) {
-            throw new RuntimeException("No tienes permisos para modificar esta cita");
+            throw new ReglaNegocioException("No tienes permisos para modificar esta cita");
         }
 
         if (cita.getEstado() != EstadoCita.PENDIENTE) {
-            throw new RuntimeException("Solo se pueden completar citas en estado PENDIENTE");
+            throw new ReglaNegocioException("Solo se pueden completar citas en estado PENDIENTE");
         }
 
         // Marcar como completada y guardar el diagnóstico/observaciones
@@ -137,15 +139,15 @@ public class CitaService {
     @Transactional
     public void marcarComoNoAsistio(Long citaId, Long medicoId) {
         Cita cita = citaRepository.findById(citaId)
-                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Cita no encontrada"));
 
         // Validar que el médico que modifica sea el asignado
         if (!cita.getMedico().getUsuario().getId().equals(medicoId)) {
-            throw new RuntimeException("No tienes permisos para modificar esta cita");
+            throw new ReglaNegocioException("No tienes permisos para modificar esta cita");
         }
 
         if (cita.getEstado() != EstadoCita.PENDIENTE) {
-            throw new RuntimeException("Solo se pueden modificar citas en estado PENDIENTE");
+            throw new ReglaNegocioException("Solo se pueden modificar citas en estado PENDIENTE");
         }
 
         cita.setEstado(EstadoCita.NO_ASISTIO);
