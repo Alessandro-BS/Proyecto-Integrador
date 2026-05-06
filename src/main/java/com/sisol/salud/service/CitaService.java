@@ -108,4 +108,47 @@ public class CitaService {
         cita.setEstado(EstadoCita.CANCELADA);
         citaRepository.save(cita);
     }
+
+    // ----------------------------------------------------------------------------------
+    // TAREA 4.6: FUNCIONES DEL MÉDICO (Completar cita o marcar como Inasistencia)
+    // ----------------------------------------------------------------------------------
+
+    @Transactional
+    public void completarCita(Long citaId, Long medicoId, String observaciones) {
+        Cita cita = citaRepository.findById(citaId)
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+
+        // Validar que el médico que está completando la cita sea el médico asignado a ella
+        if (!cita.getMedico().getUsuario().getId().equals(medicoId)) {
+            throw new RuntimeException("No tienes permisos para modificar esta cita");
+        }
+
+        if (cita.getEstado() != EstadoCita.PENDIENTE) {
+            throw new RuntimeException("Solo se pueden completar citas en estado PENDIENTE");
+        }
+
+        // Marcar como completada y guardar el diagnóstico/observaciones
+        cita.setEstado(EstadoCita.COMPLETADA);
+        cita.setObservaciones(observaciones);
+        
+        citaRepository.save(cita);
+    }
+
+    @Transactional
+    public void marcarComoNoAsistio(Long citaId, Long medicoId) {
+        Cita cita = citaRepository.findById(citaId)
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+
+        // Validar que el médico que modifica sea el asignado
+        if (!cita.getMedico().getUsuario().getId().equals(medicoId)) {
+            throw new RuntimeException("No tienes permisos para modificar esta cita");
+        }
+
+        if (cita.getEstado() != EstadoCita.PENDIENTE) {
+            throw new RuntimeException("Solo se pueden modificar citas en estado PENDIENTE");
+        }
+
+        cita.setEstado(EstadoCita.NO_ASISTIO);
+        citaRepository.save(cita);
+    }
 }
