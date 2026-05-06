@@ -32,7 +32,6 @@ public class DisponibilidadService {
     // 2. Agregar un nuevo horario para un médico
     @Transactional
     public DisponibilidadResponse agregarDisponibilidad(Long medicoId, DisponibilidadRequest request) {
-
         Medico medico = medicoRepository.findById(medicoId)
                 .orElseThrow(() -> new RuntimeException("Médico no encontrado con ID: " + medicoId));
 
@@ -41,14 +40,26 @@ public class DisponibilidadService {
             throw new IllegalArgumentException("La hora de inicio debe ser anterior a la hora de fin");
         }
 
-        // Validacion 2: Revisar si ya tiene un turno ese mismo día que se cruce
-        // Evitar que el médico tenga dos turnos al mismo día
-        boolean yaTieneTurnoEseDia = disponibilidadRepository.findByMedicoId(medicoId).stream()
-                .anyMatch(d -> d.getDiaSemana().equals(request.getDiaSemana()));
+        // Validación 2: Duración mínima del turno
+        long duracionHoras = java.time.Duration.between(request.getHoraInicio(), request.getHoraFin()).toHours();
+        if (duracionHoras < 2) {
+            throw new IllegalArgumentException("El bloque de disponibilidad debe ser de al menos 2 horas.");
+        }
 
-        if (yaTieneTurnoEseDia) {
-            throw new RecursoDuplicadoException(
-                    "El médico ya tiene disponibilidad registrada para el día " + request.getDiaSemana());
+        // Validación 3: Solapamiento de horarios en el mismo día
+        // Permitimos que registre varios turnos el mismo día (ej. mañana y tarde),
+        // pero verificamos que no choquen entre sí.
+        List<DisponibilidadMedica> disponibilidadesDelDia = disponibilidadRepository.findByMedicoId(medicoId).stream()
+                .filter(d -> d.getDiaSemana().equals(request.getDiaSemana()))
+                .toList();
+        for (DisponibilidadMedica existente : disponibilidadesDelDia) {
+            // Un solapamiento ocurre si: InicioNuevo < FinExistente AND FinNuevo >
+            // InicioExistente
+            if (request.getHoraInicio().isBefore(existente.getHoraFin()) &&
+                    request.getHoraFin().isAfter(existente.getHoraInicio())) {
+                throw new RecursoDuplicadoException("El horario se solapa con una disponibilidad ya registrada ("
+                        + existente.getHoraInicio() + " - " + existente.getHoraFin() + ").");
+            }
         }
 
         // Crear Disponibilidad
