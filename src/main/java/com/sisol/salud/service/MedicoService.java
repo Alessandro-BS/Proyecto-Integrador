@@ -27,9 +27,7 @@ public class MedicoService {
 
     // 2. Buscar médicos por el ID de su especialidad
     public List<MedicoResponse> obtenerPorEspecialidad(Long especialidadId) {
-        List<Medico> medicos = medicoRepository.findAll().stream()
-                .filter(m -> m.getEspecialidad().getId().equals(especialidadId))
-                .collect(Collectors.toList());
+        List<Medico> medicos = medicoRepository.findByEspecialidadId(especialidadId);
         return medicoMapper.toResponseList(medicos);
     }
 
