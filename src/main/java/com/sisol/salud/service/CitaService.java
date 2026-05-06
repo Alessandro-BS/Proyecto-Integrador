@@ -73,4 +73,39 @@ public class CitaService {
 
         return citaMapper.toResponse(citaGuardada);
     }
+
+    @Transactional
+    public void cancelarCita(Long citaId, Long usuarioQueCancelaId, boolean esAdmin) {
+        
+        Cita cita = citaRepository.findById(citaId)
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+
+        // Validar que la cita no esté ya cancelada o completada
+        if (cita.getEstado() != EstadoCita.PENDIENTE) {
+            throw new RuntimeException("Solo se pueden cancelar citas pendientes");
+        }
+
+        // Regla de Negocio: Si el que cancela NO es un administrador (es un paciente), 
+        // debe avisar con al menos 2 horas de anticipación
+        if (!esAdmin) {
+            // Unimos fecha y hora de la cita para compararlas con la fecha y hora ACTUAL
+            java.time.LocalDateTime fechaHoraCita = cita.getFecha().atTime(cita.getHoraInicio());
+            java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
+
+            long horasDeDiferencia = java.time.Duration.between(ahora, fechaHoraCita).toHours();
+
+            if (horasDeDiferencia < 2) {
+                throw new RuntimeException("No se puede cancelar una cita con menos de 2 horas de anticipación. Por favor comuníquese con la clínica.");
+            }
+            
+            // Validar que el paciente que cancela es el dueño de la cita
+            if (!cita.getPaciente().getUsuario().getId().equals(usuarioQueCancelaId)) {
+                throw new RuntimeException("No tienes permisos para cancelar esta cita");
+            }
+        }
+
+        // Si pasa todas las validaciones, cambiamos el estado
+        cita.setEstado(EstadoCita.CANCELADA);
+        citaRepository.save(cita);
+    }
 }
