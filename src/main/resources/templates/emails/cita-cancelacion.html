@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cancelación de Cita - SISOL Salud</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-top: 5px solid #dc3545; }
+        .header { text-align: center; border-bottom: 1px solid #eeeeee; padding-bottom: 20px; margin-bottom: 20px; }
+        .header h1 { color: #dc3545; margin: 0; font-size: 28px;}
+        .content { line-height: 1.6; }
+        .highlight { background-color: #fcf1f1; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #dc3545; }
+        .highlight p { margin: 8px 0; }
+        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #777; border-top: 1px solid #eeeeee; padding-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SISOL Salud 🏥</h1>
+            <p>Sistema Inteligente de Turnos</p>
+        </div>
+        
+        <div class="content">
+            <h2>Hola, <span th:text="${nombrePaciente}">Paciente</span></h2>
+            <p>Te confirmamos que hemos procesado la <strong>cancelación</strong> de tu cita médica según lo solicitado.</p>
+            
+            <div class="highlight">
+                <p>🩺 <strong>Especialidad:</strong> <span th:text="${especialidad}">Especialidad</span></p>
+                <p>👨‍⚕️ <strong>Médico:</strong> Dr/Dra. <span th:text="${nombreMedico}">Nombre Médico</span></p>
+                <p>📅 <strong>Fecha original:</strong> <span th:text="${fecha}">DD/MM/YYYY</span></p>
+                <p>⏰ <strong>Hora original:</strong> <span th:text="${hora}">HH:MM</span></p>
+            </div>
+            
+            <p>Tu cupo ha sido liberado exitosamente en nuestro sistema.</p>
+            <p>Esperamos que te encuentres bien. Puedes agendar una nueva cita desde nuestro portal web en el momento que lo necesites.</p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2026 Hospital SISOL Salud. Todos los derechos reservados.</p>
+            <p>Este es un correo generado automáticamente, por favor no respondas a esta dirección.</p>
+        </div>
+    </div>
+</body>
+</html>
