@@ -36,12 +36,12 @@ spring:
     suffix: .html
     encoding: UTF-8
 
-  # ---- Email (SMTP) ----
+  # ---- Email (SMTP) - Usaremos Mailtrap para pruebas locales ----
   mail:
-    host: ${MAIL_HOST:smtp.gmail.com}
-    port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:tu-email@gmail.com}
-    password: ${MAIL_PASSWORD:tu-app-password}
+    host: ${MAIL_HOST:sandbox.smtp.mailtrap.io}
+    port: ${MAIL_PORT:2525}
+    username: ${MAIL_USERNAME:a_configurar}
+    password: ${MAIL_PASSWORD:a_configurar}
     properties:
       mail:
         smtp:
