@@ -25,4 +25,18 @@ public interface CitaRepository extends JpaRepository<Cita, Long> { // Repositor
 
     @Query("SELECT c FROM Cita c WHERE c.medico.id = :medicoId AND c.fecha = :fecha AND c.estado != 'CANCELADA'")
     List<Cita> buscarCitasPorMedicoYDia(@Param("medicoId") Long medicoId, @Param("fecha") LocalDate fecha);
+
+    // ==========================================
+    // QUERIES PARA REPORTES Y DASHBOARD (FASE 5)
+    // ==========================================
+
+    long countByEstado(EstadoCita estado);
+
+    @Query("SELECT new com.sisol.salud.dto.response.TopEspecialidadResponse(c.medico.especialidad.nombre, COUNT(c)) " +
+           "FROM Cita c GROUP BY c.medico.especialidad.nombre ORDER BY COUNT(c) DESC")
+    List<com.sisol.salud.dto.response.TopEspecialidadResponse> findTopEspecialidades();
+
+    @Query("SELECT new com.sisol.salud.dto.response.CitasPorDiaResponse(c.fecha, COUNT(c)) " +
+           "FROM Cita c GROUP BY c.fecha ORDER BY c.fecha ASC")
+    List<com.sisol.salud.dto.response.CitasPorDiaResponse> countCitasPorDia();
 }
