@@ -26,7 +26,7 @@ public class CitaRestController {
     // 1. Agendar Cita (Disponible para ADMIN y PACIENTE)
     @PostMapping("/reservar")
     @PreAuthorize("hasAnyRole('ADMIN', 'PACIENTE')")
-    public ResponseEntity<CitaResponse> reservarCita(@RequestBody CitaRequest request) {
+    public ResponseEntity<CitaResponse> reservarCita(@jakarta.validation.Valid @RequestBody CitaRequest request) {
         CitaResponse response = citaService.reservarCita(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
