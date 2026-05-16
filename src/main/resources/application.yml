@@ -77,10 +77,22 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: "health,info,metrics,beans,env"
   endpoint:
     health:
-      show-details: when-authorized
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+# ---- Información del Sistema (para endpoint /info) ----
+info:
+  app:
+    name: SISOL Salud - Backend
+    description: Sistema Inteligente de Turnos para Hospitales SISOL
+    version: 1.0.0
+    status: Desarrollo - Fase 9
+  company: SISOL Salud Peru
 
 # ---- Swagger / OpenAPI ----
 springdoc:
