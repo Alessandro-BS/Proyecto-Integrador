@@ -16,7 +16,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class EmailService {
+public class EmailService implements NotificacionSender {
 
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
@@ -33,12 +33,13 @@ public class EmailService {
      * @param to               Correo del destinatario
      * @param subject          Asunto del correo
      * @param templateName     Nombre de la plantilla HTML (sin la extensión .html)
-     * @param templateModel    Variables a inyectar en la plantilla
+     * @param parametros       Variables a inyectar en la plantilla
      */
-    public void enviarCorreoHtml(String to, String subject, String templateName, Map<String, Object> templateModel) {
+    @Override
+    public void enviar(String destino, String asunto, String templateName, Map<String, Object> parametros) {
         try {
             Context thymeleafContext = new Context();
-            thymeleafContext.setVariables(templateModel);
+            thymeleafContext.setVariables(parametros);
             
             // Procesar la plantilla HTML con las variables
             String htmlBody = templateEngine.process("emails/" + templateName, thymeleafContext);
@@ -48,15 +49,15 @@ public class EmailService {
             
             // "SISOL Salud <noreply@sisolsalud.pe>"
             helper.setFrom(mailFrom, nombreSistema);
-            helper.setTo(to);
-            helper.setSubject(subject);
+            helper.setTo(destino);
+            helper.setSubject(asunto);
             helper.setText(htmlBody, true); // true = es HTML
 
             javaMailSender.send(message);
-            log.info("Email enviado exitosamente a: {}", to);
+            log.info("Email enviado exitosamente a: {}", destino);
 
         } catch (MessagingException | java.io.UnsupportedEncodingException e) {
-            log.error("Error al enviar email a {}: {}", to, e.getMessage());
+            log.error("Error al enviar email a {}: {}", destino, e.getMessage());
             // No lanzamos excepción para no romper el flujo principal si el correo falla
         }
     }

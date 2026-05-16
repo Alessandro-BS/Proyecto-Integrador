@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class NotificacionService {
 
-    private final EmailService emailService;
+    private final NotificacionSender notificacionSender;
     private final NotificacionRepository notificacionRepository;
 
     @Transactional
@@ -35,8 +35,8 @@ public class NotificacionService {
         modelo.put("fecha", cita.getFecha().toString());
         modelo.put("hora", cita.getHoraInicio().toString());
 
-        // Enviar el correo
-        emailService.enviarCorreoHtml(cita.getPaciente().getUsuario().getEmail(), asunto, template, modelo);
+        // Enviar la notificación
+        notificacionSender.enviar(cita.getPaciente().getUsuario().getEmail(), asunto, template, modelo);
 
         // Guardar registro en la base de datos
         guardarRegistroNotificacion(cita, asunto, "Correo de confirmación enviado exitosamente.");
@@ -54,8 +54,8 @@ public class NotificacionService {
         modelo.put("fecha", cita.getFecha().toString());
         modelo.put("hora", cita.getHoraInicio().toString());
 
-        // Enviar el correo
-        emailService.enviarCorreoHtml(cita.getPaciente().getUsuario().getEmail(), asunto, template, modelo);
+        // Enviar la notificación
+        notificacionSender.enviar(cita.getPaciente().getUsuario().getEmail(), asunto, template, modelo);
 
         // Guardar registro en la base de datos
         guardarRegistroNotificacion(cita, asunto, "Correo de cancelación enviado exitosamente.");
@@ -73,8 +73,8 @@ public class NotificacionService {
         modelo.put("fecha", cita.getFecha().toString());
         modelo.put("hora", cita.getHoraInicio().toString());
 
-        // Enviar el correo
-        emailService.enviarCorreoHtml(cita.getPaciente().getUsuario().getEmail(), asunto, template, modelo);
+        // Enviar la notificación
+        notificacionSender.enviar(cita.getPaciente().getUsuario().getEmail(), asunto, template, modelo);
 
         // Guardar registro en la base de datos
         guardarRegistroNotificacion(cita, asunto, "Correo de recordatorio enviado exitosamente.");
