@@ -30,6 +30,7 @@ public class CitaService {
     private final PacienteRepository pacienteRepository;
     private final MedicoRepository medicoRepository;
     private final DisponibilidadService disponibilidadService;
+    private final NotificacionService notificacionService;
     private final CitaMapper citaMapper;
 
     @Transactional
@@ -70,8 +71,11 @@ public class CitaService {
                 .motivoConsulta(request.getMotivoConsulta())
                 .build();
 
-        // 5. Guardar en BD y devolver DTO
+        // 5. Guardar en BD
         Cita citaGuardada = citaRepository.save(nuevaCita);
+
+        // 6. Enviar notificación por correo
+        notificacionService.enviarConfirmacionCita(citaGuardada);
 
         return citaMapper.toResponse(citaGuardada);
     }
@@ -109,6 +113,9 @@ public class CitaService {
         // Si pasa todas las validaciones, cambiamos el estado
         cita.setEstado(EstadoCita.CANCELADA);
         citaRepository.save(cita);
+
+        // Enviar notificación por correo de cancelación
+        notificacionService.enviarCancelacionCita(cita);
     }
 
     // ----------------------------------------------------------------------------------
