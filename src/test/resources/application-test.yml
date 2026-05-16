@@ -1,0 +1,10 @@
+spring:
+  sql:
+    init:
+      mode: never # Deshabilitar ejecución de data.sql en tests
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect # Usar dialecto H2 para tests
+    hibernate:
+      ddl-auto: create-drop
