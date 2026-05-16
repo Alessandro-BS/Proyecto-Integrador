@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>Reservar Cita - Paso 2</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h4 class="mb-0"><i class="bi bi-clock-history me-2"></i>Horario y Detalles</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Stepper / Progreso visual -->
+                        <div class="position-relative mb-5">
+                            <div class="progress" style="height: 2px;">
+                                <div class="progress-bar" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <button type="button" class="position-absolute top-0 start-0 translate-middle btn btn-sm btn-primary rounded-pill" style="width: 2rem; height:2rem;">1</button>
+                            <button type="button" class="position-absolute top-0 start-50 translate-middle btn btn-sm btn-primary rounded-pill" style="width: 2rem; height:2rem;">2</button>
+                            <button type="button" class="position-absolute top-0 start-100 translate-middle btn btn-sm btn-secondary rounded-pill" style="width: 2rem; height:2rem;">3</button>
+                        </div>
+                        
+                        <p class="text-muted mb-4">Paso 2: Seleccione la fecha y hora de su preferencia y cuéntenos brevemente el motivo de su visita.</p>
+
+                        <!-- Usaremos un ID estático o ficticio para la demostración del frontend, o el interceptado en el controlador -->
+                        <form th:action="@{/paciente/reservar-cita/finalizar}" method="post">
+                            <input type="hidden" name="medicoId" th:value="${medicoId}" />
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="fecha" class="form-label fw-bold">Fecha de la Consulta</label>
+                                    <input type="date" class="form-control form-control-lg" id="fecha" name="fecha" required>
+                                </div>
+                                <div class="col-md-6 mt-3 mt-md-0">
+                                    <label for="hora" class="form-label fw-bold">Horarios Disponibles</label>
+                                    <select class="form-select form-select-lg" id="hora" name="hora" required>
+                                        <option value="" selected disabled>Seleccione una fecha primero...</option>
+                                        <!-- Simulación estática para la maqueta -->
+                                        <option value="09:00">09:00 AM</option>
+                                        <option value="09:30">09:30 AM</option>
+                                        <option value="10:00">10:00 AM</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="motivoConsulta" class="form-label fw-bold">Motivo de la Consulta</label>
+                                <textarea class="form-control" id="motivoConsulta" name="motivoConsulta" rows="3" placeholder="Por favor describa brevemente sus síntomas o el motivo de su visita..." required></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-5">
+                                <a th:href="@{/paciente/reservar-cita}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Volver al Paso 1</a>
+                                <button type="submit" class="btn btn-success px-4">Confirmar Reserva <i class="bi bi-check-circle ms-2"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
