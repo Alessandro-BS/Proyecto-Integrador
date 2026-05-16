@@ -1,7 +1,12 @@
 # 🏥 Plan de Implementación — SISOL Salud
 
-> Sistema Inteligente de Turnos para Hospitales Públicos  
-> **Stack:** Java 17 · Spring Boot 3.x · MySQL · Thymeleaf · JWT
+> Sistema Inteligente de Turnos para Hospitales Públicos
+
+![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-Template-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-Security-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
 
 ---
 
@@ -37,11 +42,32 @@ graph TB
     SV -.->|Trigger| NT
     NT -.->|Execute| SV
 ```
+
 > Al ser Spring Boot fullstack, se usará **Thymeleaf** para las vistas y **REST Controllers** para endpoints API (Swagger). Ambos conviven en el mismo proyecto.
 
 ---
 
-## 📦 2. Estructura de Paquetes
+## 📋 2. Requisitos del Sistema
+
+### Requisitos Funcionales (RF)
+- **RF01 (Autenticación):** El sistema debe permitir el registro y acceso seguro de usuarios con distintos roles (Pacientes, Médicos, Administradores).
+- **RF02 (Gestión de Citas):** Los pacientes deben poder visualizar la disponibilidad de los médicos por especialidad y agendar citas en tiempo real.
+- **RF03 (Cancelaciones):** Los pacientes podrán cancelar sus citas exclusivamente con un mínimo de 2 horas de anticipación.
+- **RF04 (Disponibilidad):** Los médicos deben poder configurar sus horarios, días de atención y duración de sus consultas.
+- **RF05 (Atención Médica):** Los médicos visualizarán su agenda diaria y podrán cambiar el estado de las citas (Completada, No Asistió).
+- **RF06 (Analítica):** El administrador tendrá acceso a un Dashboard con reportes de ausentismo, ranking de especialidades demandadas y flujo de citas por día.
+- **RF07 (Notificaciones):** El sistema enviará alertas por correo electrónico para confirmaciones, cancelaciones y recordatorios diarios automáticos (24h antes).
+
+### Requisitos No Funcionales (RNF)
+- **RNF01 (Seguridad):** Toda comunicación REST estará protegida mediante JSON Web Tokens (JWT) y Spring Security.
+- **RNF02 (Usabilidad):** La interfaz de usuario empleará Bootstrap 5, siendo 100% responsiva (Mobile First).
+- **RNF03 (Escalabilidad):** La arquitectura backend aplicará Patrones de Diseño (Inversión de Dependencias, DTO, Strategy) para permitir futuras extensiones (ej. notificaciones SMS).
+- **RNF04 (Rendimiento):** Las métricas estadísticas y reportes se calcularán mediante consultas JPQL optimizadas, evitando sobrecarga en la memoria de la aplicación.
+- **RNF05 (Resiliencia):** Los procesos asíncronos y programados (`@Scheduled`) capturarán excepciones de manera aislada para evitar interrupciones en el servicio principal.
+
+---
+
+## 📦 3. Estructura de Paquetes
 
 ```
 com.sisol.salud
@@ -138,7 +164,7 @@ com.sisol.salud
 
 ---
 
-## 🗄️ 3. Modelo de Base de Datos
+## 🗄️ 4. Modelo de Base de Datos
 
 ```mermaid
 erDiagram
@@ -232,7 +258,7 @@ erDiagram
 
 ---
 
-## 🔐 4. Flujo de Seguridad (JWT)
+## 🔐 5. Flujo de Seguridad (JWT)
 
 ```mermaid
 sequenceDiagram
@@ -260,7 +286,7 @@ sequenceDiagram
 
 ---
 
-## 🛣️ 5. Endpoints REST
+## 🛣️ 6. Endpoints REST
 
 ### Auth (`/api/auth`)
 | Método | Endpoint | Rol | Descripción |
@@ -305,7 +331,7 @@ sequenceDiagram
 
 ---
 
-## 📧 6. Sistema de Notificaciones
+## 📧 7. Sistema de Notificaciones
 
 ```mermaid
 flowchart LR
@@ -328,7 +354,7 @@ flowchart LR
 
 ---
 
-## ⚙️ 7. Dependencias Maven (`pom.xml`)
+## ⚙️ 8. Dependencias Maven (`pom.xml`)
 
 ```xml
 <!-- Core -->
@@ -367,7 +393,7 @@ h2database (para tests)
 
 ---
 
-## 🗓️ 8. Fases de Implementación
+## 🗓️ 9. Fases de Implementación
 
 ### Fase 0 — Setup del Proyecto
 
@@ -524,7 +550,7 @@ h2database (para tests)
 
 ---
 
-## 📊 9. Resumen de Esfuerzo Estimado
+## 📊 10. Resumen de Esfuerzo Estimado
 
 | Fase | Descripción |
 |------|-------------|
@@ -541,7 +567,7 @@ h2database (para tests)
 
 ---
 
-## 🧭 10. Patrones y Buenas Prácticas Aplicadas
+## 🧭 11. Patrones y Buenas Prácticas Aplicadas
 
 | Patrón | Dónde se aplica |
 |--------|-----------------|
@@ -558,7 +584,7 @@ h2database (para tests)
 
 ---
 
-## 📂 11. Estructura de Archivos Thymeleaf
+## 📂 12. Estructura de Archivos Thymeleaf
 
 ```
 src/main/resources/
