@@ -1,12 +1,18 @@
-# 🏥 Plan de Implementación — SISOL Salud
+# 🏥 SISOL Salud - Backend
 
-> Sistema Inteligente de Turnos para Hospitales Públicos
+> Sistema Inteligente de Turnos para Hospitales Públicos. Una solución robusta basada en Spring Boot para la gestión eficiente de citas médicas, disponibilidad y analítica hospitalaria.
 
+![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
 ![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=java&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![Thymeleaf](https://img.shields.io/badge/Thymeleaf-Template-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-Security-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
+
+---
+
+## 📖 Documentación Rápida
+- 🚀 **[Guía de Despliegue y Ejecución](DEPLOYMENT.md)**
+- 📘 **[Plan de Implementación Detallado](#-9-fases-de-implementación)**
+- 📑 **Swagger UI:** `/swagger-ui.html` (con la app corriendo)
 
 ---
 
@@ -537,16 +543,15 @@ h2database (para tests)
 
 ---
 
-### Fase 9 — Pulido Final 
-
+### Fase 9 — Pulido Final ✅
 | # | Tarea |
 |---|-------|
 | 9.1 | Spring Actuator: health, metrics |
 | 9.2 | Logging con SLF4J en servicios clave |
-| 9.3 | Revisar validaciones `@Valid` en todos los endpoints |
-| 9.4 | Revisar seguridad: rutas protegidas, CORS, CSRF |
-| 9.5 | Seed data completo para demo |
-| 9.6 | README.md con instrucciones de instalación |
+| 9.3 | Auditoría automática con Envers |
+| 9.4 | Seguridad: CORS, AccessDenied handling |
+| 9.5 | README.md y Guía de Despliegue |
+| 9.6 | Entrega final del Backend |
 
 ---
 
