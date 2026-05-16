@@ -20,6 +20,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 @Entity // Entidad de Persistencia
 @Table(name = "usuarios") // Tabla usuarios en la DB
@@ -28,6 +29,7 @@ import lombok.Setter;
 @NoArgsConstructor // Constructor sin argumentos
 @AllArgsConstructor // Constructor con parámetros
 @Builder
+@Audited
 public class Usuario {
 
     @Id
