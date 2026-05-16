@@ -23,6 +23,8 @@ public interface CitaRepository extends JpaRepository<Cita, Long> { // Repositor
 
     List<Cita> findByEstado(EstadoCita estado); // Método para buscar citas por estado.
 
+    List<Cita> findByFechaAndEstado(LocalDate fecha, EstadoCita estado);
+
     @Query("SELECT c FROM Cita c WHERE c.medico.id = :medicoId AND c.fecha = :fecha AND c.estado != 'CANCELADA'")
     List<Cita> buscarCitasPorMedicoYDia(@Param("medicoId") Long medicoId, @Param("fecha") LocalDate fecha);
 

@@ -61,6 +61,25 @@ public class NotificacionService {
         guardarRegistroNotificacion(cita, asunto, "Correo de cancelación enviado exitosamente.");
     }
 
+    @Transactional
+    public void enviarRecordatorioCita(Cita cita) {
+        String asunto = "Recordatorio: Tienes una cita mañana - SISOL Salud";
+        String template = "cita-recordatorio";
+
+        Map<String, Object> modelo = new HashMap<>();
+        modelo.put("nombrePaciente", cita.getPaciente().getUsuario().getNombre());
+        modelo.put("especialidad", cita.getMedico().getEspecialidad().getNombre());
+        modelo.put("nombreMedico", cita.getMedico().getUsuario().getNombre() + " " + cita.getMedico().getUsuario().getApellido());
+        modelo.put("fecha", cita.getFecha().toString());
+        modelo.put("hora", cita.getHoraInicio().toString());
+
+        // Enviar el correo
+        emailService.enviarCorreoHtml(cita.getPaciente().getUsuario().getEmail(), asunto, template, modelo);
+
+        // Guardar registro en la base de datos
+        guardarRegistroNotificacion(cita, asunto, "Correo de recordatorio enviado exitosamente.");
+    }
+
     private void guardarRegistroNotificacion(Cita cita, String asunto, String mensajeLog) {
         Notificacion notificacion = Notificacion.builder()
                 .cita(cita)
