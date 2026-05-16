@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
 </head>
@@ -21,10 +21,17 @@
                         <a class="nav-link" th:href="@{/medicos}">Nuestros Médicos</a>
                     </li>
                 </ul>
-                <div class="d-flex">
+                <div class="d-flex" sec:authorize="!isAuthenticated()">
                     <!-- Opciones para usuarios NO autenticados -->
                     <a th:href="@{/auth/login}" class="btn btn-outline-primary me-2">Iniciar Sesión</a>
                     <a th:href="@{/auth/registro}" class="btn btn-primary">Registrarse</a>
+                </div>
+                <div class="d-flex align-items-center" sec:authorize="isAuthenticated()">
+                    <!-- Opciones para usuarios autenticados -->
+                    <span class="me-3 fw-bold text-primary">
+                        <i class="bi bi-person-circle me-1"></i> <span sec:authentication="name">Usuario</span>
+                    </span>
+                    <a th:href="@{/auth/logout}" class="btn btn-outline-danger btn-sm">Cerrar Sesión</a>
                 </div>
             </div>
         </div>

@@ -32,17 +32,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // Filtro pa
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
+        String jwt = null;
         final String userEmail;
 
-        // 1. Verificar si el token existe y empieza con "Bearer "
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // 1. Verificar si el token existe en la cabecera Authorization
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7);
+        } else {
+            // 1.5 Verificar si el token existe en una cookie (para el frontend web)
+            jakarta.servlet.http.Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (jakarta.servlet.http.Cookie cookie : cookies) {
+                    if ("JWT-TOKEN".equals(cookie.getName())) {
+                        jwt = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Si no hay token, continuar con la cadena (sin autenticar)
+        if (jwt == null) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        // 2. Extraer el token (quitando "Bearer ")
-        jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
 
         // 3. Si tenemos el email y el usuario aún no está autenticado en el contexto

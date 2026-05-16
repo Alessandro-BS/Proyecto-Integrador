@@ -15,8 +15,8 @@
                             <p class="text-muted">Accede a tu cuenta de SISOL Salud</p>
                         </div>
 
-                        <!-- El formulario será manejado vía AJAX (JS) o Form Submission -->
-                        <form id="loginForm" th:action="@{/api/auth/login}" method="post">
+                        <!-- El formulario será manejado vía HTTP POST estándar -->
+                        <form id="loginForm" th:action="@{/auth/login}" method="post">
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="dni" name="dni" placeholder="12345678" required>
                                 <label for="dni">Número de DNI</label>
