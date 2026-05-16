@@ -1,0 +1,104 @@
+/* 
+ * ESTILOS PERSONALIZADOS SISOL SALUD
+ * Extensiones a Bootstrap 5 para garantizar una experiencia responsive premium.
+ */
+
+/* =========================================
+   1. Tipografía y Variables Globales
+========================================= */
+:root {
+    --sisol-primary: #0d6efd;
+    --sisol-secondary: #6c757d;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* =========================================
+   2. Mejoras de Componentes (Tarjetas y Tablas)
+========================================= */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+/* Tablas responsivas más amigables */
+.table-responsive {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+/* =========================================
+   3. MEDIA QUERIES (Mobile y Tablets)
+========================================= */
+
+/* Pantallas Extra Pequeñas (Móviles - Hasta 576px) */
+@media (max-width: 575.98px) {
+    /* Ajuste de tipografía en encabezados */
+    .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .display-5 {
+        font-size: 2rem;
+    }
+
+    /* Reducción de espaciados laterales */
+    main.container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Botones más grandes y de ancho completo en móvil */
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Ocultar elementos no esenciales en tablas móviles */
+    .table-responsive table td.text-truncate {
+        max-width: 100px !important;
+    }
+
+    /* Ajuste especial para el modal de disponibilidad */
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+}
+
+/* Pantallas Pequeñas (Tablets en portrait - Desde 576px hasta 768px) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .btn {
+        width: auto; /* Restaurar ancho normal de botones */
+    }
+    
+    /* Stepper: Ajustes visuales para que no se superponga */
+    .progress-bar {
+        transition: width 0.6s ease;
+    }
+}
+
+/* Pantallas Medianas y Grandes (Tablets landscape y Desktops) */
+@media (min-width: 768px) {
+    /* Asegurar que las tarjetas mantengan misma altura */
+    .row-cols-md-2 > .col {
+        display: flex;
+    }
+    
+    .card {
+        width: 100%;
+    }
+}
