@@ -589,7 +589,7 @@ h2database (para tests)
 
 ---
 
-## 📂 12. Estructura de Archivos Thymeleaf
+## 📂 12. Estructura de Archivos Thymeleaf - Frontend
 
 ```
 src/main/resources/
