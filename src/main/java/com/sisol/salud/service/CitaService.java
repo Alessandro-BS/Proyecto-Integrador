@@ -15,6 +15,7 @@ import com.sisol.salud.exception.ReglaNegocioException;
 import com.sisol.salud.repository.MedicoRepository;
 import com.sisol.salud.repository.PacienteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CitaService {
 
     private final CitaRepository citaRepository;
@@ -35,6 +37,8 @@ public class CitaService {
 
     @Transactional
     public CitaResponse reservarCita(CitaRequest request) {
+        log.info("Iniciando reserva de cita para paciente ID: {} con médico ID: {} el {}", 
+                request.getPacienteId(), request.getMedicoId(), request.getFechaHora());
 
         // 1. Validar que el paciente existe
         Paciente paciente = pacienteRepository.findById(request.getPacienteId())
@@ -73,6 +77,8 @@ public class CitaService {
 
         // 5. Guardar en BD
         Cita citaGuardada = citaRepository.save(nuevaCita);
+        log.info("Cita reservada exitosamente con ID: {} para el paciente con ID: {}", 
+                citaGuardada.getId(), paciente.getId());
 
         // 6. Enviar notificación por correo
         notificacionService.enviarConfirmacionCita(citaGuardada);

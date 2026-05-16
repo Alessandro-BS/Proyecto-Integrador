@@ -19,9 +19,11 @@ import com.sisol.salud.security.jwt.JwtService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
@@ -32,6 +34,7 @@ public class AuthService {
     private final UserDetailsService userDetailsService;
 
     public AuthResponse login(LoginRequest request) {
+        log.info("Intento de inicio de sesión para el usuario: {}", request.getEmail());
         // 1. Spring Security maneja la verificación de contraseña internamente
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
@@ -56,11 +59,14 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegistroRequest request) {
+        log.info("Iniciando registro de nuevo paciente: {} con DNI {}", request.getEmail(), request.getDni());
         // 1. Valdar que no exista el email ni el DNI
         if (usuarioRepository.existsByEmail(request.getEmail())) {
+            log.warn("Fallo de registro: El email {} ya existe", request.getEmail());
             throw new RuntimeException("El email ya está registrado");
         }
         if (usuarioRepository.existsByDni(request.getDni())) {
+            log.warn("Fallo de registro: El DNI {} ya existe", request.getDni());
             throw new RuntimeException("El DNI ya está registrado");
         }
 
