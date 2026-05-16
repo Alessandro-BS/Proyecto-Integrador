@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>Mi Panel - Paciente</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="fw-bold">Bienvenido(a) a tu Panel de Control</h2>
+                <p class="text-muted">Aquí puedes gestionar tus citas médicas e historial.</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 border-top border-primary border-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary text-white rounded p-3 me-3">
+                                <i class="bi bi-calendar-plus fs-4"></i>
+                            </div>
+                            <h5 class="card-title mb-0 fw-bold">Reservar Cita</h5>
+                        </div>
+                        <p class="card-text text-muted">Agenda una nueva consulta con nuestros especialistas.</p>
+                        <a th:href="@{/paciente/reservar-cita}" class="btn btn-primary w-100 mt-2">Agendar Ahora</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 border-top border-success border-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-success text-white rounded p-3 me-3">
+                                <i class="bi bi-journal-medical fs-4"></i>
+                            </div>
+                            <h5 class="card-title mb-0 fw-bold">Mis Citas</h5>
+                        </div>
+                        <p class="card-text text-muted">Revisa tus próximas citas y tu historial médico.</p>
+                        <a th:href="@{/paciente/mis-citas}" class="btn btn-outline-success w-100 mt-2">Ver Historial</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 border-top border-info border-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-info text-white rounded p-3 me-3">
+                                <i class="bi bi-person-gear fs-4"></i>
+                            </div>
+                            <h5 class="card-title mb-0 fw-bold">Mi Perfil</h5>
+                        </div>
+                        <p class="card-text text-muted">Actualiza tus datos personales y de contacto.</p>
+                        <a href="#" class="btn btn-outline-info w-100 mt-2">Editar Perfil</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
