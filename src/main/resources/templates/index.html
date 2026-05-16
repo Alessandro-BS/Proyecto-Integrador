@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>Inicio</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold text-primary mb-3">Tu Salud es Nuestra Prioridad</h1>
+                <p class="lead text-muted mb-4">Bienvenido a SISOL Salud. Agenda tus citas médicas en línea de forma rápida, segura y sin hacer filas. Contamos con los mejores especialistas a tu disposición.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a th:href="@{/auth/registro}" class="btn btn-primary btn-lg px-4 me-md-2">Agendar Cita Ahora</a>
+                    <a th:href="@{/medicos}" class="btn btn-outline-secondary btn-lg px-4">Ver Especialistas</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center mt-4 mt-lg-0">
+                <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Hospital" class="img-fluid rounded-3 shadow-lg" style="object-fit: cover; height: 400px; width: 100%;">
+            </div>
+        </div>
+
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <div class="col d-flex align-items-start">
+                <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3 p-3 rounded-circle text-primary shadow-sm">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+                <div>
+                    <h3 class="fs-5 text-body-emphasis">Reservas en línea</h3>
+                    <p>Agenda, reprograma o cancela tus citas médicas desde cualquier dispositivo las 24 horas del día.</p>
+                </div>
+            </div>
+            <div class="col d-flex align-items-start">
+                <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3 p-3 rounded-circle text-primary shadow-sm">
+                    <i class="bi bi-hospital"></i>
+                </div>
+                <div>
+                    <h3 class="fs-5 text-body-emphasis">Múltiples Especialidades</h3>
+                    <p>Contamos con una amplia variedad de especialidades médicas para atender todas tus necesidades de salud.</p>
+                </div>
+            </div>
+            <div class="col d-flex align-items-start">
+                <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3 p-3 rounded-circle text-primary shadow-sm">
+                    <i class="bi bi-envelope-paper"></i>
+                </div>
+                <div>
+                    <h3 class="fs-5 text-body-emphasis">Notificaciones</h3>
+                    <p>Recibe confirmaciones y recordatorios por correo electrónico para que nunca olvides una cita.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
