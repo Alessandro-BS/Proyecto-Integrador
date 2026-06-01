@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS especialidades (
     id              BIGINT          AUTO_INCREMENT PRIMARY KEY,
     nombre          VARCHAR(100)    NOT NULL,
     descripcion     VARCHAR(500)    NULL,
+    costo           DECIMAL(10,2)   NOT NULL DEFAULT 0.00,
     activo          BOOLEAN         NOT NULL DEFAULT TRUE,
     created_at      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -68,12 +69,11 @@ CREATE TABLE IF NOT EXISTS especialidades (
 
 -- -------------------------------------------------------
 -- 5. Tabla: medicos
--- Datos del médico (relación 1:1 con usuarios, N:1 con especialidades)
+-- Datos del médico (relación 1:1 con usuarios)
 -- -------------------------------------------------------
 CREATE TABLE IF NOT EXISTS medicos (
     id                  BIGINT          AUTO_INCREMENT PRIMARY KEY,
     usuario_id          BIGINT          NOT NULL,
-    especialidad_id     BIGINT          NOT NULL,
     numero_colegiatura  VARCHAR(20)     NOT NULL,
     created_at          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -81,9 +81,21 @@ CREATE TABLE IF NOT EXISTS medicos (
     CONSTRAINT uk_medico_usuario        UNIQUE (usuario_id),
     CONSTRAINT uk_medico_colegiatura    UNIQUE (numero_colegiatura),
     CONSTRAINT fk_medico_usuario        FOREIGN KEY (usuario_id)
-        REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_medico_especialidad   FOREIGN KEY (especialidad_id)
-        REFERENCES especialidades(id) ON DELETE RESTRICT ON UPDATE CASCADE
+        REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -------------------------------------------------------
+-- 5.1 Tabla: medico_especialidades (Relación N:N)
+-- Asocia médicos con una o más especialidades
+-- -------------------------------------------------------
+CREATE TABLE IF NOT EXISTS medico_especialidades (
+    medico_id       BIGINT          NOT NULL,
+    especialidad_id BIGINT          NOT NULL,
+    PRIMARY KEY (medico_id, especialidad_id),
+    CONSTRAINT fk_medico_esp_medico FOREIGN KEY (medico_id) 
+        REFERENCES medicos(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_medico_esp_especialidad FOREIGN KEY (especialidad_id) 
+        REFERENCES especialidades(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -------------------------------------------------------
@@ -122,6 +134,7 @@ CREATE TABLE IF NOT EXISTS citas (
     id                  BIGINT          AUTO_INCREMENT PRIMARY KEY,
     paciente_id         BIGINT          NOT NULL,
     medico_id           BIGINT          NOT NULL,
+    especialidad_id     BIGINT          NOT NULL,
     fecha               DATE            NOT NULL,
     hora_inicio         TIME            NOT NULL,
     hora_fin            TIME            NOT NULL,
@@ -139,9 +152,35 @@ CREATE TABLE IF NOT EXISTS citas (
         REFERENCES pacientes(id) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT fk_cita_medico   FOREIGN KEY (medico_id)
         REFERENCES medicos(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_cita_especialidad FOREIGN KEY (especialidad_id)
+        REFERENCES especialidades(id) ON DELETE RESTRICT ON UPDATE CASCADE,
 
     -- Validar que hora_fin sea posterior a hora_inicio
     CONSTRAINT chk_cita_horario_valido CHECK (hora_fin > hora_inicio)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -------------------------------------------------------
+-- 7.1 Tabla: pagos
+-- Registro de pagos asociados a las citas médicas
+-- -------------------------------------------------------
+CREATE TABLE IF NOT EXISTS pagos (
+    id              BIGINT          AUTO_INCREMENT PRIMARY KEY,
+    cita_id         BIGINT          NOT NULL,
+    paciente_id     BIGINT          NOT NULL,
+    monto           DECIMAL(10,2)   NOT NULL,
+    metodo_pago     ENUM('EFECTIVO','TARJETA_DEBITO','TARJETA_CREDITO','YAPE','PLIN','TRANSFERENCIA') NOT NULL,
+    estado_pago     ENUM('PENDIENTE','PAGADO','REEMBOLSADO') NOT NULL DEFAULT 'PENDIENTE',
+    referencia_pago VARCHAR(100)    NULL,
+    fecha_pago      DATETIME        NULL,
+    notas           VARCHAR(500)    NULL,
+    created_at      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT uk_pago_cita UNIQUE (cita_id),
+    CONSTRAINT fk_pago_cita FOREIGN KEY (cita_id)
+        REFERENCES citas(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_pago_paciente FOREIGN KEY (paciente_id)
+        REFERENCES pacientes(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -------------------------------------------------------
@@ -181,8 +220,12 @@ CREATE INDEX idx_cita_estado ON citas(estado);
 -- Buscar citas por fecha (reportes diarios)
 CREATE INDEX idx_cita_fecha ON citas(fecha);
 
--- Buscar médicos por especialidad
-CREATE INDEX idx_medico_especialidad ON medicos(especialidad_id);
+-- Buscar médicos por especialidad en la tabla intermedia
+CREATE INDEX idx_medico_especialidades_especialidad ON medico_especialidades(especialidad_id);
+
+-- Buscar pagos por paciente y estado
+CREATE INDEX idx_pago_paciente ON pagos(paciente_id);
+CREATE INDEX idx_pago_estado ON pagos(estado_pago);
 
 -- Buscar disponibilidad por médico y día
 CREATE INDEX idx_disponibilidad_medico_dia ON disponibilidad_medica(medico_id, dia_semana);
@@ -204,18 +247,18 @@ INSERT INTO usuarios (dni, nombre, apellido, email, password, telefono, rol, act
  '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
  '999000001', 'ADMIN', TRUE);
 
--- 10.2 Especialidades médicas iniciales
-INSERT INTO especialidades (nombre, descripcion) VALUES
-('Medicina General',        'Atención primaria y diagnóstico general de enfermedades comunes'),
-('Pediatría',               'Atención médica especializada para niños y adolescentes'),
-('Ginecología',             'Salud reproductiva y atención integral de la mujer'),
-('Cardiología',             'Diagnóstico y tratamiento de enfermedades del corazón'),
-('Dermatología',            'Tratamiento de enfermedades de la piel, cabello y uñas'),
-('Traumatología',           'Lesiones del sistema músculo-esquelético y ortopedia'),
-('Oftalmología',            'Diagnóstico y tratamiento de enfermedades de los ojos'),
-('Neurología',              'Enfermedades del sistema nervioso central y periférico'),
-('Otorrinolaringología',    'Enfermedades del oído, nariz y garganta'),
-('Psiquiatría',             'Diagnóstico y tratamiento de trastornos mentales');
+-- 10.2 Especialidades médicas iniciales con costo de consulta
+INSERT INTO especialidades (nombre, descripcion, costo) VALUES
+('Medicina General',        'Atención primaria y diagnóstico general de enfermedades comunes', 30.00),
+('Pediatría',               'Atención médica especializada para niños y adolescentes', 40.00),
+('Ginecología',             'Salud reproductiva y atención integral de la mujer', 50.00),
+('Cardiología',             'Diagnóstico y tratamiento de enfermedades del corazón', 60.00),
+('Dermatología',            'Tratamiento de enfermedades de la piel, cabello y uñas', 45.00),
+('Traumatología',           'Lesiones del sistema músculo-esquelético y ortopedia', 50.00),
+('Oftalmología',            'Diagnóstico y tratamiento de enfermedades de los ojos', 40.00),
+('Neurología',              'Enfermedades del sistema nervioso central y periférico', 70.00),
+('Otorrinolaringología',    'Enfermedades del oído, nariz y garganta', 45.00),
+('Psiquiatría',             'Diagnóstico y tratamiento de trastornos mentales', 50.00);
 
 -- -------------------------------------------------------
 -- FIN DEL SCRIPT
