@@ -49,6 +49,10 @@ public class Cita {
     @JoinColumn(name = "medico_id", nullable = false)
     private Medico medico;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "especialidad_id", nullable = false)
+    private Especialidad especialidad;
+
     @Column(nullable = false)
     private LocalDate fecha; // Fecha
 

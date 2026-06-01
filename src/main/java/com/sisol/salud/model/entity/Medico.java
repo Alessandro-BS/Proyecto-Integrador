@@ -1,6 +1,7 @@
 package com.sisol.salud.model.entity;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,7 +13,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -41,11 +43,14 @@ public class Medico {
     @JoinColumn(name = "usuario_id", nullable = false, unique = true)
     private Usuario usuario;
 
-    // Relación Muchos a 1 con Especialidad: Un médico tiene una especialidad
-    // asignada
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "especialidad_id", nullable = false)
-    private Especialidad especialidad; // Especialidad
+    // Relación Muchos a Muchos con Especialidad: Un médico puede tener varias especialidades
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "medico_especialidades",
+        joinColumns = @JoinColumn(name = "medico_id"),
+        inverseJoinColumns = @JoinColumn(name = "especialidad_id")
+    )
+    private Set<Especialidad> especialidades; // Especialidades
 
     @Column(name = "numero_colegiatura", nullable = false, unique = true, length = 20)
     private String numeroColegiatura; // Número de colegiatura
