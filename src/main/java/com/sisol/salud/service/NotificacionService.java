@@ -30,7 +30,7 @@ public class NotificacionService {
 
         Map<String, Object> modelo = new HashMap<>();
         modelo.put("nombrePaciente", cita.getPaciente().getUsuario().getNombre());
-        modelo.put("especialidad", cita.getMedico().getEspecialidad().getNombre());
+        modelo.put("especialidad", cita.getEspecialidad().getNombre());
         modelo.put("nombreMedico", cita.getMedico().getUsuario().getNombre() + " " + cita.getMedico().getUsuario().getApellido());
         modelo.put("fecha", cita.getFecha().toString());
         modelo.put("hora", cita.getHoraInicio().toString());
@@ -49,7 +49,7 @@ public class NotificacionService {
 
         Map<String, Object> modelo = new HashMap<>();
         modelo.put("nombrePaciente", cita.getPaciente().getUsuario().getNombre());
-        modelo.put("especialidad", cita.getMedico().getEspecialidad().getNombre());
+        modelo.put("especialidad", cita.getEspecialidad().getNombre());
         modelo.put("nombreMedico", cita.getMedico().getUsuario().getNombre() + " " + cita.getMedico().getUsuario().getApellido());
         modelo.put("fecha", cita.getFecha().toString());
         modelo.put("hora", cita.getHoraInicio().toString());
@@ -68,7 +68,7 @@ public class NotificacionService {
 
         Map<String, Object> modelo = new HashMap<>();
         modelo.put("nombrePaciente", cita.getPaciente().getUsuario().getNombre());
-        modelo.put("especialidad", cita.getMedico().getEspecialidad().getNombre());
+        modelo.put("especialidad", cita.getEspecialidad().getNombre());
         modelo.put("nombreMedico", cita.getMedico().getUsuario().getNombre() + " " + cita.getMedico().getUsuario().getApellido());
         modelo.put("fecha", cita.getFecha().toString());
         modelo.put("hora", cita.getHoraInicio().toString());

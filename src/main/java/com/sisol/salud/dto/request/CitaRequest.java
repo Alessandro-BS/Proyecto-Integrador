@@ -21,10 +21,19 @@ public class CitaRequest {
     @NotNull(message = "El ID del médico es obligatorio")
     private Long medicoId;
 
+    @NotNull(message = "El ID de la especialidad es obligatorio")
+    private Long especialidadId;
+
     @NotNull(message = "La fecha y hora de la cita es obligatoria")
     @Future(message = "La cita debe programarse para una fecha futura")
     private LocalDateTime fechaHora;
 
     // Motivo de consulta opcional
     private String motivoConsulta;
+
+    // Campos de Pago
+    @NotNull(message = "El método de pago es obligatorio")
+    private com.sisol.salud.model.enums.MetodoPago metodoPago;
+
+    private String referenciaPago;
 }

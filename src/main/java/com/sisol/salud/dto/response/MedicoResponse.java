@@ -16,6 +16,6 @@ public class MedicoResponse {
     private String apellido;
     private String cpm; // Colegio médico del Perú
     private String email;
-    private String especialidad; // Devolverá solo el nombre de la especialidad
+    private java.util.List<String> especialidades; // Devolverá los nombres de las especialidades
 
 }

@@ -1,5 +1,6 @@
 package com.sisol.salud.model.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,6 +38,11 @@ public class Especialidad {
     @Column(nullable = true, length = 500)
     private String descripcion;
 
+    @Builder.Default
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal costo = BigDecimal.ZERO;
+
+    @Builder.Default
     @Column(nullable = false)
     private boolean activo = true; // Activo por defecto
 

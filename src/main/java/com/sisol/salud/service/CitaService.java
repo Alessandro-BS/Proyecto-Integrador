@@ -9,11 +9,13 @@ import com.sisol.salud.model.entity.Cita;
 import com.sisol.salud.model.entity.Medico;
 import com.sisol.salud.model.entity.Paciente;
 import com.sisol.salud.model.enums.EstadoCita;
+import com.sisol.salud.model.entity.Especialidad;
 import com.sisol.salud.repository.CitaRepository;
 import com.sisol.salud.exception.RecursoNoEncontradoException;
 import com.sisol.salud.exception.ReglaNegocioException;
 import com.sisol.salud.repository.MedicoRepository;
 import com.sisol.salud.repository.PacienteRepository;
+import com.sisol.salud.repository.EspecialidadRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,8 +33,10 @@ public class CitaService {
     private final CitaRepository citaRepository;
     private final PacienteRepository pacienteRepository;
     private final MedicoRepository medicoRepository;
+    private final EspecialidadRepository especialidadRepository;
     private final DisponibilidadService disponibilidadService;
     private final NotificacionService notificacionService;
+    private final PagoService pagoService;
     private final CitaMapper citaMapper;
 
     @Transactional
@@ -47,6 +51,15 @@ public class CitaService {
         // 2. Validar que el médico existe
         Medico medico = medicoRepository.findById(request.getMedicoId())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Médico no encontrado"));
+
+        // 2.1 Validar que la especialidad existe
+        Especialidad especialidad = especialidadRepository.findById(request.getEspecialidadId())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Especialidad no encontrada"));
+
+        // 2.2 Validar que el médico posea la especialidad seleccionada
+        if (!medico.getEspecialidades().contains(especialidad)) {
+            throw new ReglaNegocioException("El médico seleccionado no atiende en la especialidad solicitada.");
+        }
 
         // Extraer fecha y hora de la solicitud
         LocalDate fechaDeseada = request.getFechaHora().toLocalDate();
@@ -68,6 +81,7 @@ public class CitaService {
         Cita nuevaCita = Cita.builder()
                 .paciente(paciente)
                 .medico(medico)
+                .especialidad(especialidad)
                 .fecha(fechaDeseada)
                 .horaInicio(horaDeseada)
                 .horaFin(horaDeseada.plusMinutes(30)) // Cada turno dura 30 minutos
@@ -79,6 +93,15 @@ public class CitaService {
         Cita citaGuardada = citaRepository.save(nuevaCita);
         log.info("Cita reservada exitosamente con ID: {} para el paciente con ID: {}", 
                 citaGuardada.getId(), paciente.getId());
+
+        // 5.1 Registrar pago obligatorio
+        pagoService.registrarPago(
+                citaGuardada,
+                paciente,
+                especialidad.getCosto(),
+                request.getMetodoPago(),
+                request.getReferenciaPago()
+        );
 
         // 6. Enviar notificación por correo
         notificacionService.enviarConfirmacionCita(citaGuardada);
@@ -119,6 +142,9 @@ public class CitaService {
         // Si pasa todas las validaciones, cambiamos el estado
         cita.setEstado(EstadoCita.CANCELADA);
         citaRepository.save(cita);
+
+        // Reembolsar el pago asociado a la cita
+        pagoService.reembolsarPago(cita.getId());
 
         // Enviar notificación por correo de cancelación
         notificacionService.enviarCancelacionCita(cita);

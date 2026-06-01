@@ -17,10 +17,17 @@ public interface MedicoMapper {
     @Mapping(target = "nombre", source = "usuario.nombre")
     @Mapping(target = "apellido", source = "usuario.apellido")
     @Mapping(target = "email", source = "usuario.email")
-    @Mapping(target = "especialidad", source = "especialidad.nombre")
-
-    // Para mapear cada atributo de Medico a MedicoResponse
+    @Mapping(target = "especialidades", source = "especialidades")
     MedicoResponse toResponse(Medico medico);
+
+    default List<String> mapEspecialidades(java.util.Set<com.sisol.salud.model.entity.Especialidad> especialidades) {
+        if (especialidades == null) {
+            return java.util.Collections.emptyList();
+        }
+        return especialidades.stream()
+                .map(com.sisol.salud.model.entity.Especialidad::getNombre)
+                .collect(java.util.stream.Collectors.toList());
+    }
 
     // 2. Mapeo de lista de Médicos a lista de MedicoResponse (getAll)
     List<MedicoResponse> toResponseList(List<Medico> medicos);

@@ -1,13 +1,14 @@
 package com.sisol.salud.model.entity;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
 
-import com.sisol.salud.model.enums.EstadoCita;
+import com.sisol.salud.model.enums.EstadoPago;
+import com.sisol.salud.model.enums.MetodoPago;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,64 +20,62 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.envers.Audited;
 
 @Entity
-@Table(name = "citas")
+@Table(name = "pagos")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Audited
-public class Cita {
+public class Pago {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cita_id", nullable = false, unique = true)
+    private Cita cita;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "medico_id", nullable = false)
-    private Medico medico;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "especialidad_id", nullable = false)
-    private Especialidad especialidad;
-
-    @Column(nullable = false)
-    private LocalDate fecha; // Fecha
-
-    @Column(name = "hora_inicio", nullable = false)
-    private LocalTime horaInicio; // Hora de inicio de la consulta
-
-    @Column(name = "hora_fin", nullable = false)
-    private LocalTime horaFin; // Hora de fin de la consulta
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal monto;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private EstadoCita estado = EstadoCita.PENDIENTE; // Estado de la cita
+    @Column(name = "metodo_pago", nullable = false)
+    private MetodoPago metodoPago;
 
-    @Column(name = "motivo_consulta", length = 500)
-    private String motivoConsulta; // Motivo de la consulta
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado_pago", nullable = false)
+    private EstadoPago estadoPago = EstadoPago.PENDIENTE;
 
-    @Column(columnDefinition = "TEXT")
-    private String observaciones; // Observaciones del médico
+    @Column(name = "referencia_pago", length = 100)
+    private String referenciaPago;
+
+    @Column(name = "fecha_pago")
+    private LocalDateTime fechaPago;
+
+    @Column(length = 500)
+    private String notas;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt; // Fecha de creación
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt; // Fecha de modificación
+    private LocalDateTime updatedAt;
 }
