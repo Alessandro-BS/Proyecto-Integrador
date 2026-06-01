@@ -1,88 +1,131 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/base}">
+
 <head>
     <title>Servicios</title>
 </head>
+
 <body>
     <div layout:fragment="content">
         <!-- Hero Section Servicios -->
         <div class="row align-items-center mb-5 mt-4">
-            <div class="col-lg-8">
-                <h6 class="text-primary fw-bold text-uppercase mb-2" style="letter-spacing: 2px; font-size: 0.85rem;">Excelencia Médica</h6>
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <h6 class="text-primary fw-bold text-uppercase mb-2" style="letter-spacing: 2px; font-size: 0.85rem;">
+                    Excelencia Médica</h6>
                 <h1 class="display-4 fw-bold text-primary mb-4" style="letter-spacing: -0.02em;">Nuestros Servicios</h1>
-                <p class="lead text-muted mb-4" style="max-width: 600px; line-height: 1.8;">Ofrecemos atención médica integral con tecnología de vanguardia y un equipo de especialistas comprometidos con tu bienestar y el de tu familia.</p>
+                <p class="lead text-muted mb-4" style="max-width: 600px; line-height: 1.8;">Ofrecemos atención médica
+                    integral con tecnología de vanguardia y un equipo de especialistas comprometidos con tu bienestar y
+                    el de tu familia.</p>
+            </div>
+            <div class="col-lg-4 text-center d-none d-lg-block">
+                <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                    alt="Equipamiento médico" class="img-fluid rounded-2xl shadow-whisper"
+                    style="object-fit: cover; height: 250px; width: 100%;">
             </div>
         </div>
 
         <!-- Filter Pills -->
         <div class="d-flex flex-wrap gap-3 justify-content-center mb-5">
-            <a href="#" class="btn btn-primary btn-pill px-4 fw-bold">Todos</a>
-            <a href="#" class="btn btn-outline-secondary btn-pill px-4 bg-white border-0 shadow-sm text-dark">Consultas Médicas</a>
-            <a href="#" class="btn btn-outline-secondary btn-pill px-4 bg-white border-0 shadow-sm text-dark">Laboratorio</a>
-            <a href="#" class="btn btn-outline-secondary btn-pill px-4 bg-white border-0 shadow-sm text-dark">Diagnóstico por Imágenes</a>
-            <a href="#" class="btn btn-outline-secondary btn-pill px-4 bg-white border-0 shadow-sm text-dark">Cirugías</a>
+            <a th:href="@{/servicios}" 
+               class="btn btn-pill px-4 shadow-sm"
+               th:classappend="${param.categoria == null} ? 'btn-primary fw-bold text-white' : 'bg-white text-dark border-0'">Todos</a>
+               
+            <a th:href="@{/servicios(categoria='consultas')}" 
+               class="btn btn-pill px-4 shadow-sm"
+               th:classappend="${param.categoria != null and param.categoria[0] == 'consultas'} ? 'btn-primary fw-bold text-white' : 'bg-white text-dark border-0'">Consultas Médicas</a>
+               
+            <a th:href="@{/servicios(categoria='laboratorio')}" 
+               class="btn btn-pill px-4 shadow-sm"
+               th:classappend="${param.categoria != null and param.categoria[0] == 'laboratorio'} ? 'btn-primary fw-bold text-white' : 'bg-white text-dark border-0'">Laboratorio</a>
+               
+            <a th:href="@{/servicios(categoria='imagenes')}" 
+               class="btn btn-pill px-4 shadow-sm"
+               th:classappend="${param.categoria != null and param.categoria[0] == 'imagenes'} ? 'btn-primary fw-bold text-white' : 'bg-white text-dark border-0'">Diagnóstico por Imágenes</a>
+               
+            <a th:href="@{/servicios(categoria='cirugias')}" 
+               class="btn btn-pill px-4 shadow-sm"
+               th:classappend="${param.categoria != null and param.categoria[0] == 'cirugias'} ? 'btn-primary fw-bold text-white' : 'bg-white text-dark border-0'">Cirugías</a>
         </div>
 
         <!-- Grid de Servicios -->
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5 pb-5">
             <!-- Cardiología -->
             <div class="col">
-                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center" style="background-color: white;">
-                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto" style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center"
+                    style="background-color: white;">
+                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto"
+                        style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
                         <i class="bi bi-heart-pulse fs-2"></i>
                     </div>
                     <h4 class="fw-bold text-dark mb-3">Cardiología</h4>
-                    <p class="text-muted small mb-0" style="line-height: 1.6;">Prevención, diagnóstico y tratamiento de enfermedades del corazón con equipos de alta precisión.</p>
+                    <p class="text-muted small mb-0" style="line-height: 1.6;">Prevención, diagnóstico y tratamiento de
+                        enfermedades del corazón con equipos de alta precisión.</p>
                 </div>
             </div>
             <!-- Pediatría -->
             <div class="col">
-                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center" style="background-color: white;">
-                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto" style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
-                        <i class="bi bi-emoji-smile fs-2"></i>
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center"
+                    style="background-color: white;">
+                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto"
+                        style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
+                        <i class="bi bi-bandaid fs-2"></i>
                     </div>
                     <h4 class="fw-bold text-dark mb-3">Pediatría</h4>
-                    <p class="text-muted small mb-0" style="line-height: 1.6;">Atención integral y cálida para el crecimiento y desarrollo saludable de tus hijos.</p>
+                    <p class="text-muted small mb-0" style="line-height: 1.6;">Atención integral y cálida para el
+                        crecimiento y desarrollo saludable de tus hijos.</p>
                 </div>
             </div>
             <!-- Odontología -->
             <div class="col">
-                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center" style="background-color: white;">
-                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto" style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
-                        <i class="bi bi-tooth fs-2"></i>
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center"
+                    style="background-color: white;">
+                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto"
+                        style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
+                        <i class="bi bi-emoji-smile fs-2"></i>
                     </div>
                     <h4 class="fw-bold text-dark mb-3">Odontología</h4>
-                    <p class="text-muted small mb-0" style="line-height: 1.6;">Servicios dentales preventivos y restaurativos para una sonrisa radiante y saludable.</p>
+                    <p class="text-muted small mb-0" style="line-height: 1.6;">Servicios dentales preventivos y
+                        restaurativos para una sonrisa radiante y saludable.</p>
                 </div>
             </div>
             <!-- Laboratorio Clínico -->
             <div class="col">
-                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center" style="background-color: white;">
-                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto" style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center"
+                    style="background-color: white;">
+                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto"
+                        style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
                         <i class="bi bi-droplet-half fs-2"></i>
                     </div>
                     <h4 class="fw-bold text-dark mb-3">Laboratorio Clínico</h4>
-                    <p class="text-muted small mb-0" style="line-height: 1.6;">Análisis clínicos rápidos y confiables con los más altos estándares de calidad.</p>
+                    <p class="text-muted small mb-0" style="line-height: 1.6;">Análisis clínicos rápidos y confiables
+                        con los más altos estándares de calidad.</p>
                 </div>
             </div>
             <!-- Ginecología -->
             <div class="col">
-                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center" style="background-color: white;">
-                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto" style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center"
+                    style="background-color: white;">
+                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto"
+                        style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
                         <i class="bi bi-gender-female fs-2"></i>
                     </div>
                     <h4 class="fw-bold text-dark mb-3">Ginecología</h4>
-                    <p class="text-muted small mb-0" style="line-height: 1.6;">Cuidado especializado para la salud de la mujer en todas las etapas de su vida.</p>
+                    <p class="text-muted small mb-0" style="line-height: 1.6;">Cuidado especializado para la salud de la
+                        mujer en todas las etapas de su vida.</p>
                 </div>
             </div>
             <!-- Oftalmología -->
             <div class="col">
-                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center" style="background-color: white;">
-                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto" style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5 text-center"
+                    style="background-color: white;">
+                    <div class="icon-square d-inline-flex align-items-center justify-content-center mb-4 p-3 rounded-circle text-primary mx-auto"
+                        style="background-color: #fee9e7 !important; width: 70px; height: 70px;">
                         <i class="bi bi-eye fs-2"></i>
                     </div>
                     <h4 class="fw-bold text-dark mb-3">Oftalmología</h4>
-                    <p class="text-muted small mb-0" style="line-height: 1.6;">Cuidado integral de la salud visual y tratamiento de diversas patologías oculares.</p>
+                    <p class="text-muted small mb-0" style="line-height: 1.6;">Cuidado integral de la salud visual y
+                        tratamiento de diversas patologías oculares.</p>
                 </div>
             </div>
         </div>
@@ -93,45 +136,37 @@
                 <h2 class="display-6 fw-bold text-dark mb-3">¿Por qué elegirnos?</h2>
                 <p class="text-muted">Comprometidos con brindarte la mejor experiencia en salud.</p>
             </div>
-            
+
             <div class="col-md-6 mb-4 mb-md-0">
-                <div class="card border-0 rounded-2xl p-4 p-lg-5 h-100 shadow-whisper" style="background-color: #f0f7ff;">
+                <div class="card border-0 rounded-2xl p-4 p-lg-5 h-100 shadow-whisper"
+                    style="background-color: #f0f7ff;">
                     <div class="d-flex align-items-start">
-                        <div class="icon-square bg-primary text-white d-inline-flex align-items-center justify-content-center rounded-3 me-4 flex-shrink-0" style="width: 60px; height: 60px;">
+                        <div class="icon-square bg-primary text-white d-inline-flex align-items-center justify-content-center rounded-3 me-4 flex-shrink-0"
+                            style="width: 60px; height: 60px;">
                             <i class="bi bi-cpu fs-3"></i>
                         </div>
                         <div>
                             <h4 class="fw-bold text-dark mb-2">Tecnología Moderna</h4>
-                            <p class="text-muted small mb-0" style="line-height: 1.6;">Contamos con equipamiento médico de última generación para diagnósticos certeros y tratamientos mínimamente invasivos.</p>
+                            <p class="text-muted small mb-0" style="line-height: 1.6;">Contamos con equipamiento médico
+                                de última generación para diagnósticos certeros y tratamientos mínimamente invasivos.
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-6">
-                <div class="card border-0 rounded-2xl p-4 p-lg-5 h-100 shadow-whisper" style="background-color: #f0f7ff;">
+                <div class="card border-0 rounded-2xl p-4 p-lg-5 h-100 shadow-whisper"
+                    style="background-color: #f0f7ff;">
                     <div class="d-flex align-items-start">
-                        <div class="icon-square bg-primary text-white d-inline-flex align-items-center justify-content-center rounded-3 me-4 flex-shrink-0" style="width: 60px; height: 60px;">
+                        <div class="icon-square bg-primary text-white d-inline-flex align-items-center justify-content-center rounded-3 me-4 flex-shrink-0"
+                            style="width: 60px; height: 60px;">
                             <i class="bi bi-shield-check fs-3"></i>
                         </div>
                         <div>
                             <h4 class="fw-bold text-dark mb-2">Profesionales Certificados</h4>
-                            <p class="text-muted small mb-0" style="line-height: 1.6;">Nuestro staff médico está conformado por especialistas de amplia trayectoria y calidez humana constante.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CTA Section -->
-        <div class="row py-5 mt-4 mb-3">
-            <div class="col-12">
-                <div class="card border-0 rounded-2xl shadow-whisper p-0 text-center text-dark overflow-hidden" style="background: url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center;">
-                    <div class="p-5 w-100 h-100 d-flex flex-column align-items-center justify-content-center" style="background: rgba(255, 255, 255, 0.85); min-height: 400px; backdrop-filter: blur(8px);">
-                        <div style="max-width: 700px;" class="bg-white p-5 rounded-2xl shadow-sm">
-                            <h2 class="display-5 fw-bold text-primary mb-4">Tu salud es nuestra prioridad</h2>
-                            <p class="lead text-muted mb-5">Estamos presentes en más de 20 distritos de Lima para estar siempre cerca de ti.</p>
-                            <a th:href="@{/auth/registro}" class="btn btn-primary btn-lg btn-pill px-5 shadow-sm fw-bold">Encontrar Sedes</a>
+                            <p class="text-muted small mb-0" style="line-height: 1.6;">Nuestro staff médico está
+                                conformado por especialistas de amplia trayectoria y calidez humana constante.</p>
                         </div>
                     </div>
                 </div>
@@ -139,4 +174,5 @@
         </div>
     </div>
 </body>
+
 </html>
