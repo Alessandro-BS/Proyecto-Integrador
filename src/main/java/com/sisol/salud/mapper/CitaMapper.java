@@ -19,7 +19,7 @@ public interface CitaMapper {
     @Mapping(target = "medicoNombre", expression = "java(cita.getMedico().getUsuario().getNombre() + ' ' + cita.getMedico().getUsuario().getApellido())")
 
     // Extraemos el nombre de la especialidad
-    @Mapping(target = "especialidad", source = "medico.especialidad.nombre")
+    @Mapping(target = "especialidad", source = "especialidad.nombre")
 
     // El estado es un Enum, lo pasamos a String
     @Mapping(target = "estado", expression = "java(cita.getEstado().name())")
