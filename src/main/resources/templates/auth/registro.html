@@ -5,87 +5,171 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <div class="card shadow-sm border-0 rounded-3 mt-3">
-                    <div class="card-body p-5">
-                        <div class="text-center mb-4">
-                            <i class="bi bi-person-plus display-4 text-primary"></i>
-                            <h2 class="mt-3 font-weight-bold">Crear Cuenta</h2>
-                            <p class="text-muted">Únete a SISOL Salud y gestiona tus citas fácilmente</p>
+        <!-- Portal Hero Section con Glassmorphism -->
+        <div class="position-relative overflow-hidden mb-5"
+            style="background: url('/img/hospital-bg-doctor.jpg') no-repeat center center; background-size: cover; min-height: calc(100vh - 120px); border-radius: 0 0 2rem 2rem;">
+            <!-- Overlay Blur -->
+            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                style="background: rgba(240, 247, 245, 0.85); backdrop-filter: blur(8px); padding: 2rem 1rem;">
+
+                <div class="card border-0 shadow-lg rounded-4 w-100" style="max-width: 600px; border-top: 6px solid var(--sisol-primary) !important;">
+                    <div class="card-body p-4 p-md-5">
+                        
+                        <!-- Icono Superior -->
+                        <div class="mx-auto mb-4 mt-2 d-flex align-items-center justify-content-center rounded-3" style="width: 56px; height: 56px; background-color: #fde4e4;">
+                            <i class="bi bi-person-plus-fill fs-4" style="color: var(--sisol-primary);"></i>
                         </div>
 
+                        <!-- Textos -->
+                        <h2 class="text-center fw-bold text-dark mb-3" style="letter-spacing: -0.02em; font-size: 1.75rem;">Crear Cuenta</h2>
+                        <p class="text-center text-muted mb-5" style="font-size: 0.95rem; line-height: 1.6;">Únete a nuestra plataforma y gestiona tus citas médicas de forma fácil y segura.</p>
+
+                        <!-- Mensaje de Éxito / Error -->
+                        <div th:if="${mensajeError}" class="alert alert-danger rounded-3 border-0 small p-3 mb-4" role="alert">
+                            <i class="bi bi-exclamation-circle-fill me-2"></i><span th:text="${mensajeError}"></span>
+                        </div>
+                        <div th:if="${mensajeExito}" class="alert alert-success rounded-3 border-0 small p-3 mb-4" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i><span th:text="${mensajeExito}"></span>
+                        </div>
+
+                        <!-- Formulario de Registro -->
                         <form id="registroForm" th:action="@{/auth/registro}" method="post">
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-6 form-floating">
-                                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre" required>
-                                    <label for="nombre" class="ms-2">Nombre</label>
-                                </div>
-                                <div class="col-md-6 form-floating">
-                                    <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Apellido" required>
-                                    <label for="apellido" class="ms-2">Apellido</label>
-                                </div>
-                            </div>
                             
                             <div class="row g-3 mb-3">
-                                <div class="col-md-6 form-floating">
-                                    <input type="text" class="form-control" id="dni" name="dni" placeholder="DNI" required pattern="\d{8}">
-                                    <label for="dni" class="ms-2">DNI (8 dígitos)</label>
+                                <!-- Nombre -->
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">NOMBRES</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-primary); border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+                                            <i class="bi bi-person"></i>
+                                        </span>
+                                        <input type="text" class="form-control border-0 py-2 shadow-none" id="nombre" name="nombre" placeholder="Tus nombres" required style="background-color: #fdf3f3; font-size: 0.95rem; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+                                    </div>
                                 </div>
-                                <div class="col-md-6 form-floating">
-                                    <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Teléfono">
-                                    <label for="telefono" class="ms-2">Teléfono</label>
+                                <!-- Apellido -->
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">APELLIDOS</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-primary); border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+                                            <i class="bi bi-person"></i>
+                                        </span>
+                                        <input type="text" class="form-control border-0 py-2 shadow-none" id="apellido" name="apellido" placeholder="Tus apellidos" required style="background-color: #fdf3f3; font-size: 0.95rem; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="email" name="email" placeholder="correo@ejemplo.com" required>
-                                <label for="email">Correo Electrónico</label>
+                            <div class="row g-3 mb-3">
+                                <!-- DNI -->
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">DOCUMENTO DE IDENTIDAD</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-primary); border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+                                            <i class="bi bi-person-vcard"></i>
+                                        </span>
+                                        <input type="text" class="form-control border-0 py-2 shadow-none" id="dni" name="dni" placeholder="Número de DNI" required pattern="\d{8,15}" style="background-color: #fdf3f3; font-size: 0.95rem; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+                                    </div>
+                                </div>
+                                <!-- Teléfono -->
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">TELÉFONO</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-primary); border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+                                            <i class="bi bi-telephone"></i>
+                                        </span>
+                                        <input type="tel" class="form-control border-0 py-2 shadow-none" id="telefono" name="telefono" placeholder="Número celular" style="background-color: #fdf3f3; font-size: 0.95rem; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-floating mb-4">
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
-                                <label for="password">Contraseña</label>
-                            </div>
-                            
-                            <!-- Campos adicionales del Paciente -->
-                            <hr class="my-4">
-                            <h5 class="mb-3 text-muted">Datos Adicionales</h5>
-                            
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-6 form-floating">
-                                    <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" required>
-                                    <label for="fechaNacimiento" class="ms-2">Fecha de Nacimiento</label>
-                                </div>
-                                <div class="col-md-6 form-floating">
-                                    <select class="form-select" id="grupoSanguineo" name="grupoSanguineo">
-                                        <option value="">Seleccione...</option>
-                                        <option value="O+">O+</option>
-                                        <option value="O-">O-</option>
-                                        <option value="A+">A+</option>
-                                        <option value="A-">A-</option>
-                                        <option value="B+">B+</option>
-                                        <option value="B-">B-</option>
-                                        <option value="AB+">AB+</option>
-                                        <option value="AB-">AB-</option>
-                                    </select>
-                                    <label for="grupoSanguineo" class="ms-2">Grupo Sanguíneo</label>
+                            <!-- Correo -->
+                            <div class="mb-3">
+                                <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">CORREO ELECTRÓNICO</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-primary); border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+                                        <i class="bi bi-envelope"></i>
+                                    </span>
+                                    <input type="email" class="form-control border-0 py-2 shadow-none" id="email" name="email" placeholder="correo@ejemplo.com" required style="background-color: #fdf3f3; font-size: 0.95rem; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
                                 </div>
                             </div>
-                            
-                            <div class="form-floating mb-4">
-                                <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección">
-                                <label for="direccion">Dirección</label>
+
+                            <!-- Contraseña -->
+                            <div class="mb-5">
+                                <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">CONTRASEÑA</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-primary); border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+                                        <i class="bi bi-lock"></i>
+                                    </span>
+                                    <input type="password" class="form-control border-0 py-2 shadow-none" id="password" name="password" placeholder="Mínimo 8 caracteres" required minlength="8" style="background-color: #fdf3f3; font-size: 0.95rem; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+                                </div>
                             </div>
-                            
-                            <div class="d-grid gap-2 mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">Completar Registro</button>
+
+                            <!-- Botón Registrarse -->
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-3 fw-bold shadow-sm d-flex align-items-center justify-content-center py-3" style="font-size: 1.05rem;">
+                                    <i class="bi bi-check-circle me-2"></i> Completar Registro
+                                </button>
+                            </div>
+
+                            <!-- Footer Card -->
+                            <div class="text-center" style="font-size: 0.9rem;">
+                                <span class="text-muted">¿Ya tienes una cuenta?</span> 
+                                <button type="button" class="btn btn-link text-decoration-none fw-bold ms-1 p-0 align-baseline" style="color: #6a8db4;" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                    Inicia Sesión
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- Incluir el Modal de Login aquí para que funcione el botón de Iniciar Sesión -->
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg rounded-4 w-100" style="max-width: 480px; border-top: 6px solid var(--sisol-primary) !important; margin: 0 auto;">
+                    <div class="modal-header border-0 pb-0 position-absolute top-0 end-0 z-3">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="margin: 1rem;"></button>
+                    </div>
+                    <div class="modal-body p-4 p-md-5">
+                        <div class="mx-auto mb-4 mt-2 d-flex align-items-center justify-content-center rounded-3" style="width: 56px; height: 56px; background-color: #fde4e4;">
+                            <i class="bi bi-bag-plus-fill fs-4" style="color: var(--sisol-primary);"></i>
+                        </div>
+                        <h2 class="text-center fw-bold text-dark mb-3" style="letter-spacing: -0.02em; font-size: 1.5rem;" id="loginModalLabel">Bienvenido a tu Portal de Salud</h2>
+                        <p class="text-center text-muted mb-5" style="font-size: 0.95rem; line-height: 1.6;">Gestiona tus citas médicas al instante y realiza tus pagos con un solo clic de forma segura.</p>
+                        <form id="loginFormModal" th:action="@{/auth/login}" method="post">
+                            <div class="mb-4">
+                                <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">DOCUMENTO DE IDENTIDAD</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-secondary); border-right: 1px solid #f9e0e0 !important; border-top-left-radius: 8px; border-bottom-left-radius: 8px; width: 80px; justify-content: space-between;">
+                                        <span class="fw-bold" style="font-size: 0.9rem;">DNI</span>
+                                        <i class="bi bi-chevron-down" style="font-size: 0.75rem;"></i>
+                                    </span>
+                                    <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-primary);">
+                                        <i class="bi bi-person-vcard-fill"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-0 py-2 shadow-none" id="dni_login" name="dni" placeholder="Número de documento" required style="background-color: #fdf3f3; font-size: 0.95rem; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">CONTRASEÑA</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-primary); border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+                                        <i class="bi bi-lock-fill"></i>
+                                    </span>
+                                    <input type="password" class="form-control border-0 py-2 shadow-none" id="password_login" name="password" placeholder="••••••••" required style="background-color: #fdf3f3; font-size: 0.95rem; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+                                </div>
+                            </div>
+                            <div class="text-end mb-4">
+                                <a href="#" class="text-decoration-none fw-bold" style="font-size: 0.8rem; color: var(--sisol-primary);">¿Olvidaste tu contraseña?</a>
+                            </div>
+                            <div class="d-grid mb-5">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-3 fw-bold shadow-sm d-flex align-items-center justify-content-center py-3" style="font-size: 1.05rem;">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Ingresar
+                                </button>
                             </div>
                         </form>
-                        
-                        <div class="text-center mt-4">
-                            <p class="mb-0">¿Ya tienes una cuenta? <a th:href="@{/auth/login}" class="text-decoration-none fw-bold">Inicia Sesión</a></p>
-                        </div>
                     </div>
                 </div>
             </div>
