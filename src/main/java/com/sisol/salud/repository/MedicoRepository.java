@@ -14,4 +14,9 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> { // Repos
     Optional<Medico> findByUsuarioId(Long usuarioId); // Método para buscar un médico por usuario.
 
     List<Medico> findByEspecialidadId(Long especialidadId); // Método para buscar médicos por especialidad.
+
+    @org.springframework.data.jpa.repository.Query("SELECT m FROM Medico m WHERE " +
+           "(:keyword IS NULL OR LOWER(m.usuario.nombre) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(m.usuario.apellido) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+           "AND (:especialidadId IS NULL OR m.especialidad.id = :especialidadId)")
+    List<Medico> buscarPorFiltros(@org.springframework.data.repository.query.Param("keyword") String keyword, @org.springframework.data.repository.query.Param("especialidadId") Long especialidadId);
 }

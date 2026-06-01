@@ -37,4 +37,12 @@ public class MedicoService {
                 .orElseThrow(() -> new RuntimeException("Médico no encontrado con ID: " + id));
         return medicoMapper.toResponse(medico);
     }
+
+    public List<MedicoResponse> buscarPorFiltros(String keyword, Long especialidadId) {
+        if (keyword != null && keyword.trim().isEmpty()) {
+            keyword = null;
+        }
+        List<Medico> medicos = medicoRepository.buscarPorFiltros(keyword, especialidadId);
+        return medicoMapper.toResponseList(medicos);
+    }
 }

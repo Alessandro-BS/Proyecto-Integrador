@@ -10,6 +10,33 @@
             <p class="lead text-muted">Conoce al equipo médico altamente calificado que conforma SISOL Salud.</p>
         </div>
 
+        <!-- Filtros de Búsqueda -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body bg-light rounded">
+                <form th:action="@{/medicos}" method="get" class="row g-3">
+                    <div class="col-md-5">
+                        <label for="keyword" class="form-label fw-bold">Nombre o Apellido</label>
+                        <input type="text" class="form-control" id="keyword" name="keyword" th:value="${keyword}" placeholder="Buscar médico...">
+                    </div>
+                    <div class="col-md-5">
+                        <label for="especialidadId" class="form-label fw-bold">Especialidad</label>
+                        <select class="form-select" id="especialidadId" name="especialidadId">
+                            <option value="">Todas las especialidades</option>
+                            <option th:each="esp : ${especialidades}" 
+                                    th:value="${esp.id}" 
+                                    th:text="${esp.nombre}"
+                                    th:selected="${esp.id == especialidadId}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search me-2"></i>Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <!-- Iterar sobre la lista de médicos -->
             <div class="col" th:each="medico : ${medicos}">
@@ -21,7 +48,7 @@
                         </div>
                         <h4 class="card-title fw-bold" th:text="'Dr. ' + ${medico.nombre} + ' ' + ${medico.apellido}">Dr. Juan Pérez</h4>
                         <h6 class="card-subtitle mb-3 text-primary fw-bold" th:text="${medico.especialidad}">Cardiología</h6>
-                        <p class="card-text text-muted small">CMP: <span th:text="${medico.numeroColegiatura}">123456</span></p>
+                        <p class="card-text text-muted small">CMP: <span th:text="${medico.cpm}">123456</span></p>
                     </div>
                     <div class="card-footer bg-white border-0 text-center pb-4">
                         <a th:href="@{/auth/login}" class="btn btn-outline-primary btn-sm">Agendar Cita</a>
