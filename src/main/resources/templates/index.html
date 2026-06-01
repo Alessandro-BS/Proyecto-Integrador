@@ -1,53 +1,128 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/base}">
+
 <head>
     <title>Inicio</title>
 </head>
+
 <body>
     <div layout:fragment="content">
-        <div class="row align-items-center mb-5">
+        <div class="row align-items-center mb-5 mt-4">
             <div class="col-lg-6">
-                <h1 class="display-4 fw-bold text-primary mb-3">Tu Salud es Nuestra Prioridad</h1>
-                <p class="lead text-muted mb-4">Bienvenido a SISOL Salud. Agenda tus citas médicas en línea de forma rápida, segura y sin hacer filas. Contamos con los mejores especialistas a tu disposición.</p>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                    <a th:href="@{/auth/registro}" class="btn btn-primary btn-lg px-4 me-md-2">Agendar Cita Ahora</a>
-                    <a th:href="@{/medicos}" class="btn btn-outline-secondary btn-lg px-4">Ver Especialistas</a>
+                <h1 class="display-4 fw-bold text-primary mb-4" style="letter-spacing: -0.02em;">Tu Salud es Nuestra
+                    Prioridad</h1>
+                <p class="lead text-muted mb-5" style="line-height: 1.8;">Bienvenido a SISOL Salud. Agenda tus citas
+                    médicas en línea de forma rápida, segura y sin hacer filas. Contamos con los mejores especialistas a
+                    tu disposición.</p>
+                <div class="d-grid gap-3 d-md-flex justify-content-md-start">
+                    <a th:href="@{/auth/registro}" class="btn btn-primary btn-lg btn-pill shadow-sm">Agendar Cita
+                        Ahora</a>
+                    <a th:href="@{/medicos}" class="btn btn-outline-secondary btn-lg btn-pill bg-white">Ver
+                        Especialistas</a>
                 </div>
             </div>
-            <div class="col-lg-6 text-center mt-4 mt-lg-0">
-                <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Hospital" class="img-fluid rounded-3 shadow-lg" style="object-fit: cover; height: 400px; width: 100%;">
+            <div class="col-lg-6 text-center mt-5 mt-lg-0">
+                <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    alt="Hospital" class="img-fluid rounded-2xl shadow-whisper"
+                    style="object-fit: cover; height: 450px; width: 100%;">
             </div>
         </div>
 
-        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
-            <div class="col d-flex align-items-start">
-                <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3 p-3 rounded-circle text-primary shadow-sm">
-                    <i class="bi bi-calendar-check"></i>
-                </div>
-                <div>
-                    <h3 class="fs-5 text-body-emphasis">Reservas en línea</h3>
-                    <p>Agenda, reprograma o cancela tus citas médicas desde cualquier dispositivo las 24 horas del día.</p>
-                </div>
-            </div>
-            <div class="col d-flex align-items-start">
-                <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3 p-3 rounded-circle text-primary shadow-sm">
-                    <i class="bi bi-hospital"></i>
-                </div>
-                <div>
-                    <h3 class="fs-5 text-body-emphasis">Múltiples Especialidades</h3>
-                    <p>Contamos con una amplia variedad de especialidades médicas para atender todas tus necesidades de salud.</p>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3 mt-4">
+            <div class="col">
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-4">
+                    <div class="d-flex flex-column align-items-start">
+                        <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-3 flex-shrink-0 mb-4 p-3 rounded-circle text-primary"
+                            style="background-color: #fee9e7 !important;">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <div>
+                            <h3 class="fs-4 fw-bold mb-3">Reservas en línea</h3>
+                            <p class="text-muted" style="line-height: 1.6;">Agenda, reprograma o cancela tus citas
+                                médicas desde cualquier dispositivo las 24 horas del día.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col d-flex align-items-start">
-                <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3 p-3 rounded-circle text-primary shadow-sm">
-                    <i class="bi bi-envelope-paper"></i>
+            <div class="col">
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-4">
+                    <div class="d-flex flex-column align-items-start">
+                        <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-3 flex-shrink-0 mb-4 p-3 rounded-circle text-primary"
+                            style="background-color: #fee9e7 !important;">
+                            <i class="bi bi-hospital"></i>
+                        </div>
+                        <div>
+                            <h3 class="fs-4 fw-bold mb-3">Múltiples Especialidades</h3>
+                            <p class="text-muted" style="line-height: 1.6;">Contamos con una amplia variedad de
+                                especialidades médicas para atender todas tus necesidades de salud.</p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="fs-5 text-body-emphasis">Notificaciones</h3>
-                    <p>Recibe confirmaciones y recordatorios por correo electrónico para que nunca olvides una cita.</p>
+            </div>
+            <div class="col">
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-4">
+                    <div class="d-flex flex-column align-items-start">
+                        <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-3 flex-shrink-0 mb-4 p-3 rounded-circle text-primary"
+                            style="background-color: #fee9e7 !important;">
+                            <i class="bi bi-envelope-paper"></i>
+                        </div>
+                        <div>
+                            <h3 class="fs-4 fw-bold mb-3">Notificaciones</h3>
+                            <p class="text-muted" style="line-height: 1.6;">Recibe confirmaciones y recordatorios por
+                                correo electrónico para que nunca olvides una cita.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Por qué elegirnos -->
+        <div class="row align-items-center py-5 mt-5">
+            <div class="col-lg-5">
+                <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    alt="Médicos atendiendo" class="img-fluid rounded-2xl shadow-whisper"
+                    style="object-fit: cover; height: 500px; width: 100%;">
+            </div>
+            <div class="col-lg-6 offset-lg-1 mt-5 mt-lg-0">
+                <h2 class="display-6 fw-bold text-primary mb-4">Experiencia Médica Nacional</h2>
+                <p class="lead text-muted mb-4" style="line-height: 1.8;">En SISOL Salud, nos dedicamos a ofrecer
+                    atención médica excepcional mediante tecnología avanzada y un trato humano y cálido. Nuestro
+                    objetivo es que te sientas en las mejores manos desde el momento en que ingresas.</p>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill text-primary fs-4 me-3"></i>
+                        <span class="fs-5 text-muted">Especialistas altamente calificados</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill text-primary fs-4 me-3"></i>
+                        <span class="fs-5 text-muted">Equipamiento tecnológico moderno</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill text-primary fs-4 me-3"></i>
+                        <span class="fs-5 text-muted">Atención de emergencias 24/7</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Call to Action -->
+        <div class="row py-5 mt-5">
+            <div class="col-12">
+                <div class="card border-0 rounded-2xl shadow-whisper p-5 text-center bg-primary text-white"
+                    style="background-image: linear-gradient(rgba(107, 21, 21, 0.9), rgba(107, 21, 21, 0.9)), url('https://images.unsplash.com/photo-1516549655169-df83a0774514?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center;">
+                    <h2 class="display-5 fw-bold mb-4" style="color: white !important;">¿Listo para priorizar tu salud?
+                    </h2>
+                    <p class="lead mb-5 mx-auto" style="max-width: 700px; color: #f5e9e9;">No esperes más. Con nuestro
+                        nuevo portal, acceder a los mejores médicos nunca ha sido tan sencillo. Regístrate hoy y toma el
+                        control de tu bienestar.</p>
+                    <a th:href="@{/auth/registro}"
+                        class="btn btn-light btn-lg btn-pill text-primary fw-bold px-5 py-3 shadow-sm">Crear Cuenta
+                        Gratis</a>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
 </html>
