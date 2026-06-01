@@ -49,6 +49,7 @@ public class SecurityConfig {
                                 "/medicos",
                                 "/servicios",
                                 "/api/auth/**", // Endpoint de login y registro
+                                "/auth/**", // Rutas web de login y registro
                                 "/css/**", // Recursos estáticos
                                 "/js/**",
                                 "/img/**",

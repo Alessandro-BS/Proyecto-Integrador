@@ -5,34 +5,71 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <div class="text-center mb-5">
-            <h1 class="display-5 fw-bold text-primary">Nuestros Especialistas</h1>
-            <p class="lead text-muted">Conoce al equipo médico altamente calificado que conforma SISOL Salud.</p>
+        <!-- Hero Section Especialistas -->
+        <div class="row align-items-center mb-5 mt-4">
+            <div class="col-12 text-center">
+                <h1 class="display-4 fw-bold text-primary mb-3" style="letter-spacing: -0.02em;">Nuestros Especialistas</h1>
+                <p class="lead text-muted mx-auto" style="max-width: 700px; line-height: 1.8;">Conoce al equipo médico altamente calificado que conforma SISOL Salud. Profesionales dedicados a brindarte la mejor atención y cuidado.</p>
+            </div>
         </div>
 
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <!-- Filtros de Búsqueda -->
+        <div class="card shadow-whisper border-0 rounded-2xl mb-5" style="background-color: white;">
+            <div class="card-body p-4 p-md-5">
+                <form th:action="@{/medicos}" method="get" class="row g-4 align-items-end">
+                    <div class="col-md-5">
+                        <label for="keyword" class="form-label fw-bold text-primary">Nombre o Apellido</label>
+                        <input type="text" class="form-control form-control-lg rounded-3" id="keyword" name="keyword" th:value="${keyword}" placeholder="Ej: Juan Pérez">
+                    </div>
+                    <div class="col-md-5">
+                        <label for="especialidadId" class="form-label fw-bold text-primary">Especialidad</label>
+                        <select class="form-select form-select-lg rounded-3" id="especialidadId" name="especialidadId">
+                            <option value="">Todas las especialidades</option>
+                            <option th:each="esp : ${especialidades}" 
+                                    th:value="${esp.id}" 
+                                    th:text="${esp.nombre}"
+                                    th:selected="${esp.id == especialidadId}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary btn-lg btn-pill w-100 shadow-sm">
+                            <i class="bi bi-search me-2"></i>Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Grid de Médicos -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
             <!-- Iterar sobre la lista de médicos -->
             <div class="col" th:each="medico : ${medicos}">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="card-body text-center">
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper" style="background-color: white;">
+                    <div class="card-body text-center p-4">
                         <!-- Icono temporal de médico -->
-                        <div class="mb-3">
-                            <i class="bi bi-person-badge display-3 text-secondary"></i>
+                        <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center flex-shrink-0 mb-4 p-3 rounded-circle text-primary" style="background-color: #fee9e7 !important; width: 80px; height: 80px;">
+                            <i class="bi bi-person-fill display-5"></i>
                         </div>
-                        <h4 class="card-title fw-bold" th:text="'Dr. ' + ${medico.nombre} + ' ' + ${medico.apellido}">Dr. Juan Pérez</h4>
+                        <h4 class="card-title fw-bold text-dark mb-1" th:text="'Dr. ' + ${medico.nombre} + ' ' + ${medico.apellido}">Dr. Juan Pérez</h4>
                         <h6 class="card-subtitle mb-3 text-primary fw-bold" th:text="${medico.especialidad}">Cardiología</h6>
-                        <p class="card-text text-muted small">CMP: <span th:text="${medico.numeroColegiatura}">123456</span></p>
+                        <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+                            <span class="badge bg-light text-dark border rounded-pill px-3 py-2">
+                                <i class="bi bi-card-heading me-1 text-primary"></i> CMP: <span th:text="${medico.cpm}">123456</span>
+                            </span>
+                        </div>
                     </div>
-                    <div class="card-footer bg-white border-0 text-center pb-4">
-                        <a th:href="@{/auth/login}" class="btn btn-outline-primary btn-sm">Agendar Cita</a>
+                    <div class="card-footer bg-white border-0 text-center pb-4 pt-0">
+                        <a th:href="@{/medicos}" class="btn btn-outline-primary btn-pill fw-bold">Más información</a>
                     </div>
                 </div>
             </div>
             
             <!-- Mensaje si no hay médicos -->
             <div class="col-12" th:if="${#lists.isEmpty(medicos)}">
-                <div class="alert alert-info text-center" role="alert">
-                    <i class="bi bi-info-circle me-2"></i> No hay médicos registrados en el sistema en este momento.
+                <div class="card border-0 rounded-2xl shadow-whisper p-5 text-center" style="background-color: white;">
+                    <i class="bi bi-search display-1 text-muted mb-3 opacity-25"></i>
+                    <h3 class="fw-bold text-dark mb-3">No se encontraron resultados</h3>
+                    <p class="text-muted lead">Intenta ajustar los filtros de búsqueda o inténtalo más tarde.</p>
                 </div>
             </div>
         </div>

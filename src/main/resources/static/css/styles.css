@@ -7,20 +7,169 @@
    1. Tipografía y Variables Globales
 ========================================= */
 :root {
-    --sisol-primary: #0d6efd;
-    --sisol-secondary: #6c757d;
+    --sisol-primary: #6b1515; /* Granate Médico Profundo */
+    --sisol-secondary: #615e5c;
+    --sisol-accent: #f5e9e9;
+    --sisol-bg-cream: #fdf7f4; /* Fondo Crema Suave */
+    --bs-primary: #6b1515;
+    --bs-primary-rgb: 107, 21, 21;
+    --bs-body-font-family: 'Inter', sans-serif;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
+    font-family: var(--bs-body-font-family);
+    background-color: var(--sisol-bg-cream); /* Usar el nuevo fondo crema */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
+h1, h2, h3, h4, h5, h6, .navbar-brand, .portal-title {
+    font-family: 'Manrope', sans-serif;
+}
+
 main {
     flex: 1;
+}
+
+/* =========================================
+   Stitch Design System Utilities
+========================================= */
+.shadow-whisper {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+.rounded-2xl {
+    border-radius: 1rem !important;
+}
+
+.btn-pill {
+    border-radius: 9999px !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+/* =========================================
+   Reescritura de colores primarios Bootstrap
+========================================= */
+.text-primary {
+    color: var(--sisol-primary) !important;
+}
+
+.bg-primary {
+    background-color: var(--sisol-primary) !important;
+}
+
+.btn-primary {
+    background-color: var(--sisol-primary);
+    border-color: var(--sisol-primary);
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background-color: #5c1414 !important;
+    border-color: #5c1414 !important;
+}
+
+.btn-outline-primary {
+    color: var(--sisol-primary);
+    border-color: var(--sisol-primary);
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
+    background-color: var(--sisol-primary) !important;
+    color: white !important;
+}
+
+/* Navbar Logo */
+.navbar-brand {
+    color: var(--sisol-primary) !important;
+    font-weight: 800;
+}
+
+/* Boton Reservar Cita */
+.btn-reservar {
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* =========================================
+   Portal Hero Section (Login)
+========================================= */
+.portal-hero {
+    background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.8)), url('/img/hospital-bg.jpg') no-repeat center center;
+    background-size: cover;
+    min-height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.portal-title {
+    font-weight: 800;
+    font-size: 3rem;
+    color: #000;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.portal-subtitle {
+    font-size: 1.1rem;
+    color: #444;
+    max-width: 700px;
+    margin: 0 auto 3rem auto;
+}
+
+.portal-btn {
+    padding: 0.8rem 2.5rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    margin: 0 0.5rem;
+    min-width: 200px;
+}
+
+.portal-features {
+    margin-top: 4rem;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #666;
+    letter-spacing: 1px;
+}
+
+.feature-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.top-icons-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+}
+
+.icon-box-1 { background-color: #5c1414; }
+.icon-box-2 { background-color: #0c2b5e; }
+.icon-box-3 { background-color: #fcaeae; color: #5c1414; }
+
+/* Eliminar espaciado por defecto en main para el portal */
+.main-portal {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
 }
 
 /* =========================================
