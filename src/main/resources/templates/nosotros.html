@@ -1,26 +1,107 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/base}">
+
 <head>
     <title>Nosotros</title>
 </head>
+
 <body>
     <div layout:fragment="content">
-        <div class="row align-items-center mb-5">
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <img src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Nosotros" class="img-fluid rounded shadow">
+        <!-- Hero Section Nosotros -->
+        <div class="row align-items-center mb-5 mt-4">
+            <div class="col-lg-6 mb-4 mb-lg-0 pe-lg-5">
+                <h1 class="display-4 fw-bold text-primary mb-4" style="letter-spacing: -0.02em;">Sobre SISOL Salud</h1>
+                <p class="lead text-muted mb-4" style="line-height: 1.8;">Somos un sistema integral de servicios médicos
+                    diseñado para modernizar, agilizar y democratizar el acceso a la salud pública y privada en todo el
+                    país.</p>
+                <p class="text-muted mb-5" style="line-height: 1.8;">Nacimos de la necesidad de ofrecer un trato más
+                    humano y eficiente. Hoy, miles de pacientes confían en nosotros para conectar con los mejores
+                    especialistas sin largas esperas, optimizando el tiempo mediante tecnología de punta.</p>
             </div>
             <div class="col-lg-6">
-                <h1 class="display-5 fw-bold text-primary mb-4">Sobre SISOL Salud</h1>
-                <p class="lead">Somos un sistema inteligente de turnos médicos diseñado para modernizar y agilizar el acceso a la salud pública en el país.</p>
-                <p>Nuestra misión es conectar a los pacientes con los mejores especialistas, eliminando las largas filas de espera y optimizando el tiempo de consulta mediante tecnología de punta.</p>
-                <p>Con SISOL Salud, puedes:</p>
-                <ul>
-                    <li>Agendar citas las 24 horas del día.</li>
-                    <li>Acceder a un directorio completo de especialistas.</li>
-                    <li>Recibir notificaciones automatizadas.</li>
-                </ul>
+                <img src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    alt="Médicos trabajando" class="img-fluid rounded-2xl shadow-whisper"
+                    style="object-fit: cover; height: 450px; width: 100%;">
+            </div>
+        </div>
+
+        <!-- Misión y Visión -->
+        <div class="row g-4 py-5 mb-5 mt-3">
+            <div class="col-md-6">
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5" style="background-color: white;">
+                    <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-3 flex-shrink-0 mb-4 p-3 rounded-circle text-primary"
+                        style="background-color: #fee9e7 !important; width: 64px; height: 64px;">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <h3 class="fs-3 fw-bold mb-3 text-primary">Nuestra Misión</h3>
+                    <p class="text-muted" style="line-height: 1.8;">Brindar atención médica de excelencia, oportuna y
+                        accesible, apoyándonos en la innovación tecnológica y un equipo de profesionales comprometidos
+                        con el bienestar de cada paciente.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 border-0 rounded-2xl shadow-whisper p-5" style="background-color: white;">
+                    <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-3 flex-shrink-0 mb-4 p-3 rounded-circle text-primary"
+                        style="background-color: #fee9e7 !important; width: 64px; height: 64px;">
+                        <i class="bi bi-eye"></i>
+                    </div>
+                    <h3 class="fs-3 fw-bold mb-3 text-primary">Nuestra Visión</h3>
+                    <p class="text-muted" style="line-height: 1.8;">Ser la red de salud líder a nivel nacional,
+                        reconocida por su calidad humana, eficiencia operativa y por transformar la experiencia del
+                        paciente en el sistema de salud moderno.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Valores Section -->
+        <div class="row py-5 mt-2 rounded-2xl shadow-whisper" style="background-color: white;">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-6 fw-bold text-primary">Nuestros Valores</h2>
+                <p class="lead text-muted mx-auto mt-3" style="max-width: 600px;">Los pilares que guían cada una de
+                    nuestras consultas y decisiones médicas.</p>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center mb-4 mb-lg-0">
+                <div class="mb-3">
+                    <i class="bi bi-heart-pulse text-primary display-4"></i>
+                </div>
+                <h4 class="fw-bold">Empatía</h4>
+                <p class="text-muted small">Entendemos tus preocupaciones y te acompañamos en tu recuperación.</p>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center mb-4 mb-lg-0">
+                <div class="mb-3">
+                    <i class="bi bi-shield-check text-primary display-4"></i>
+                </div>
+                <h4 class="fw-bold">Seguridad</h4>
+                <p class="text-muted small">Garantizamos los más altos estándares de higiene y protección de datos.</p>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center mb-4 mb-lg-0">
+                <div class="mb-3">
+                    <i class="bi bi-lightning-charge text-primary display-4"></i>
+                </div>
+                <h4 class="fw-bold">Eficiencia</h4>
+                <p class="text-muted small">Cero filas. Gestionamos tu tiempo con procesos ágiles y digitales.</p>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+                <div class="mb-3">
+                    <i class="bi bi-people text-primary display-4"></i>
+                </div>
+                <h4 class="fw-bold">Inclusión</h4>
+                <p class="text-muted small">Servicios médicos al alcance de todos, sin distinción alguna.</p>
+            </div>
+        </div>
+
+        <!-- Banner Cierre -->
+        <div class="row py-5 mt-5 mb-4">
+            <div class="col-12 text-center">
+                <h3 class="fw-bold text-primary mb-4">¿Quieres ser parte de nuestro equipo médico?</h3>
+                <p class="text-muted mb-4 mx-auto" style="max-width: 600px;">Si eres un profesional de la salud
+                    comprometido y quieres sumarte a nuestra red de especialistas, nos encantaría conocerte.</p>
+                <a th:href="@{/auth/registro}" class="btn btn-outline-primary btn-lg btn-pill fw-bold">Postular como
+                    Especialista</a>
             </div>
         </div>
     </div>
 </body>
+
 </html>
