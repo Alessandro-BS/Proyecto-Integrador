@@ -90,40 +90,74 @@
         <!-- Modal de Login -->
         <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0 rounded-2xl shadow-lg">
-                    <div class="modal-header border-0 pb-0">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-content border-0 shadow-lg rounded-4 w-100" style="max-width: 480px; border-top: 6px solid var(--sisol-primary) !important; margin: 0 auto;">
+                    <div class="modal-header border-0 pb-0 position-absolute top-0 end-0 z-3">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="margin: 1rem;"></button>
                     </div>
-                    <div class="modal-body p-4 p-md-5 pt-0">
-                        <div class="text-center mb-4">
-                            <div class="icon-square bg-light text-primary d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
-                                style="width: 80px; height: 80px;">
-                                <i class="bi bi-person-fill display-5"></i>
-                            </div>
-                            <h2 class="fw-bold text-dark" id="loginModalLabel">Iniciar Sesión</h2>
-                            <p class="text-muted">Accede a tu cuenta de SISOL Salud</p>
+                    <div class="modal-body p-4 p-md-5">
+                        
+                        <!-- Icono Superior -->
+                        <div class="mx-auto mb-4 mt-2 d-flex align-items-center justify-content-center rounded-3" style="width: 56px; height: 56px; background-color: #fde4e4;">
+                            <i class="bi bi-bag-plus-fill fs-4" style="color: var(--sisol-primary);"></i>
                         </div>
 
+                        <!-- Textos -->
+                        <h2 class="text-center fw-bold text-dark mb-3" style="letter-spacing: -0.02em; font-size: 1.5rem;" id="loginModalLabel">Bienvenido a tu Portal de Salud</h2>
+                        <p class="text-center text-muted mb-5" style="font-size: 0.95rem; line-height: 1.6;">Gestiona tus citas médicas al instante y realiza tus pagos con un solo clic de forma segura.</p>
+
                         <!-- Mensaje de Error (si existe) -->
-                        <div th:if="${mensajeError}" class="alert alert-danger rounded-3 border-0 small" role="alert">
+                        <div th:if="${mensajeError}" class="alert alert-danger rounded-3 border-0 small p-3 mb-4" role="alert">
                             <i class="bi bi-exclamation-circle-fill me-2"></i><span th:text="${mensajeError}"></span>
                         </div>
 
+                        <!-- Formulario -->
                         <form id="loginForm" th:action="@{/auth/login}" method="post">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control form-control-lg rounded-3 bg-light border-0"
-                                    id="dni" name="dni" placeholder="12345678" required>
-                                <label for="dni" class="text-muted">Número de DNI</label>
+                            
+                            <!-- DNI -->
+                            <div class="mb-4">
+                                <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">DOCUMENTO DE IDENTIDAD</label>
+                                <div class="input-group">
+                                    <!-- Dropdown simulado DNI -->
+                                    <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-secondary); border-right: 1px solid #f9e0e0 !important; border-top-left-radius: 8px; border-bottom-left-radius: 8px; width: 80px; justify-content: space-between;">
+                                        <span class="fw-bold" style="font-size: 0.9rem;">DNI</span>
+                                        <i class="bi bi-chevron-down" style="font-size: 0.75rem;"></i>
+                                    </span>
+                                    <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-primary);">
+                                        <i class="bi bi-person-vcard-fill"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-0 py-2 shadow-none" id="dni" name="dni" placeholder="Número de documento" required style="background-color: #fdf3f3; font-size: 0.95rem; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+                                </div>
                             </div>
-                            <div class="form-floating mb-4">
-                                <input type="password" class="form-control form-control-lg rounded-3 bg-light border-0"
-                                    id="password" name="password" placeholder="Contraseña" required>
-                                <label for="password" class="text-muted">Contraseña</label>
+
+                            <!-- Contraseña -->
+                            <div class="mb-3">
+                                <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">CONTRASEÑA</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0" style="background-color: #fdf3f3; color: var(--sisol-primary); border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+                                        <i class="bi bi-lock-fill"></i>
+                                    </span>
+                                    <input type="password" class="form-control border-0 py-2 shadow-none" id="password" name="password" placeholder="••••••••" required style="background-color: #fdf3f3; font-size: 0.95rem; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+                                </div>
                             </div>
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary btn-lg btn-pill fw-bold shadow-sm">Ingresar
-                                    a mi cuenta</button>
+
+                            <!-- Olvidaste tu contraseña -->
+                            <div class="text-end mb-4">
+                                <a href="#" class="text-decoration-none fw-bold" style="font-size: 0.8rem; color: var(--sisol-primary);">¿Olvidaste tu contraseña?</a>
                             </div>
+
+                            <!-- Botón Ingresar -->
+                            <div class="d-grid mb-5">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-3 fw-bold shadow-sm d-flex align-items-center justify-content-center py-3" style="font-size: 1.05rem;">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Ingresar
+                                </button>
+                            </div>
+
+                            <!-- Footer Card -->
+                            <div class="text-center" style="font-size: 0.9rem;">
+                                <span class="text-muted">¿No tienes cuenta?</span> 
+                                <a th:href="@{/auth/registro}" class="text-decoration-none fw-bold ms-1" style="color: #6a8db4;">Crear cuenta</a>
+                            </div>
+
                         </form>
                     </div>
                 </div>
