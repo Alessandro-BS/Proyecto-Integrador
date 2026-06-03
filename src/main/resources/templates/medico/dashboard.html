@@ -1,48 +1,422 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/medico_base}">
+
 <head>
-    <title>Mi Panel - Médico</title>
+    <title>Dashboard</title>
+    <style>
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
+            color: #141d23;
+        }
+
+        .dashboard-date {
+            color: #676462;
+            font-size: 0.95rem;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: #564240;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 0;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background-color: #ba1a1a;
+            border-radius: 50%;
+        }
+
+        .summary-banner {
+            background: linear-gradient(135deg, #4b0004, #6b1515);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(107, 21, 21, 0.2);
+        }
+
+        .summary-icon {
+            background-color: rgba(255, 255, 255, 0.15);
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-right: 1.5rem;
+        }
+
+        .summary-text h2 {
+            font-size: 1.75rem;
+            margin-bottom: 0.25rem;
+            font-weight: 700;
+        }
+
+        .summary-text p {
+            margin-bottom: 0;
+            color: #ffb3ad;
+            font-size: 0.95rem;
+        }
+
+        /* Próxima Cita Card */
+        .next-appt-card {
+            position: relative;
+        }
+
+        .badge-time {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background-color: #e9f2fb;
+            color: #141d23;
+            padding: 0.3rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .patient-info-row {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .patient-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            object-fit: cover;
+        }
+
+        .patient-details h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .patient-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: #564240;
+            font-size: 0.9rem;
+        }
+
+        .patient-meta i {
+            margin-right: 0.4rem;
+        }
+
+        .patient-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            background-color: #f8f9fa;
+            color: #564240;
+            padding: 0.3rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            background-color: #f2dedc;
+            color: #6b1515;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .stat-trend {
+            color: #198754;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .stat-trend.warning {
+            color: #FFC107;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+            font-weight: 800;
+        }
+
+        .stat-label {
+            color: #676462;
+            font-size: 0.9rem;
+        }
+
+        /* Recordatorios */
+        .reminder-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .reminder-item:last-child {
+            border-bottom: none;
+        }
+
+        .reminder-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            color: #141d23;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .dot.red {
+            background-color: #ba1a1a;
+        }
+
+        .dot.yellow {
+            background-color: #FFC107;
+        }
+
+        .reminder-time {
+            font-size: 0.85rem;
+            color: #676462;
+        }
+
+        /* Training Card */
+        .training-card {
+            background-color: #212121;
+            color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .training-icon {
+            font-size: 2.5rem;
+            color: #a09f9e;
+            margin-bottom: 1rem;
+        }
+
+        .training-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .training-card p {
+            color: #a09f9e;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-training {
+            color: #ffb3ad;
+            background: none;
+            border: none;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-training:hover {
+            color: #ffdad6;
+        }
+    </style>
 </head>
+
 <body>
     <div layout:fragment="content">
-        <div class="row mb-4">
-            <div class="col-12">
-                <h2 class="fw-bold">Bienvenido(a), Doctor</h2>
-                <p class="text-muted">Panel de control y gestión de agenda médica.</p>
+
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title headline">Buenos días, Dra. Vazquez</h1>
+                <p class="dashboard-date" id="currentDate">Hoy es Lunes, 24 de Octubre de 2024</p>
             </div>
         </div>
 
+        <!-- Summary Banner -->
+        <div class="summary-banner">
+            <div class="d-flex align-items-center">
+                <div class="summary-icon">
+                    <i class="fa-regular fa-calendar-check"></i>
+                </div>
+                <div class="summary-text">
+                    <h2>Tienes 5 citas hoy</h2>
+                    <p>Tu agenda está completa hasta las 04:00 PM.</p>
+                </div>
+            </div>
+            <div>
+                <a th:href="@{/panel-medico/citas-hoy}" class="btn-white text-decoration-none">Ver Agenda <i
+                        class="fa-solid fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="row g-4 mb-4">
+            <!-- Próxima Cita -->
+            <div class="col-lg-8">
+                <div class="card-soft next-appt-card h-100">
+                    <div class="badge-time">En 15 minutos</div>
+                    <p class="text-uppercase fw-bold text-muted mb-0" style="font-size: 0.75rem; letter-spacing: 1px;">
+                        Próxima Cita</p>
+
+                    <div class="patient-info-row">
+                        <img src="https://images.unsplash.com/photo-1566616213894-2e4e1ba6cb86?q=80&w=200&auto=format&fit=crop"
+                            alt="Ricardo Montaner" class="patient-avatar">
+                        <div class="patient-details">
+                            <h3 class="headline">Ricardo Montaner</h3>
+                            <div class="patient-meta">
+                                <span><i class="fa-regular fa-clock"></i> 09:30 AM</span>
+                                <span><i class="fa-solid fa-stethoscope"></i> Chequeo General</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="patient-tags">
+                            <span class="tag">Hipertensión</span>
+                            <span class="tag">Control Trimestral</span>
+                        </div>
+                        <a th:href="@{/panel-medico/consulta}" class="btn-maroon text-decoration-none px-4 py-3">Iniciar
+                            Consulta</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="col-lg-4">
+                <div class="row g-4 h-100">
+                    <div class="col-12">
+                        <div class="card-soft stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon">
+                                    <i class="fa-solid fa-user-check"></i>
+                                </div>
+                                <div class="stat-trend"><i class="fa-solid fa-arrow-trend-up"></i> +12%</div>
+                            </div>
+                            <div class="stat-value headline">124</div>
+                            <div class="stat-label">Pacientes atendidos este mes</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card-soft stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon">
+                                    <i class="fa-solid fa-file-medical"></i>
+                                </div>
+                                <div class="stat-trend warning">Atención Urgente</div>
+                            </div>
+                            <div class="stat-value headline">08</div>
+                            <div class="stat-label">Resultados Pendientes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Grid -->
         <div class="row g-4">
-            <div class="col-md-6">
-                <div class="card h-100 shadow-sm border-0 border-start border-primary border-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="bg-primary text-white rounded p-3 me-3">
-                                <i class="bi bi-calendar-check fs-4"></i>
-                            </div>
-                            <h5 class="card-title mb-0 fw-bold">Citas de Hoy</h5>
+            <!-- Recordatorios -->
+            <div class="col-lg-8">
+                <div class="card-soft h-100">
+                    <h3 class="headline mb-4" style="font-size: 1.25rem;">Recordatorios Médicos</h3>
+
+                    <div class="reminder-item">
+                        <div class="reminder-title">
+                            <span class="dot red"></span> Sesión Clínica Semanal
                         </div>
-                        <p class="card-text text-muted">Revise los pacientes agendados para el día de hoy y actualice su estado tras la consulta.</p>
-                        <a th:href="@{/panel-medico/citas-hoy}" class="btn btn-primary mt-2">Ver Agenda Diaria <i class="bi bi-arrow-right ms-2"></i></a>
+                        <div class="reminder-time">Hoy, 02:00 PM</div>
+                    </div>
+
+                    <div class="reminder-item">
+                        <div class="reminder-title">
+                            <span class="dot yellow"></span> Renovar Certificados Médicos
+                        </div>
+                        <div class="reminder-time">Mañana</div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="card h-100 shadow-sm border-0 border-start border-warning border-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="bg-warning text-dark rounded p-3 me-3">
-                                <i class="bi bi-clock-history fs-4"></i>
-                            </div>
-                            <h5 class="card-title mb-0 fw-bold">Mi Disponibilidad</h5>
-                        </div>
-                        <p class="card-text text-muted">Configure los días, horarios y duración de sus turnos para que los pacientes puedan reservar.</p>
-                        <a th:href="@{/panel-medico/disponibilidad}" class="btn btn-outline-warning text-dark mt-2">Gestionar Horarios</a>
+            <!-- Capacitación -->
+            <div class="col-lg-4">
+                <div class="training-card">
+                    <div class="training-icon">
+                        <i class="fa-solid fa-chalkboard-user"></i>
                     </div>
+                    <h4 class="headline">Capacitación SISOL</h4>
+                    <p>Nuevos protocolos de atención cardiovascular disponibles.</p>
+                    <a href="#" class="btn-training">Acceder al curso</a>
                 </div>
             </div>
         </div>
+
+        <script>
+            // Script para la fecha de hoy
+            const dateElement = document.getElementById('currentDate');
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            let today = new Date().toLocaleDateString('es-ES', options);
+            today = today.charAt(0).toUpperCase() + today.slice(1);
+            dateElement.textContent = `Hoy es ${today}`;
+        </script>
     </div>
 </body>
+
 </html>

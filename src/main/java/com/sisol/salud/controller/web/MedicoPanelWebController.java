@@ -30,4 +30,11 @@ public class MedicoPanelWebController {
         model.addAttribute("title", "Mi Disponibilidad");
         return "medico/disponibilidad";
     }
+
+    @GetMapping("/consulta")
+    @PreAuthorize("hasRole('MEDICO')")
+    public String iniciarConsulta(Model model) {
+        model.addAttribute("title", "En Consulta");
+        return "medico/consulta";
+    }
 }
