@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/base}">
+
+<head>
+    <title>Reservar Cita - Especialista</title>
+    <style>
+        .page-title {
+            color: var(--sisol-primary);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .stepper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 3rem;
+            max-width: 600px;
+        }
+
+        .stepper::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e0e0e0;
+            z-index: 0;
+        }
+
+        .step-item {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fdf7f4;
+            padding: 0 10px;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            background-color: var(--sisol-primary);
+            color: #fff;
+        }
+
+        .step-item.inactive .step-circle {
+            background-color: #e0e0e0;
+            color: #fff;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--sisol-primary);
+        }
+
+        .step-item.inactive .step-label {
+            color: #999;
+        }
+
+        .summary-sidebar {
+            background-color: var(--sisol-primary);
+            color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            height: 100%;
+            min-height: 500px;
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+
+        .summary-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.2rem;
+            font-weight: 600;
+        }
+
+        .summary-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .doctor-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem 1rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+
+        .doctor-card:hover {
+            border-color: var(--sisol-primary);
+            transform: translateY(-5px);
+        }
+
+        .doctor-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fdf3f3;
+            margin-bottom: 1rem;
+        }
+
+        .doctor-specialty {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--sisol-primary);
+            font-weight: 800;
+            margin-bottom: 0.2rem;
+        }
+
+        .doctor-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .rating {
+            color: #ffc107;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .rating span {
+            color: #6c757d;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .btn-select {
+            border: 1px solid var(--sisol-primary);
+            color: var(--sisol-primary);
+            background: transparent;
+            border-radius: 2rem;
+            padding: 0.6rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            width: 90%;
+            transition: all 0.2s;
+        }
+
+        .doctor-card:hover .btn-select {
+            background-color: var(--sisol-primary);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="row gx-5">
+            <!-- Left Content: Steps & Selection -->
+            <div class="col-lg-8">
+                
+                <!-- Stepper -->
+                <div class="stepper mb-5">
+                    <div class="step-item">
+                        <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                        <div class="step-label">ESPECIALIDAD</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">MÉDICO</div>
+                    </div>
+                    <div class="step-item inactive">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">HORARIO</div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <h2 class="page-title mb-0">Selecciona un Especialista</h2>
+                    <a th:href="@{/paciente/reservar-cita}" class="btn btn-link text-muted p-0"><i class="bi bi-arrow-left"></i> Volver</a>
+                </div>
+                <p class="text-muted mb-4"><span th:text="${especialidad}">Especialidad</span> • Lima, Perú</p>
+
+                <div class="row g-4 mt-2">
+                    <!-- Doctor 1 -->
+                    <div class="col-md-6">
+                        <form th:action="@{/paciente/reservar-cita/paso3}" method="post">
+                            <input type="hidden" name="especialidad" th:value="${especialidad}">
+                            <input type="hidden" name="medico" value="Dr. Ricardo Mendoza">
+                            <button type="submit" class="w-100 p-0 border-0 bg-transparent">
+                                <div class="doctor-card">
+                                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Doctor" class="doctor-img">
+                                    <div class="doctor-specialty">Cardiólogo Clínico</div>
+                                    <div class="doctor-name">Dr. Ricardo Mendoza</div>
+                                    <div class="rating">
+                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+                                        <span>(128 reseñas)</span>
+                                    </div>
+                                    <div class="btn-select">Ver Disponibilidad</div>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Doctor 2 -->
+                    <div class="col-md-6">
+                        <form th:action="@{/paciente/reservar-cita/paso3}" method="post">
+                            <input type="hidden" name="especialidad" th:value="${especialidad}">
+                            <input type="hidden" name="medico" value="Dra. Elena Rossi">
+                            <button type="submit" class="w-100 p-0 border-0 bg-transparent">
+                                <div class="doctor-card">
+                                    <img src="https://images.unsplash.com/photo-1594824436998-d40ee3fc2cc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Doctor" class="doctor-img">
+                                    <div class="doctor-specialty">Especialista en Arritmias</div>
+                                    <div class="doctor-name">Dra. Elena Rossi</div>
+                                    <div class="rating">
+                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
+                                        <span>(94 reseñas)</span>
+                                    </div>
+                                    <div class="btn-select">Ver Disponibilidad</div>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Content: Summary Sidebar -->
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                <div class="summary-sidebar shadow-lg">
+                    <h3 class="summary-title">Resumen de Cita</h3>
+                    
+                    <div class="summary-item">
+                        <div class="summary-icon"><i class="bi bi-heart-pulse"></i></div>
+                        <div>
+                            <div class="summary-label">ESPECIALIDAD</div>
+                            <div class="summary-value" th:text="${especialidad}">Cardiología</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

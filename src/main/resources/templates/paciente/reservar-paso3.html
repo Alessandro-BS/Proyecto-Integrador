@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/base}">
+
+<head>
+    <title>Reservar Cita - Horario y Pago</title>
+    <style>
+        .page-title {
+            color: var(--sisol-primary);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .stepper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .stepper::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e0e0e0;
+            z-index: 0;
+        }
+
+        .step-item {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fdf7f4;
+            padding: 0 10px;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            background-color: var(--sisol-primary);
+            color: #fff;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--sisol-primary);
+        }
+
+        .summary-sidebar {
+            background-color: #4a1010;
+            color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            height: 100%;
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .summary-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.2rem;
+            font-weight: 600;
+        }
+
+        .summary-value {
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .payment-methods {
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+        }
+
+        .payment-method-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .payment-option {
+            background-color: rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-option:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .payment-option.active {
+            background-color: white;
+            color: #4a1010;
+        }
+
+        .payment-option i.icon-method {
+            margin-right: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .payment-option i.icon-check {
+            font-size: 1.2rem;
+        }
+
+        .payment-option:not(.active) i.icon-check {
+            opacity: 0.3;
+        }
+
+        .cost-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+        }
+
+        .btn-confirm {
+            background-color: white;
+            color: #4a1010;
+            border: none;
+            border-radius: 2rem;
+            width: 100%;
+            padding: 0.8rem;
+            font-weight: 800;
+            font-size: 1.05rem;
+            margin-top: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-confirm:hover {
+            transform: scale(1.02);
+            background-color: #f8f9fa;
+        }
+
+        /* Calendar & Time Slots */
+        .selection-box {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            height: 100%;
+        }
+        
+        .box-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Simple Calendar Styling */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            color: #333;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            gap: 0.5rem;
+        }
+        .calendar-day-header {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #999;
+            margin-bottom: 0.5rem;
+        }
+        .calendar-day {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            color: #333;
+            cursor: pointer;
+            margin: auto;
+        }
+        .calendar-day.muted {
+            color: #ccc;
+        }
+        .calendar-day.active {
+            background-color: #5c1414;
+            color: white;
+            font-weight: bold;
+        }
+        .calendar-day:hover:not(.active):not(.muted) {
+            background-color: #fdf3f3;
+        }
+
+        /* Time Slots */
+        .time-slot {
+            display: block;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            padding: 0.8rem;
+            text-align: center;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .time-slot.active {
+            background-color: #5c1414;
+            border-color: #5c1414;
+            color: white;
+        }
+        .time-slot:hover:not(.active) {
+            border-color: #5c1414;
+            color: #5c1414;
+        }
+
+        .info-alert {
+            background-color: #f0f7ff;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            font-size: 0.85rem;
+            color: #333;
+            margin-top: 1rem;
+        }
+        .info-alert i {
+            color: #0d6efd;
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- Formulario completo que envuelve a ambas columnas -->
+        <form th:action="@{/paciente/reservar-cita/finalizar}" method="post" id="reservaForm">
+            <!-- Hidden inputs con lo seleccionado antes -->
+            <input type="hidden" name="especialidad" th:value="${especialidad}">
+            <input type="hidden" name="medico" th:value="${medico}">
+            
+            <div class="row gx-5">
+                <!-- Left Content: Steps & Selection -->
+                <div class="col-lg-8">
+                    
+                    <!-- Stepper -->
+                    <div class="stepper mb-4">
+                        <div class="step-item">
+                            <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                            <div class="step-label">ESPECIALIDAD</div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                            <div class="step-label">MÉDICO</div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">HORARIO</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="page-title mb-0" style="font-size: 1.5rem;">Selecciona Fecha y Horarios</h2>
+                        <a href="javascript:history.back()" class="btn btn-link text-muted p-0"><i class="bi bi-arrow-left"></i> Volver</a>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Calendar -->
+                        <div class="col-md-6">
+                            <div class="selection-box">
+                                <h3 class="box-title">Selecciona Fecha</h3>
+                                
+                                <div class="calendar-header">
+                                    <span>Marzo 2026</span>
+                                    <div>
+                                        <i class="bi bi-chevron-left text-muted me-2" style="cursor: pointer;"></i>
+                                        <i class="bi bi-chevron-right" style="cursor: pointer;"></i>
+                                    </div>
+                                </div>
+
+                                <div class="calendar-grid mt-3">
+                                    <div class="calendar-day-header">LU</div>
+                                    <div class="calendar-day-header">MA</div>
+                                    <div class="calendar-day-header">MI</div>
+                                    <div class="calendar-day-header">JU</div>
+                                    <div class="calendar-day-header">VI</div>
+                                    <div class="calendar-day-header">SA</div>
+                                    <div class="calendar-day-header">DO</div>
+
+                                    <div class="calendar-day muted">23</div>
+                                    <div class="calendar-day muted">24</div>
+                                    <div class="calendar-day muted">25</div>
+                                    <div class="calendar-day muted">26</div>
+                                    <div class="calendar-day muted">27</div>
+                                    <div class="calendar-day muted">28</div>
+                                    <div class="calendar-day">1</div>
+
+                                    <div class="calendar-day">2</div>
+                                    <div class="calendar-day">3</div>
+                                    <div class="calendar-day">4</div>
+                                    <div class="calendar-day">5</div>
+                                    <div class="calendar-day">6</div>
+                                    <div class="calendar-day">7</div>
+                                    <div class="calendar-day">8</div>
+
+                                    <div class="calendar-day">9</div>
+                                    <div class="calendar-day">10</div>
+                                    <div class="calendar-day">11</div>
+                                    <div class="calendar-day">12</div>
+                                    <div class="calendar-day">13</div>
+                                    <div class="calendar-day">14</div>
+                                    <div class="calendar-day active">15</div>
+
+                                    <div class="calendar-day">16</div>
+                                    <div class="calendar-day">17</div>
+                                    <div class="calendar-day">18</div>
+                                    <div class="calendar-day">19</div>
+                                    <div class="calendar-day">20</div>
+                                    <div class="calendar-day">21</div>
+                                    <div class="calendar-day">22</div>
+                                </div>
+                                
+                                <input type="hidden" name="fecha" value="15 de Marzo de 2026">
+                            </div>
+                        </div>
+
+                        <!-- Horarios -->
+                        <div class="col-md-6">
+                            <div class="selection-box">
+                                <h3 class="box-title">Horarios Disponibles</h3>
+                                
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <div class="time-slot">09:00 AM</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="time-slot">10:30 AM</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="time-slot active">11:15 AM</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="time-slot">02:00 PM</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="time-slot">03:30 PM</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="time-slot">04:45 PM</div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="hora" value="11:15 AM">
+
+                                <div class="info-alert">
+                                    <i class="bi bi-info-circle"></i>
+                                    <div>La cita tiene una duración estimada de 30 minutos.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Content: Summary Sidebar -->
+                <div class="col-lg-4 mt-5 mt-lg-0">
+                    <div class="summary-sidebar shadow-lg">
+                        <h3 class="summary-title">Resumen de Cita</h3>
+                        
+                        <div class="summary-item">
+                            <div class="summary-icon"><i class="bi bi-heart-pulse"></i></div>
+                            <div>
+                                <div class="summary-label">ESPECIALIDAD</div>
+                                <div class="summary-value" th:text="${especialidad}">Cardiología</div>
+                            </div>
+                        </div>
+
+                        <div class="summary-item">
+                            <div class="summary-icon"><i class="bi bi-person"></i></div>
+                            <div>
+                                <div class="summary-label">MÉDICO</div>
+                                <div class="summary-value" th:text="${medico}">Dra. Elena Rossi</div>
+                            </div>
+                        </div>
+
+                        <div class="summary-item">
+                            <div class="summary-icon"><i class="bi bi-calendar-event"></i></div>
+                            <div>
+                                <div class="summary-label">FECHA Y HORA</div>
+                                <div class="summary-value">Domingo, 15 de Marzo 2026<br>11:15 AM</div>
+                            </div>
+                        </div>
+
+                        <div class="payment-methods">
+                            <div class="payment-method-label">MÉTODO DE PAGO</div>
+                            
+                            <label class="payment-option w-100">
+                                <div>
+                                    <i class="bi bi-qr-code-scan icon-method"></i> Yape / Plin
+                                </div>
+                                <input type="radio" name="metodoPago" value="Yape/Plin" class="d-none">
+                                <i class="bi bi-circle icon-check"></i>
+                            </label>
+
+                            <label class="payment-option w-100">
+                                <div>
+                                    <i class="bi bi-cash icon-method"></i> Pago Efectivo
+                                </div>
+                                <input type="radio" name="metodoPago" value="Pago Efectivo" class="d-none">
+                                <i class="bi bi-circle icon-check"></i>
+                            </label>
+
+                            <label class="payment-option w-100 active">
+                                <div>
+                                    <i class="bi bi-credit-card icon-method"></i> Tarjeta de Débito/Crédito
+                                </div>
+                                <input type="radio" name="metodoPago" value="Tarjeta" class="d-none" checked>
+                                <i class="bi bi-check-circle-fill icon-check"></i>
+                            </label>
+                        </div>
+
+                        <div class="cost-section">
+                            <span>Costo de consulta</span>
+                            <span class="fw-bold fs-5">S/ 45.00</span>
+                        </div>
+
+                        <button type="submit" class="btn-confirm shadow-sm">Confirmar Reserva</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Script simple para cambiar las opciones visuales -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            
+            paymentOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remover clase active de todos
+                    paymentOptions.forEach(opt => {
+                        opt.classList.remove('active');
+                        const icon = opt.querySelector('.icon-check');
+                        icon.classList.remove('bi-check-circle-fill');
+                        icon.classList.add('bi-circle');
+                    });
+                    
+                    // Añadir active al clickeado
+                    this.classList.add('active');
+                    const icon = this.querySelector('.icon-check');
+                    icon.classList.remove('bi-circle');
+                    icon.classList.add('bi-check-circle-fill');
+                    
+                    // Marcar el radio button
+                    this.querySelector('input[type="radio"]').checked = true;
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

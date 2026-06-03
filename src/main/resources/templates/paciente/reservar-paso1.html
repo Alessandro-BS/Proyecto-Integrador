@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/base}">
+
+<head>
+    <title>Reservar Cita - Especialidad</title>
+    <style>
+        .page-title {
+            color: var(--sisol-primary);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .stepper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 3rem;
+            max-width: 600px;
+        }
+
+        .stepper::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e0e0e0;
+            z-index: 0;
+        }
+
+        .step-item {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fdf7f4;
+            padding: 0 10px;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            background-color: #e0e0e0;
+            color: #fff;
+        }
+
+        .step-item.active .step-circle {
+            background-color: var(--sisol-primary);
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #999;
+        }
+
+        .step-item.active .step-label {
+            color: var(--sisol-primary);
+        }
+
+        .summary-sidebar {
+            background-color: var(--sisol-primary);
+            color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            height: 100%;
+            min-height: 500px;
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .specialty-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+
+        .specialty-card:hover {
+            border-color: var(--sisol-primary);
+            transform: translateY(-5px);
+        }
+
+        .specialty-icon {
+            width: 70px;
+            height: 70px;
+            background-color: #fdf3f3;
+            color: var(--sisol-primary);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .specialty-name {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--sisol-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-select {
+            border: 1px solid var(--sisol-primary);
+            color: var(--sisol-primary);
+            background: transparent;
+            border-radius: 2rem;
+            padding: 0.4rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .specialty-card:hover .btn-select {
+            background-color: var(--sisol-primary);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="row gx-5">
+            <!-- Left Content: Steps & Selection -->
+            <div class="col-lg-8">
+                
+                <!-- Stepper -->
+                <div class="stepper mb-5">
+                    <div class="step-item active">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">ESPECIALIDAD</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">MÉDICO</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">HORARIO</div>
+                    </div>
+                </div>
+
+                <h2 class="page-title mb-1">Selecciona una Especialidad</h2>
+                <p class="text-muted mb-4">Elige la especialidad médica que necesitas para continuar.</p>
+
+                <div class="row g-4 mt-2">
+                    <!-- Specialty 1 -->
+                    <div class="col-md-6">
+                        <form th:action="@{/paciente/reservar-cita/paso2}" method="post">
+                            <input type="hidden" name="especialidad" value="Cardiología">
+                            <button type="submit" class="w-100 p-0 border-0 bg-transparent text-start">
+                                <div class="specialty-card">
+                                    <div class="specialty-icon">
+                                        <i class="bi bi-heart-pulse-fill"></i>
+                                    </div>
+                                    <div class="specialty-name">Cardiología</div>
+                                    <div class="text-muted small">Cuidado del corazón y sistema cardiovascular.</div>
+                                    <div class="btn-select">Seleccionar</div>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Specialty 2 -->
+                    <div class="col-md-6">
+                        <form th:action="@{/paciente/reservar-cita/paso2}" method="post">
+                            <input type="hidden" name="especialidad" value="Dermatología">
+                            <button type="submit" class="w-100 p-0 border-0 bg-transparent text-start">
+                                <div class="specialty-card">
+                                    <div class="specialty-icon">
+                                        <i class="bi bi-person-bounding-box"></i>
+                                    </div>
+                                    <div class="specialty-name">Dermatología</div>
+                                    <div class="text-muted small">Cuidado y salud de la piel, cabello y uñas.</div>
+                                    <div class="btn-select">Seleccionar</div>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Content: Summary Sidebar -->
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                <div class="summary-sidebar shadow-lg">
+                    <h3 class="summary-title">Resumen de Cita</h3>
+                    <p class="text-white-50 small">Aún no has seleccionado ninguna opción. Comienza eligiendo una especialidad.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

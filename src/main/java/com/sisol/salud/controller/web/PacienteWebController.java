@@ -44,38 +44,46 @@ public class PacienteWebController {
 
     @GetMapping("/reservar-cita")
     @PreAuthorize("hasRole('PACIENTE')")
-    public String reservarCita(Model model) {
-        model.addAttribute("title", "Reservar Nueva Cita - Paso 1");
-        return "paciente/reservar-cita";
+    public String reservarCitaPaso1(Model model) {
+        model.addAttribute("title", "Selecciona una Especialidad");
+        return "paciente/reservar-paso1";
     }
 
-    @PostMapping("/reservar-cita")
+    @PostMapping("/reservar-cita/paso2")
     @PreAuthorize("hasRole('PACIENTE')")
-    public String procesarPaso1(@org.springframework.web.bind.annotation.RequestParam("medico") Long medicoId, Model model) {
-        // Redirige al paso 2 pasándole el ID del médico como parámetro en la URL
-        return "redirect:/paciente/reservar-cita/paso2?medicoId=" + medicoId;
+    public String procesarPaso1(
+            @org.springframework.web.bind.annotation.RequestParam("especialidad") String especialidad,
+            Model model) {
+        model.addAttribute("especialidad", especialidad);
+        model.addAttribute("title", "Selecciona un Especialista");
+        return "paciente/reservar-paso2";
     }
 
-    @GetMapping("/reservar-cita/paso2")
+    @PostMapping("/reservar-cita/paso3")
     @PreAuthorize("hasRole('PACIENTE')")
-    public String reservarCitaPaso2(@org.springframework.web.bind.annotation.RequestParam("medicoId") Long medicoId, Model model) {
-        model.addAttribute("medicoId", medicoId);
-        model.addAttribute("title", "Reservar Nueva Cita - Paso 2");
-        return "paciente/reservar-cita-paso2";
+    public String procesarPaso2(
+            @org.springframework.web.bind.annotation.RequestParam("especialidad") String especialidad,
+            @org.springframework.web.bind.annotation.RequestParam("medico") String medico,
+            Model model) {
+        model.addAttribute("especialidad", especialidad);
+        model.addAttribute("medico", medico);
+        model.addAttribute("title", "Selecciona Fecha y Horario");
+        return "paciente/reservar-paso3";
     }
 
-    @org.springframework.web.bind.annotation.PostMapping("/reservar-cita/finalizar")
+    @PostMapping("/reservar-cita/finalizar")
     @PreAuthorize("hasRole('PACIENTE')")
     public String finalizarReserva(
-            @org.springframework.web.bind.annotation.RequestParam("medicoId") Long medicoId,
+            @org.springframework.web.bind.annotation.RequestParam("especialidad") String especialidad,
+            @org.springframework.web.bind.annotation.RequestParam("medico") String medico,
             @org.springframework.web.bind.annotation.RequestParam("fecha") String fecha,
             @org.springframework.web.bind.annotation.RequestParam("hora") String hora,
-            @org.springframework.web.bind.annotation.RequestParam("motivoConsulta") String motivoConsulta,
+            @org.springframework.web.bind.annotation.RequestParam("metodoPago") String metodoPago,
             org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         
-        // Aquí llamaríamos a CitaService.reservarCita()
-        // Por ahora simulamos éxito
-        redirectAttributes.addFlashAttribute("mensajeExito", "¡Cita reservada exitosamente para el " + fecha + " a las " + hora + "!");
+        // Simulación de guardado de cita
+        redirectAttributes.addFlashAttribute("mensajeExito", 
+            "¡Cita reservada exitosamente para el " + fecha + " a las " + hora + " con el doctor " + medico + "!");
         return "redirect:/paciente/mis-citas";
     }
 }
