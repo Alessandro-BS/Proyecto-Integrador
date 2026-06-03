@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/medico_base}">
+
+<head>
+    <title>En Consulta</title>
+    <style>
+        .breadcrumb {
+            margin-bottom: 2rem;
+            font-size: 0.85rem;
+            color: #676462;
+        }
+        
+        .breadcrumb a {
+            color: #676462;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 0.5rem;
+        }
+
+        .breadcrumb-active {
+            color: #4b0004;
+            font-weight: 700;
+        }
+
+        /* Patient Info Card */
+        .patient-card {
+            border-left: 6px solid #6b1515;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .patient-avatar-placeholder {
+            width: 80px;
+            height: 80px;
+            background-color: #e9eff5;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: #4b0004;
+        }
+
+        .patient-main-info {
+            flex-grow: 1;
+        }
+
+        .patient-label {
+            font-size: 0.75rem;
+            color: #676462;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .patient-name {
+            font-size: 2.2rem;
+            color: #141d23;
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+        }
+
+        .patient-time-tag {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .time-text {
+            color: #676462;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .tag-control {
+            background-color: #f2dedc;
+            color: #6b1515;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .patient-stats {
+            display: flex;
+            gap: 2rem;
+            border-left: 1px solid #E5E5E5;
+            padding-left: 2rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .stat-val {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #141d23;
+        }
+
+        /* Form Areas */
+        .form-section-title {
+            font-size: 1.1rem;
+            color: #141d23;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-section-title i {
+            color: #6b1515;
+        }
+
+        .text-area-custom {
+            width: 100%;
+            height: 300px;
+            background-color: #f8f9fa;
+            border: 1px solid #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            resize: none;
+            color: #141d23;
+            font-family: var(--font-body);
+            transition: border-color 0.2s;
+        }
+
+        .text-area-custom:focus {
+            outline: none;
+            border-color: #ddc0bd;
+            background-color: #ffffff;
+        }
+        
+        .text-area-custom::placeholder {
+            color: #676462;
+        }
+
+        /* Right Column Cards */
+        .card-title-right {
+            font-size: 1.1rem;
+            color: #141d23;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed #ddc0bd;
+            border-radius: 12px;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            background-color: #fffaf9;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .upload-zone:hover {
+            background-color: #fce8e6;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: #6b1515;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: #6b1515;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .upload-desc {
+            font-size: 0.8rem;
+            color: #676462;
+        }
+
+        .files-header {
+            font-size: 0.75rem;
+            color: #676462;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .file-item {
+            border: 1px solid #E5E5E5;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-icon {
+            background-color: #fce8e6;
+            color: #ba1a1a;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+        .file-info {
+            flex-grow: 1;
+        }
+
+        .file-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #141d23;
+            margin-bottom: 0.1rem;
+        }
+
+        .file-size {
+            font-size: 0.75rem;
+            color: #676462;
+        }
+
+        .btn-delete-file {
+            background: none;
+            border: none;
+            color: #676462;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .btn-delete-file:hover {
+            color: #ba1a1a;
+        }
+
+        /* Acciones Finales */
+        .actions-card {
+            background-color: #550a0a;
+            color: white;
+        }
+
+        .actions-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .actions-desc {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .btn-actions-primary {
+            background-color: var(--pure-white);
+            color: #550a0a;
+            width: 100%;
+            border-radius: 8px;
+            padding: 0.8rem;
+            font-weight: 700;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn-actions-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-actions-secondary {
+            background-color: rgba(255,255,255,0.1);
+            color: var(--pure-white);
+            width: 100%;
+            border-radius: 8px;
+            padding: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-actions-secondary:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        
+        <!-- Breadcrumbs -->
+        <div class="breadcrumb">
+            <a th:href="@{/}">Inicio</a>
+            <span class="breadcrumb-separator">›</span>
+            <a th:href="@{/panel-medico/citas-hoy}">Consultas</a>
+            <span class="breadcrumb-separator">›</span>
+            <span class="breadcrumb-active">En Consulta: Carlos Ruiz</span>
+        </div>
+
+        <div class="row g-4">
+            
+            <!-- Columna Izquierda (8 cols) -->
+            <div class="col-lg-8">
+                
+                <!-- Tarjeta Paciente -->
+                <div class="card-soft patient-card">
+                    <div class="patient-avatar-placeholder">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    
+                    <div class="patient-main-info">
+                        <div class="patient-label">Paciente en Consulta</div>
+                        <h2 class="patient-name headline">Carlos Ruiz</h2>
+                        <div class="patient-time-tag">
+                            <span class="time-text"><i class="fa-regular fa-clock"></i> 10:30 AM - 11:00 AM</span>
+                            <span class="tag-control">Control Periódico</span>
+                        </div>
+                    </div>
+                    
+                    <div class="patient-stats">
+                        <div class="stat-item">
+                            <span class="patient-label">Edad</span>
+                            <span class="stat-val">42 años</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="patient-label">ID Médico</span>
+                            <span class="stat-val">100234-A</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="patient-label">Motivo</span>
+                            <span class="stat-val">Follow-up</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formularios -->
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card-soft h-100">
+                            <h3 class="form-section-title headline">
+                                <i class="fa-solid fa-notes-medical"></i> Notas Médicas
+                            </h3>
+                            <textarea class="text-area-custom" placeholder="Describa detalladamente los síntomas y observaciones del paciente durante la evaluación clínica actual..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card-soft h-100">
+                            <h3 class="form-section-title headline">
+                                <i class="fa-solid fa-stethoscope"></i> Diagnóstico
+                            </h3>
+                            <textarea class="text-area-custom" placeholder="Ingrese el diagnóstico clínico presuntivo o definitivo, incluyendo códigos CIE-10 si es necesario..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Columna Derecha (4 cols) -->
+            <div class="col-lg-4">
+                
+                <!-- Tarjeta Archivos -->
+                <div class="card-soft mb-4">
+                    <h3 class="card-title-right headline">
+                        <i class="fa-regular fa-file-lines"></i> Resultados y Recetas
+                    </h3>
+                    
+                    <div class="upload-zone">
+                        <div class="upload-icon">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <div class="upload-text">Adjuntar Archivos</div>
+                        <div class="upload-desc">Suelte aquí o explore exámenes, placas o recetas digitales</div>
+                    </div>
+                    
+                    <div class="files-header">Documentos Adjuntos (1)</div>
+                    
+                    <div class="file-item">
+                        <div class="file-icon">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">Analisis_Sangre.pdf</div>
+                            <div class="file-size">2.4 MB</div>
+                        </div>
+                        <button class="btn-delete-file"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Acciones Finales -->
+                <div class="card-soft actions-card">
+                    <h3 class="actions-title headline">Acciones Finales</h3>
+                    <p class="actions-desc">
+                        Asegúrese de haber completado todos los campos antes de cerrar el registro de la consulta.
+                    </p>
+                    
+                    <button class="btn-actions-primary">
+                        <i class="fa-regular fa-circle-check"></i> Finalizar Consulta
+                    </button>
+                    
+                    <button class="btn-actions-secondary">
+                        <i class="fa-regular fa-floppy-disk"></i> Guardar Borrador
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>
