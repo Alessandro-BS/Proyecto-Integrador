@@ -1,65 +1,333 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/base}">
+
 <head>
     <title>Mis Citas</title>
+    <style>
+        .page-title {
+            color: var(--sisol-primary);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .date-btn {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            color: #555;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .nav-tabs-custom {
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-tabs-custom .nav-link {
+            color: #6c757d;
+            font-weight: 600;
+            padding: 0.75rem 0;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            color: var(--sisol-primary);
+        }
+
+        .nav-tabs-custom .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--sisol-primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .search-container {
+            background-color: white;
+            border-radius: 0.8rem;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            max-width: 450px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            margin-bottom: 2rem;
+        }
+
+        .search-container input {
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+            margin-left: 0.75rem;
+            color: #495057;
+        }
+
+        .search-container input::placeholder {
+            color: #adb5bd;
+        }
+
+        .appointment-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .date-box {
+            border-radius: 0.8rem;
+            text-align: center;
+            padding: 1rem 0.5rem;
+            min-width: 90px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-right: 1.5rem;
+        }
+
+        .date-box.primary {
+            background-color: var(--sisol-primary);
+            color: white;
+        }
+
+        .date-box.secondary {
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
+
+        .date-box-month {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .date-box-day {
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0.2rem 0;
+        }
+
+        .date-box-time {
+            font-size: 0.75rem;
+        }
+
+        .appointment-info {
+            flex-grow: 1;
+        }
+
+        .specialty {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #adb5bd;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .doctor-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--sisol-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .location-info {
+            font-size: 0.85rem;
+            color: #6c757d;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .location-info i {
+            margin-right: 0.3rem;
+            color: #adb5bd;
+        }
+
+        .status-badge {
+            padding: 0.35rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+
+        .status-confirmed {
+            background-color: #e6f4ea;
+            color: #1e8e3e;
+        }
+        
+        .status-pending {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 140px;
+            margin-left: 2rem;
+            align-items: flex-end;
+        }
+
+        .btn-cita {
+            border-radius: 2rem;
+            padding: 0.4rem 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-outline-primary-custom {
+            border: 1px solid var(--sisol-primary);
+            color: var(--sisol-primary);
+            background: transparent;
+        }
+
+        .btn-outline-primary-custom:hover {
+            background-color: var(--sisol-primary);
+            color: white;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--sisol-primary);
+            color: white;
+            border: 1px solid var(--sisol-primary);
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #5c1414;
+        }
+
+        .btn-outline-danger-custom {
+            border: 1px solid #dc3545;
+            color: #dc3545;
+            background: transparent;
+        }
+
+        .btn-outline-danger-custom:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    </style>
 </head>
+
 <body>
     <div layout:fragment="content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold mb-0">Mis Citas</h2>
-                <p class="text-muted">Historial de tus atenciones y citas programadas.</p>
-            </div>
-            <a th:href="@{/paciente/reservar-cita}" class="btn btn-primary">
-                <i class="bi bi-plus-lg me-1"></i> Nueva Cita
+        
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a th:href="@{/paciente/dashboard}" class="text-decoration-none text-muted fw-bold" style="font-size: 0.9rem;">
+                <i class="bi bi-arrow-left me-1"></i> Volver al panel
             </a>
         </div>
 
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Hora</th>
-                                <th>Especialidad</th>
-                                <th>Médico</th>
-                                <th>Estado</th>
-                                <th class="text-end">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Ejemplo de fila estática (luego será dinámica con th:each) -->
-                            <tr>
-                                <td>15/06/2026</td>
-                                <td>10:00 AM</td>
-                                <td>Cardiología</td>
-                                <td>Dr. Juan Pérez</td>
-                                <td><span class="badge bg-warning text-dark">Pendiente</span></td>
-                                <td class="text-end">
-                                    <button class="btn btn-sm btn-outline-danger" title="Cancelar Cita">
-                                        <i class="bi bi-x-circle"></i> Cancelar
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>10/05/2026</td>
-                                <td>03:30 PM</td>
-                                <td>Dermatología</td>
-                                <td>Dra. Ana Gómez</td>
-                                <td><span class="badge bg-success">Completada</span></td>
-                                <td class="text-end">
-                                    <button class="btn btn-sm btn-outline-secondary" title="Ver Detalles" disabled>
-                                        <i class="bi bi-eye"></i> Detalles
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-start mb-4 mt-2">
+            <div>
+                <h1 class="page-title mb-2">Mis Citas</h1>
+                <p class="text-muted fs-6">Gestiona tus consultas médicas y revisa tu historial.</p>
+            </div>
+            <button class="date-btn shadow-sm">
+                <i class="bi bi-calendar3 me-2 text-muted"></i> Septiembre 2024
+            </button>
+        </div>
+
+        <!-- Nav Tabs -->
+        <div class="nav-tabs-custom">
+            <a href="#" class="nav-link active">Próximas</a>
+            <a href="#" class="nav-link">Pasadas</a>
+            <a href="#" class="nav-link">Canceladas</a>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <i class="bi bi-search text-muted"></i>
+            <input type="text" placeholder="Buscar por doctor o especialidad...">
+        </div>
+
+        <!-- Citas List -->
+        <div>
+            <!-- Cita 1 -->
+            <div class="appointment-card">
+                <div class="date-box primary shadow-sm">
+                    <span class="date-box-month">SEPT</span>
+                    <span class="date-box-day">18</span>
+                    <span class="date-box-time">10:30 AM</span>
+                </div>
+                
+                <div class="appointment-info">
+                    <div class="specialty">CARDIOLOGÍA</div>
+                    <div class="doctor-name">Dr. Ricardo Palma</div>
+                    <div class="location-info">
+                        <span><i class="bi bi-geo-alt"></i> Sede Surco - Av. Los Jazmines 450</span>
+                        <span><i class="bi bi-door-open"></i> Consultorio 302</span>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="status-badge status-confirmed">
+                        <i class="bi bi-check-circle me-1"></i> CONFIRMADA
+                    </span>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="#" class="btn-cita btn-outline-primary-custom text-decoration-none">Ver Detalles</a>
+                    <a href="#" class="btn-cita btn-primary-custom text-decoration-none">Reprogramar</a>
                 </div>
             </div>
+
+            <!-- Cita 2 -->
+            <div class="appointment-card">
+                <div class="date-box secondary shadow-sm">
+                    <span class="date-box-month">SEPT</span>
+                    <span class="date-box-day">24</span>
+                    <span class="date-box-time">03:45 PM</span>
+                </div>
+                
+                <div class="appointment-info">
+                    <div class="specialty">DERMATOLOGÍA</div>
+                    <div class="doctor-name">Dra. Elena Vazquez</div>
+                    <div class="location-info">
+                        <span><i class="bi bi-geo-alt"></i> Sede Miraflores - Jr. Junín 122</span>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="status-badge status-pending">
+                        <i class="bi bi-clock me-1"></i> PENDIENTE
+                    </span>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="#" class="btn-cita btn-outline-primary-custom text-decoration-none">Ver Detalles</a>
+                    <a href="#" class="btn-cita btn-outline-danger-custom text-decoration-none">Cancelar</a>
+                </div>
+            </div>
+
         </div>
     </div>
 </body>
+
 </html>
