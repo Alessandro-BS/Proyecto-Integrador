@@ -1,63 +1,304 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/base}">
+
 <head>
     <title>Mi Panel - Paciente</title>
+    <style>
+        .profile-img-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-photo-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: var(--sisol-primary);
+            color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid #fff;
+            transition: background-color 0.2s;
+        }
+
+        .edit-photo-btn:hover {
+            background-color: #5c1414;
+        }
+
+        .dashboard-header h1 {
+            color: var(--sisol-primary);
+            font-weight: 800;
+        }
+
+        .dashboard-stat-card {
+            background-color: white;
+            border-radius: 1rem;
+            text-align: center;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .dashboard-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .dashboard-stat-label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .action-card {
+            border-radius: 1rem;
+            text-align: center;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: block;
+            height: 100%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: white;
+            color: #333;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .action-card.primary-action {
+            background-color: var(--sisol-primary);
+            color: white;
+        }
+
+        .action-card.primary-action:hover {
+            background-color: #5c1414;
+            color: white;
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .appointment-list-item {
+            background-color: #f9f9f9;
+            border-radius: 0.8rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .appointment-date-box {
+            background-color: white;
+            border-radius: 0.5rem;
+            text-align: center;
+            padding: 0.5rem;
+            min-width: 70px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .banner-historial {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;
+            border-radius: 1rem;
+            color: white;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+    </style>
 </head>
+
 <body>
     <div layout:fragment="content">
-        <div class="row mb-4">
+        <!-- Header Section -->
+        <div class="row mb-5 dashboard-header">
             <div class="col-12">
-                <h2 class="fw-bold">Bienvenido(a) a tu Panel de Control</h2>
-                <p class="text-muted">Aquí puedes gestionar tus citas médicas e historial.</p>
+                <h1
+                    th:text="'Bienvenido, ' + ${usuario != null ? usuario.nombre + ' ' + usuario.apellido : 'Paciente'}">
+                    Bienvenido, Carlos Alberto</h1>
+                <p class="text-muted fs-5">Tu salud es nuestra prioridad. Aquí tienes un resumen de tu actividad
+                    reciente.</p>
             </div>
         </div>
 
         <div class="row g-4">
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0 border-top border-primary border-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="bg-primary text-white rounded p-3 me-3">
-                                <i class="bi bi-calendar-plus fs-4"></i>
+            <!-- Left Column: Profile -->
+            <div class="col-lg-4">
+                <div class="card shadow-whisper border-0 rounded-2xl mb-4 text-center" style="background-color: white;">
+                    <div class="card-body p-4">
+                        <div class="profile-img-container mb-3">
+                            <img src="https://ui-avatars.com/api/?name=Usuario&background=random&size=150"
+                                th:src="${usuario != null} ? 'https://ui-avatars.com/api/?name=' + ${usuario.nombre} + '+' + ${usuario.apellido} + '&background=random&size=150' : 'https://ui-avatars.com/api/?name=Usuario&background=random&size=150'"
+                                alt="Profile Photo" class="profile-img rounded-circle">
+                            <div class="edit-photo-btn" title="Cambiar foto de perfil">
+                                <i class="bi bi-pencil-fill"></i>
                             </div>
-                            <h5 class="card-title mb-0 fw-bold">Reservar Cita</h5>
                         </div>
-                        <p class="card-text text-muted">Agenda una nueva consulta con nuestros especialistas.</p>
-                        <a th:href="@{/paciente/reservar-cita}" class="btn btn-primary w-100 mt-2">Agendar Ahora</a>
+
+                        <h4 class="fw-bold mb-1"
+                            th:text="${usuario != null ? usuario.nombre + ' ' + usuario.apellido : 'Carlos Alberto Ruiz'}">
+                            Carlos Alberto Ruiz</h4>
+                        <p class="text-muted small mb-4"
+                            th:text="${paciente != null && paciente.createdAt != null} ? 'Paciente desde ' + ${#temporals.format(paciente.createdAt, 'yyyy')} : 'Paciente desde 2021'">
+                            Paciente desde 2021</p>
+
+                        <div class="text-start mb-4">
+                            <div class="d-flex justify-content-between border-bottom py-2">
+                                <span class="text-muted fw-bold small text-uppercase">DNI</span>
+                                <span class="fw-bold"
+                                    th:text="${usuario != null ? usuario.dni : '452819XX'}">452819XX</span>
+                            </div>
+                            <div class="d-flex justify-content-between border-bottom py-2">
+                                <span class="text-muted fw-bold small text-uppercase">Teléfono</span>
+                                <span class="fw-bold"
+                                    th:text="${usuario != null && usuario.telefono != null ? usuario.telefono : '+51 987 654 321'}">+51
+                                    987 654 321</span>
+                            </div>
+                        </div>
+
+                        <a href="#" class="btn btn-outline-dark btn-pill w-100 fw-bold">Editar Perfil</a>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="dashboard-stat-card">
+                            <div class="text-primary mb-2"><i class="bi bi-calendar-check fs-4"></i></div>
+                            <div class="dashboard-stat-value">12</div>
+                            <div class="dashboard-stat-label">Citas Totales</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="dashboard-stat-card">
+                            <div class="text-success mb-2"><i class="bi bi-patch-check fs-4"></i></div>
+                            <div class="dashboard-stat-value">850</div>
+                            <div class="dashboard-stat-label">Puntos Salud</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0 border-top border-success border-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="bg-success text-white rounded p-3 me-3">
-                                <i class="bi bi-journal-medical fs-4"></i>
-                            </div>
-                            <h5 class="card-title mb-0 fw-bold">Mis Citas</h5>
-                        </div>
-                        <p class="card-text text-muted">Revisa tus próximas citas y tu historial médico.</p>
-                        <a th:href="@{/paciente/mis-citas}" class="btn btn-outline-success w-100 mt-2">Ver Historial</a>
+            <!-- Right Column: Actions and Info -->
+            <div class="col-lg-8">
+                <!-- Action Buttons -->
+                <div class="row g-3 mb-5">
+                    <div class="col-md-4">
+                        <a th:href="@{/paciente/reservar-cita}" class="action-card primary-action">
+                            <div class="action-icon"><i class="bi bi-plus-circle"></i></div>
+                            <div class="fw-bold">Reservar Cita</div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a th:href="@{/paciente/mis-citas}" class="action-card">
+                            <div class="action-icon text-primary"><i class="bi bi-calendar3"></i></div>
+                            <div class="fw-bold">Mis Citas</div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="action-card">
+                            <div class="action-icon text-primary"><i class="bi bi-file-earmark-medical"></i></div>
+                            <div class="fw-bold">Resultados</div>
+                        </a>
                     </div>
                 </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0 border-top border-info border-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="bg-info text-white rounded p-3 me-3">
-                                <i class="bi bi-person-gear fs-4"></i>
-                            </div>
-                            <h5 class="card-title mb-0 fw-bold">Mi Perfil</h5>
+
+                <!-- Upcoming Appointments -->
+                <div class="card shadow-whisper border-0 rounded-2xl mb-4" style="background-color: white;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="fw-bold m-0">Próximas Citas</h4>
+                            <a href="#" class="text-primary text-decoration-none small fw-bold">Ver todas</a>
                         </div>
-                        <p class="card-text text-muted">Actualiza tus datos personales y de contacto.</p>
-                        <a href="#" class="btn btn-outline-info w-100 mt-2">Editar Perfil</a>
+
+                        <!-- Sample Appointment 1 -->
+                        <div class="appointment-list-item">
+                            <div class="appointment-date-box me-3">
+                                <div class="text-muted small fw-bold text-uppercase">OCT</div>
+                                <div class="fs-4 fw-bold">24</div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-1">Dr. Ricardo Mendoza</h6>
+                                <p class="text-muted small m-0">Cardiología &bull; Clínica San Borja</p>
+                            </div>
+                            <div class="text-end me-3">
+                                <div class="fw-bold mb-1">10:30 AM</div>
+                                <span
+                                    class="badge bg-danger bg-opacity-25 text-danger rounded-pill px-3">CONFIRMADA</span>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="#">Ver detalle</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#">Cancelar</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Sample Appointment 2 -->
+                        <div class="appointment-list-item">
+                            <div class="appointment-date-box me-3">
+                                <div class="text-muted small fw-bold text-uppercase">NOV</div>
+                                <div class="fs-4 fw-bold">02</div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-1">Dra. Elena Vazquez</h6>
+                                <p class="text-muted small m-0">Dermatología &bull; Sisol Surquillo</p>
+                            </div>
+                            <div class="text-end me-3">
+                                <div class="fw-bold mb-1">04:15 PM</div>
+                                <span
+                                    class="badge bg-secondary bg-opacity-25 text-secondary rounded-pill px-3">PENDIENTE</span>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="#">Ver detalle</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#">Cancelar</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Banner -->
+                <div class="banner-historial shadow-whisper">
+                    <h3 class="fw-bold mb-2">Tu historial médico digital</h3>
+                    <p class="mb-4" style="max-width: 400px;">Accede a tus recetas y resultados de laboratorio en
+                        cualquier momento.</p>
+                    <a th:href="@{/paciente/mis-citas}" class="btn btn-light btn-pill fw-bold text-dark">Ver
+                        Historial</a>
+                </div>
+
             </div>
         </div>
     </div>
 </body>
+
 </html>

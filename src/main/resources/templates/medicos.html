@@ -51,7 +51,7 @@
                             <i class="bi bi-person-fill display-5"></i>
                         </div>
                         <h4 class="card-title fw-bold text-dark mb-1" th:text="'Dr. ' + ${medico.nombre} + ' ' + ${medico.apellido}">Dr. Juan Pérez</h4>
-                        <h6 class="card-subtitle mb-3 text-primary fw-bold" th:text="${medico.especialidad}">Cardiología</h6>
+                        <h6 class="card-subtitle mb-3 text-primary fw-bold" th:text="${#strings.listJoin(medico.especialidades, ', ')}">Cardiología</h6>
                         <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
                             <span class="badge bg-light text-dark border rounded-pill px-3 py-2">
                                 <i class="bi bi-card-heading me-1 text-primary"></i> CMP: <span th:text="${medico.cpm}">123456</span>
