@@ -71,7 +71,7 @@ public class CitaRepositoryTest {
 
         medico = Medico.builder()
                 .usuario(userM)
-                .especialidad(esp)
+                .especialidades(java.util.Set.of(esp))
                 .numeroColegiatura("CMP-999")
                 .build();
         medico = entityManager.persistAndFlush(medico);
@@ -81,6 +81,7 @@ public class CitaRepositoryTest {
                 .paciente(paciente)
                 .medico(medico)
                 .fecha(hoy)
+                .especialidad(esp)
                 .horaInicio(LocalTime.of(9, 0))
                 .horaFin(LocalTime.of(9, 30))
                 .estado(EstadoCita.PENDIENTE)
@@ -92,7 +93,7 @@ public class CitaRepositoryTest {
     void findByPacienteId_DebeRetornarCitasDelPaciente() {
         List<Cita> citas = citaRepository.findByPacienteId(paciente.getId());
         assertEquals(1, citas.size());
-        assertEquals("Pediatría", citas.get(0).getMedico().getEspecialidad().getNombre());
+        assertEquals("Pediatría", citas.get(0).getMedico().getEspecialidades().iterator().next().getNombre());
     }
 
     @Test

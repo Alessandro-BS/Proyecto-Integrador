@@ -46,6 +46,8 @@ public class CitaRestControllerTest {
         citaRequest = new CitaRequest();
         citaRequest.setPacienteId(1L);
         citaRequest.setMedicoId(1L);
+        citaRequest.setEspecialidadId(1L);
+        citaRequest.setMetodoPago(com.sisol.salud.model.enums.MetodoPago.TARJETA_CREDITO);
         citaRequest.setFechaHora(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         citaRequest.setMotivoConsulta("Chequeo general");
 
