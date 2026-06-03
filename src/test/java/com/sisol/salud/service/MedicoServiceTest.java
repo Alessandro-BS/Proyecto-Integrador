@@ -51,14 +51,14 @@ public class MedicoServiceTest {
         medicoPrueba.setId(1L);
         medicoPrueba.setNumeroColegiatura("12345");
         medicoPrueba.setUsuario(usuario);
-        medicoPrueba.setEspecialidad(especialidadPrueba);
+        medicoPrueba.setEspecialidades(java.util.Set.of(especialidadPrueba));
 
         medicoResponsePrueba = new MedicoResponse();
         medicoResponsePrueba.setId(1L);
         medicoResponsePrueba.setNombre("Dr. Carlos");
         medicoResponsePrueba.setApellido("Perez");
         medicoResponsePrueba.setCpm("12345");
-        medicoResponsePrueba.setEspecialidad("Cardiología");
+        medicoResponsePrueba.setEspecialidades(java.util.Arrays.asList("Cardiología"));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class MedicoServiceTest {
         List<Medico> medicos = Arrays.asList(medicoPrueba);
         List<MedicoResponse> responses = Arrays.asList(medicoResponsePrueba);
 
-        when(medicoRepository.findByEspecialidadId(idEspecialidad)).thenReturn(medicos);
+        when(medicoRepository.findByEspecialidades_Id(idEspecialidad)).thenReturn(medicos);
         when(medicoMapper.toResponseList(medicos)).thenReturn(responses);
 
         // Act
@@ -97,8 +97,8 @@ public class MedicoServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.size());
-        assertEquals("Cardiología", resultado.get(0).getEspecialidad());
-        verify(medicoRepository).findByEspecialidadId(idEspecialidad);
+        assertEquals("Cardiología", resultado.get(0).getEspecialidades().get(0));
+        verify(medicoRepository).findByEspecialidades_Id(idEspecialidad);
     }
 
     @Test

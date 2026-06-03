@@ -39,7 +39,7 @@ public class MedicoRestControllerTest {
         medicoResponse.setNombre("Dr. Carlos");
         medicoResponse.setApellido("Perez");
         medicoResponse.setCpm("12345");
-        medicoResponse.setEspecialidad("Cardiología");
+        medicoResponse.setEspecialidades(Arrays.asList("Cardiología"));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class MedicoRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].nombre").value("Dr. Carlos"))
-                .andExpect(jsonPath("$[0].especialidad").value("Cardiología"));
+                .andExpect(jsonPath("$[0].especialidades[0]").value("Cardiología"));
     }
 
     @Test
@@ -68,6 +68,6 @@ public class MedicoRestControllerTest {
         mockMvc.perform(get("/api/medicos/especialidad/{id}", especialidadId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].especialidad").value("Cardiología"));
+                .andExpect(jsonPath("$[0].especialidades[0]").value("Cardiología"));
     }
 }

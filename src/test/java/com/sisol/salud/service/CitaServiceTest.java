@@ -29,9 +29,12 @@ import com.sisol.salud.model.entity.Medico;
 import com.sisol.salud.model.entity.Paciente;
 import com.sisol.salud.model.entity.Usuario;
 import com.sisol.salud.model.enums.EstadoCita;
+import com.sisol.salud.model.entity.Especialidad;
 import com.sisol.salud.repository.CitaRepository;
+import com.sisol.salud.repository.EspecialidadRepository;
 import com.sisol.salud.repository.MedicoRepository;
 import com.sisol.salud.repository.PacienteRepository;
+import com.sisol.salud.service.PagoService;
 
 @ExtendWith(MockitoExtension.class)
 public class CitaServiceTest {
@@ -54,6 +57,12 @@ public class CitaServiceTest {
     @Mock
     private CitaMapper citaMapper;
 
+    @Mock
+    private PagoService pagoService;
+
+    @Mock
+    private EspecialidadRepository especialidadRepository;
+
     @InjectMocks
     private CitaService citaService;
 
@@ -64,6 +73,7 @@ public class CitaServiceTest {
     private CitaResponse citaResponse;
     private Usuario usuarioPaciente;
     private Usuario usuarioMedico;
+    private Especialidad especialidad;
 
     @BeforeEach
     void setUp() {
@@ -77,9 +87,14 @@ public class CitaServiceTest {
         paciente.setId(1L);
         paciente.setUsuario(usuarioPaciente);
 
+        especialidad = new Especialidad();
+        especialidad.setId(1L);
+        especialidad.setNombre("Cardiología");
+
         medico = new Medico();
         medico.setId(1L);
         medico.setUsuario(usuarioMedico);
+        medico.setEspecialidades(java.util.Set.of(especialidad));
 
         cita = new Cita();
         cita.setId(1L);
@@ -92,6 +107,7 @@ public class CitaServiceTest {
         citaRequest = new CitaRequest();
         citaRequest.setPacienteId(1L);
         citaRequest.setMedicoId(1L);
+        citaRequest.setEspecialidadId(1L);
         citaRequest.setFechaHora(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         citaRequest.setMotivoConsulta("Dolor de cabeza");
 
@@ -105,6 +121,7 @@ public class CitaServiceTest {
         // Arrange
         when(pacienteRepository.findById(1L)).thenReturn(Optional.of(paciente));
         when(medicoRepository.findById(1L)).thenReturn(Optional.of(medico));
+        when(especialidadRepository.findById(1L)).thenReturn(Optional.of(especialidad));
 
         HorarioDisponibleResponse slot = new HorarioDisponibleResponse(LocalTime.of(10, 0), LocalTime.of(10, 30), true);
         when(disponibilidadService.obtenerSlotsDisponibles(1L, citaRequest.getFechaHora().toLocalDate()))
@@ -127,6 +144,7 @@ public class CitaServiceTest {
         // Arrange
         when(pacienteRepository.findById(1L)).thenReturn(Optional.of(paciente));
         when(medicoRepository.findById(1L)).thenReturn(Optional.of(medico));
+        when(especialidadRepository.findById(1L)).thenReturn(Optional.of(especialidad));
 
         HorarioDisponibleResponse slot = new HorarioDisponibleResponse(LocalTime.of(10, 0), LocalTime.of(10, 30), false); // No disponible
         when(disponibilidadService.obtenerSlotsDisponibles(1L, citaRequest.getFechaHora().toLocalDate()))

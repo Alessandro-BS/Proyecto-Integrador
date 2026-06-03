@@ -51,16 +51,16 @@ public class MedicoRepositoryTest {
         // 3. Crear y persistir médico
         Medico medico = Medico.builder()
                 .usuario(usuarioMedico)
-                .especialidad(cardiologia)
+                .especialidades(java.util.Set.of(cardiologia))
                 .numeroColegiatura("CMP-12345")
                 .build();
         entityManager.persistAndFlush(medico);
     }
 
     @Test
-    void findByEspecialidadId_DebeRetornarListaDeMedicos() {
+    void findByEspecialidades_Id_DebeRetornarListaDeMedicos() {
         // Act
-        List<Medico> medicos = medicoRepository.findByEspecialidadId(cardiologia.getId());
+        List<Medico> medicos = medicoRepository.findByEspecialidades_Id(cardiologia.getId());
 
         // Assert
         assertFalse(medicos.isEmpty());
@@ -79,9 +79,9 @@ public class MedicoRepositoryTest {
     }
 
     @Test
-    void findByEspecialidadId_CuandoNoHayMedicos_DebeRetornarListaVacia() {
+    void findByEspecialidades_Id_CuandoNoHayMedicos_DebeRetornarListaVacia() {
         // Act
-        List<Medico> medicos = medicoRepository.findByEspecialidadId(999L);
+        List<Medico> medicos = medicoRepository.findByEspecialidades_Id(999L);
 
         // Assert
         assertTrue(medicos.isEmpty());

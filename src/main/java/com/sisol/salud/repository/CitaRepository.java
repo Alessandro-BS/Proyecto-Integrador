@@ -34,8 +34,8 @@ public interface CitaRepository extends JpaRepository<Cita, Long> { // Repositor
 
     long countByEstado(EstadoCita estado);
 
-    @Query("SELECT new com.sisol.salud.dto.response.TopEspecialidadResponse(c.medico.especialidad.nombre, COUNT(c)) " +
-           "FROM Cita c GROUP BY c.medico.especialidad.nombre ORDER BY COUNT(c) DESC")
+    @Query("SELECT new com.sisol.salud.dto.response.TopEspecialidadResponse(c.especialidad.nombre, COUNT(c)) " +
+           "FROM Cita c GROUP BY c.especialidad.nombre ORDER BY COUNT(c) DESC")
     List<com.sisol.salud.dto.response.TopEspecialidadResponse> findTopEspecialidades();
 
     @Query("SELECT new com.sisol.salud.dto.response.CitasPorDiaResponse(c.fecha, COUNT(c)) " +
