@@ -15,12 +15,22 @@ import lombok.RequiredArgsConstructor;
 public class PacienteWebController {
 
     private final CitaService citaService;
+    private final com.sisol.salud.repository.UsuarioRepository usuarioRepository;
+    private final com.sisol.salud.repository.PacienteRepository pacienteRepository;
 
     @GetMapping("/dashboard")
     @PreAuthorize("hasRole('PACIENTE')")
-    public String dashboard(Model model) {
-        // TODO: En el futuro obtendremos el ID del paciente logueado usando SecurityContextHolder
-        // Por ahora lo pasaremos como prueba o lo dejaremos vacío
+    public String dashboard(java.security.Principal principal, Model model) {
+        if (principal != null) {
+            String email = principal.getName();
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+            if (usuario != null) {
+                com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findByUsuarioId(usuario.getId()).orElse(null);
+                model.addAttribute("usuario", usuario);
+                model.addAttribute("paciente", paciente);
+            }
+        }
+        
         model.addAttribute("title", "Mi Panel - Paciente");
         return "paciente/dashboard";
     }
