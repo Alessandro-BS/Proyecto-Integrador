@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/base}">
+
+<head>
+    <title>Resultados Médicos</title>
+    <style>
+        .page-title {
+            color: var(--sisol-primary);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .filter-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            margin-bottom: 2rem;
+        }
+
+        .filter-label {
+            font-size: 0.8rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .filter-input {
+            background-color: #f8f9fa;
+            border: 1px solid #f0f0f0;
+            border-radius: 0.5rem;
+            padding: 0.6rem 1rem;
+            width: 100%;
+            color: #333;
+            outline: none;
+        }
+
+        .btn-filter {
+            background-color: #4a1010;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        
+        .btn-filter:hover {
+            background-color: #380a0a;
+            color: white;
+        }
+
+        .result-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+        }
+
+        .result-card.type-lab::before { background-color: #198754; }
+        .result-card.type-img::before { background-color: #0dcaf0; }
+        .result-card.type-cardio::before { background-color: #ffc107; }
+
+        .icon-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .type-lab .icon-circle { background-color: #e8f5e9; color: #198754; }
+        .type-img .icon-circle { background-color: #e0f7fa; color: #0dcaf0; }
+        .type-cardio .icon-circle { background-color: #fff8e1; color: #ffc107; }
+
+        .result-info {
+            flex-grow: 1;
+        }
+
+        .result-category {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            margin-bottom: 0.2rem;
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .result-meta {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        
+        .result-meta i {
+            margin-right: 0.4rem;
+        }
+
+        .result-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .status-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-ready { background-color: #e8f5e9; color: #198754; }
+        .status-process { background-color: #fff8e1; color: #ffc107; }
+
+        .btn-action {
+            border-radius: 2rem;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .btn-action-primary {
+            background-color: #4a1010;
+            color: white;
+            border: 1px solid #4a1010;
+        }
+
+        .btn-action-primary:hover {
+            background-color: #380a0a;
+            color: white;
+        }
+
+        .btn-action-disabled {
+            background-color: #e9ecef;
+            color: #adb5bd;
+            border: 1px solid #e9ecef;
+            cursor: not-allowed;
+        }
+
+        .help-card {
+            background-color: #4a1010;
+            color: white;
+            border-radius: 1rem;
+            padding: 2.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .help-card-icon {
+            position: absolute;
+            right: -20px;
+            bottom: -30px;
+            font-size: 10rem;
+            opacity: 0.1;
+            transform: rotate(-10deg);
+        }
+
+        .btn-white {
+            background-color: white;
+            color: #4a1010;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.6rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+            display: inline-block;
+            text-decoration: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .security-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2.5rem 2rem;
+            height: 100%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .security-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4a1010;
+            margin-bottom: 1.5rem;
+        }
+
+        .security-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .security-list li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .security-list li i {
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: #198754;
+            font-size: 1.1rem;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        
+        <!-- Header -->
+        <div class="mb-4 mt-2">
+            <h1 class="page-title mb-2">Resultados Médicos</h1>
+            <p class="text-muted fs-6">Consulta y descarga tus exámenes de laboratorio e imágenes desde la comodidad de tu hogar.</p>
+        </div>
+
+        <!-- Filter -->
+        <div class="filter-card">
+            <div class="row align-items-end g-3">
+                <div class="col-md-3">
+                    <label class="filter-label">Tipo de Examen</label>
+                    <select class="filter-input">
+                        <option>Todos los tipos</option>
+                        <option>Laboratorio Clínico</option>
+                        <option>Rayos X</option>
+                        <option>Cardiología</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="filter-label">Desde</label>
+                    <div class="position-relative">
+                        <input type="date" class="filter-input text-muted">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="filter-label">Hasta</label>
+                    <div class="position-relative">
+                        <input type="date" class="filter-input text-muted">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn-filter">
+                        <i class="bi bi-filter"></i> Filtrar Resultados
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results List -->
+        <div class="mb-5">
+            <!-- Result 1 -->
+            <div class="result-card type-lab">
+                <div class="icon-circle">
+                    <i class="bi bi-eyedropper"></i>
+                </div>
+                <div class="result-info">
+                    <div class="result-category">LABORATORIO CLÍNICO</div>
+                    <div class="result-title">Hemograma Completo y Perfil Lipídico</div>
+                    <div class="result-meta">
+                        <i class="bi bi-calendar3"></i> 14 de Mayo, 2024 • Dr. Ricardo Palma
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <span class="status-badge status-ready">Listo para descargar</span>
+                    <a href="#" class="btn-action btn-action-primary"><i class="bi bi-download"></i> Descargar PDF</a>
+                </div>
+            </div>
+
+            <!-- Result 2 -->
+            <div class="result-card type-img">
+                <div class="icon-circle">
+                    <i class="bi bi-person-bounding-box"></i>
+                </div>
+                <div class="result-info">
+                    <div class="result-category">RAYOS X</div>
+                    <div class="result-title">Radiografía de Tórax Frontal</div>
+                    <div class="result-meta">
+                        <i class="bi bi-calendar3"></i> 12 de Mayo, 2024 • Dr. Alberto Valdivia
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <span class="status-badge status-ready">Listo para descargar</span>
+                    <a href="#" class="btn-action btn-action-primary"><i class="bi bi-eye"></i> Ver Resultado</a>
+                </div>
+            </div>
+
+            <!-- Result 3 -->
+            <div class="result-card type-cardio">
+                <div class="icon-circle">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+                <div class="result-info">
+                    <div class="result-category">CARDIOLOGÍA</div>
+                    <div class="result-title">Electrocardiograma de Esfuerzo</div>
+                    <div class="result-meta">
+                        <i class="bi bi-calendar3"></i> 18 de Mayo, 2024 • Dra. Elena García
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <span class="status-badge status-process">En proceso</span>
+                    <a href="#" class="btn-action btn-action-disabled" tabindex="-1"><i class="bi bi-dash-circle"></i> No disponible</a>
+                </div>
+            </div>
+
+            <!-- Result 4 -->
+            <div class="result-card type-lab">
+                <div class="icon-circle">
+                    <i class="bi bi-eyedropper"></i>
+                </div>
+                <div class="result-info">
+                    <div class="result-category">LABORATORIO CLÍNICO</div>
+                    <div class="result-title">Examen de Glucosa Post-Prandial</div>
+                    <div class="result-meta">
+                        <i class="bi bi-calendar3"></i> 05 de Mayo, 2024 • Dr. Ricardo Palma
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <span class="status-badge status-ready">Listo para descargar</span>
+                    <a href="#" class="btn-action btn-action-primary"><i class="bi bi-download"></i> Descargar PDF</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Section -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="help-card shadow-sm">
+                    <i class="bi bi-clipboard2-pulse help-card-icon"></i>
+                    <h4 class="mb-3" style="position: relative; z-index: 1;">¿Necesitas ayuda con tus resultados?</h4>
+                    <p class="mb-4" style="color: rgba(255,255,255,0.8); position: relative; z-index: 1;">Agenda una teleconsulta inmediata con un médico general para la interpretación de tus exámenes.</p>
+                    <a href="#" class="btn-white shadow-sm">Hablar con un médico</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="security-card">
+                    <h4 class="security-title">Información de Seguridad</h4>
+                    <ul class="security-list">
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            Tus datos están protegidos bajo la ley de protección de datos personales.
+                        </li>
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            Los resultados solo pueden ser visualizados por usted y su médico tratante.
+                        </li>
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            Disponibilidad de descarga de PDF durante 2 años desde la fecha de emisión.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

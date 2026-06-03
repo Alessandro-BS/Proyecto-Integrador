@@ -86,4 +86,11 @@ public class PacienteWebController {
             "¡Cita reservada exitosamente para el " + fecha + " a las " + hora + " con el doctor " + medico + "!");
         return "redirect:/paciente/mis-citas";
     }
+
+    @GetMapping("/resultados")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String resultadosMedicos(Model model) {
+        model.addAttribute("title", "Resultados Médicos");
+        return "paciente/resultados";
+    }
 }
