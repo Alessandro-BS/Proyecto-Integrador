@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/base}">
+
+<head>
+    <title>Editar Perfil</title>
+    <style>
+        .page-title {
+            color: var(--sisol-primary);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .settings-sidebar {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            margin-bottom: 2rem;
+        }
+
+        .settings-nav-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: #555;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+        }
+
+        .settings-nav-item i {
+            margin-right: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .settings-nav-item:hover {
+            background-color: #f8f9fa;
+            color: var(--sisol-primary);
+        }
+
+        .settings-nav-item.active {
+            background-color: #fdf3f3;
+            color: var(--sisol-primary);
+            border-left-color: var(--sisol-primary);
+            font-weight: 600;
+        }
+
+        .help-card {
+            background-color: #4a1010;
+            color: white;
+            border-radius: 1rem;
+            padding: 2rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .help-card-icon {
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            font-size: 7rem;
+            opacity: 0.1;
+            transform: rotate(-10deg);
+        }
+
+        .btn-white {
+            background-color: white;
+            color: #4a1010;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            display: inline-block;
+            text-decoration: none;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            text-align: center;
+        }
+
+        .settings-content {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .profile-photo-box {
+            background-color: #f8f9fa;
+            border-radius: 1rem;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-img-container {
+            position: relative;
+            margin-right: 2rem;
+        }
+
+        .profile-img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #e9ecef;
+        }
+
+        .camera-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: var(--sisol-primary);
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            border: 2px solid white;
+        }
+
+        .form-label-custom {
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+        }
+
+        .form-control-custom {
+            background-color: #f8f9fa;
+            border: 1px solid #f8f9fa;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            color: #333;
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-control-custom:focus {
+            outline: none;
+            border-color: var(--sisol-primary);
+            background-color: white;
+        }
+
+        .form-control-custom[readonly] {
+            background-color: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .section-title {
+            color: var(--sisol-primary);
+            font-weight: 800;
+            font-size: 1.25rem;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .btn-cancel {
+            background-color: white;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+            border-radius: 2rem;
+            padding: 0.6rem 2rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-cancel:hover {
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+
+        .btn-save {
+            background-color: var(--sisol-primary);
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.6rem 2rem;
+            font-weight: 600;
+        }
+
+        .btn-save:hover {
+            background-color: #380a0a;
+        }
+
+        /* Tabs */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Notificaciones Styles */
+        .notification-card {
+            border: 1px solid #f0f0f0;
+            border-radius: 0.8rem;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            background-color: white;
+        }
+        
+        .notification-card.unread {
+            background-color: #fcfcfc;
+            border-left: 4px solid var(--sisol-primary);
+        }
+        
+        .notif-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 1.25rem;
+            flex-shrink: 0;
+            background-color: #f8f9fa;
+        }
+        
+        .notif-icon.text-danger { background-color: #fdf3f3; }
+        .notif-icon.text-secondary { background-color: #f1f3f5; }
+        
+        .notif-content { flex-grow: 1; }
+        .notif-title { font-weight: 700; color: #333; margin-bottom: 0.2rem; }
+        .notif-desc { font-size: 0.85rem; color: #6c757d; margin: 0; }
+        .notif-meta { font-size: 0.75rem; color: #adb5bd; font-weight: 600; text-align: right; }
+        
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--sisol-primary);
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
+
+        .notif-banner {
+            border-radius: 1rem;
+            overflow: hidden;
+            height: 140px;
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+            color: white;
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1622253692010-333f2da6031d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') center/cover;
+        }
+        
+        .notif-quote-box {
+            border: 2px solid var(--sisol-primary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        
+        <!-- Alertas -->
+        <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i><span th:text="${mensajeExito}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="settings-sidebar" id="perfilTabs">
+                    <a class="settings-nav-item active" data-target="tab-perfil">
+                        <i class="bi bi-person"></i> Mi perfil
+                    </a>
+                    <a class="settings-nav-item" data-target="tab-seguridad">
+                        <i class="bi bi-shield-check"></i> Seguridad
+                    </a>
+                    <a class="settings-nav-item" data-target="tab-notificaciones">
+                        <i class="bi bi-bell"></i> Notificaciones
+                    </a>
+                </div>
+
+                <div class="help-card shadow-sm">
+                    <i class="bi bi-lock help-card-icon"></i>
+                    <h5 class="mb-2 fw-bold" style="position: relative; z-index: 1;">Need help?</h5>
+                    <p class="small mb-3" style="color: rgba(255,255,255,0.8); position: relative; z-index: 1;">Our support team is available 24/7 for medical assistance.</p>
+                    <a href="#" class="btn-white shadow-sm">Contact Support</a>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-lg-9">
+                
+                <!-- =================== TAB MI PERFIL =================== -->
+                <div id="tab-perfil" class="tab-content active">
+                    <div class="settings-content">
+                        <h2 class="page-title mb-1">Editar Perfil</h2>
+                        <p class="text-muted mb-4 pb-3 border-bottom">Actualiza tus datos personales y cómo te ven los demás en el portal.</p>
+
+                        <form th:action="@{/paciente/perfil/actualizar}" method="post">
+                            
+                            <!-- Profile Photo -->
+                            <div class="profile-photo-box">
+                                <div class="profile-img-container">
+                                    <img th:src="${usuario != null} ? 'https://ui-avatars.com/api/?name=' + ${usuario.nombre} + '+' + ${usuario.apellido} + '&background=random&size=150' : 'https://ui-avatars.com/api/?name=Usuario&background=random&size=150'" alt="Profile Photo" class="profile-img">
+                                    <div class="camera-icon"><i class="bi bi-camera"></i></div>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Profile Photo</h6>
+                                    <p class="text-muted small mb-3">JPG, GIF or PNG. Max size of 2MB.</p>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn-save" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Upload New Photo</button>
+                                        <button type="button" class="btn-cancel" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Basic Info -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Nombre Completo (Solo lectura) <i class="bi bi-lock ms-1"></i></label>
+                                    <input type="text" class="form-control-custom" readonly
+                                        th:value="${usuario != null ? usuario.nombre + ' ' + usuario.apellido : ''}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">DNI (Solo lectura) <i class="bi bi-lock ms-1"></i></label>
+                                    <input type="text" class="form-control-custom" readonly
+                                        th:value="${usuario != null ? usuario.dni : ''}">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Correo Electrónico (Solo lectura) <i class="bi bi-lock ms-1"></i></label>
+                                    <input type="email" class="form-control-custom" readonly
+                                        th:value="${usuario != null ? usuario.email : ''}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Teléfono</label>
+                                    <input type="text" class="form-control-custom" name="telefono"
+                                        th:value="${usuario != null ? usuario.telefono : ''}">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control-custom" name="fechaNacimiento"
+                                        th:value="${paciente != null && paciente.fechaNacimiento != null ? paciente.fechaNacimiento : ''}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Género</label>
+                                    <select class="form-control-custom" name="genero">
+                                        <option value="">Seleccione...</option>
+                                        <option value="Masculino" th:selected="${paciente != null && paciente.genero == 'Masculino'}">Masculino</option>
+                                        <option value="Femenino" th:selected="${paciente != null && paciente.genero == 'Femenino'}">Femenino</option>
+                                        <option value="Otro" th:selected="${paciente != null && paciente.genero == 'Otro'}">Otro</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Emergency Contact -->
+                            <h4 class="section-title">Contacto de Emergencia</h4>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label-custom">Nombre</label>
+                                    <input type="text" class="form-control-custom" name="contactoEmergenciaNombre" placeholder="Ej. María Pérez"
+                                        th:value="${paciente != null ? paciente.contactoEmergenciaNombre : ''}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-custom">Parentesco</label>
+                                    <input type="text" class="form-control-custom" name="contactoEmergenciaParentesco" placeholder="Ej. Esposa, Madre"
+                                        th:value="${paciente != null ? paciente.contactoEmergenciaParentesco : ''}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-custom">Teléfono</label>
+                                    <input type="text" class="form-control-custom" name="contactoEmergenciaTelefono" placeholder="+51 --- --- ---"
+                                        th:value="${paciente != null ? paciente.contactoEmergenciaTelefono : ''}">
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+                                <a th:href="@{/paciente/dashboard}" class="btn-cancel">Cancelar</a>
+                                <button type="submit" class="btn-save">Guardar Cambios</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+                <!-- =================== TAB SEGURIDAD =================== -->
+                <div id="tab-seguridad" class="tab-content">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="page-title m-0">Seguridad</h2>
+                        <span class="text-muted small"><i class="bi bi-shield-check me-1"></i> Protege tu cuenta</span>
+                    </div>
+
+                    <div class="settings-content">
+                        <h5 class="fw-bold mb-4"><i class="bi bi-arrow-clockwise me-2"></i> Cambiar Contraseña</h5>
+                        
+                        <form action="#" method="post">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label-custom">Contraseña Actual</label>
+                                    <input type="password" class="form-control-custom" value="12345678" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-custom">Nueva Contraseña</label>
+                                    <input type="password" class="form-control-custom" value="12345678" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-custom">Confirmar Nueva Contraseña</label>
+                                    <input type="password" class="form-control-custom" value="12345678" readonly>
+                                </div>
+                            </div>
+                            <p class="text-muted small fst-italic">La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula y un número.</p>
+                        </form>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="button" class="btn-save" style="padding: 0.8rem 2.5rem;">Guardar Cambios</button>
+                    </div>
+                </div>
+
+
+                <!-- =================== TAB NOTIFICACIONES =================== -->
+                <div id="tab-notificaciones" class="tab-content">
+                    <h2 class="page-title mb-1">Centro de Notificaciones</h2>
+                    <p class="text-muted mb-4">Mantente al tanto de tus citas, resultados y seguridad de tu cuenta.</p>
+
+                    <!-- Notif 1 -->
+                    <div class="notification-card unread">
+                        <div class="notif-icon text-danger">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <div class="notif-content">
+                            <div class="notif-title">Cita Confirmada</div>
+                            <p class="notif-desc">Tu cita con el Dr. Ricardo Mendoza para el 15 de Marzo ha sido confirmada exitosamente.</p>
+                        </div>
+                        <div class="notif-meta">
+                            Hace 2 horas <span class="unread-dot"></span>
+                        </div>
+                    </div>
+
+                    <!-- Notif 2 -->
+                    <div class="notification-card">
+                        <div class="notif-icon text-secondary">
+                            <i class="bi bi-file-earmark-medical"></i>
+                        </div>
+                        <div class="notif-content">
+                            <div class="notif-title">Resultados Listos</div>
+                            <p class="notif-desc">Tus análisis de sangre ya están disponibles en la sección de documentos.</p>
+                        </div>
+                        <div class="notif-meta">Hoy, 09:15 AM</div>
+                    </div>
+
+                    <!-- Notif 3 -->
+                    <div class="notification-card">
+                        <div class="notif-icon text-secondary">
+                            <i class="bi bi-bell"></i>
+                        </div>
+                        <div class="notif-content">
+                            <div class="notif-title">Recordatorio</div>
+                            <p class="notif-desc">Recuerda que tu cita de seguimiento es en menos de 24 horas.</p>
+                        </div>
+                        <div class="notif-meta">Ayer</div>
+                    </div>
+
+                    <!-- Notif 4 -->
+                    <div class="notification-card">
+                        <div class="notif-icon text-danger" style="background-color: #fff0f0;">
+                            <i class="bi bi-shield-exclamation text-danger"></i>
+                        </div>
+                        <div class="notif-content">
+                            <div class="notif-title">Seguridad</div>
+                            <p class="notif-desc">Nuevo inicio de sesión detectado en un dispositivo desconocido. ¿Fuiste tú?</p>
+                        </div>
+                        <div class="notif-meta">Hace 2 días</div>
+                    </div>
+
+                    <div class="text-center my-4">
+                        <a href="#" class="text-decoration-none fw-bold" style="color: var(--sisol-primary);">Cargar notificaciones anteriores</a>
+                    </div>
+
+                    <!-- Bottom blocks -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="notif-banner">
+                                <h4 class="fw-bold m-0">Tu bienestar, digitalizado</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="notif-quote-box">
+                                <p class="fst-italic text-muted mb-2">"Mantenerte informado es el primer paso para una vida más saludable."</p>
+                                <span style="color: var(--sisol-primary); font-size: 0.75rem; font-weight: 800; letter-spacing: 1px;">EQUIPO MÉDICO SISOL</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script para cambiar de pestañas -->
+    <th:block layout:fragment="scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const tabs = document.querySelectorAll('#perfilTabs .settings-nav-item');
+                const contents = document.querySelectorAll('.tab-content');
+
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Remover clase active
+                        tabs.forEach(t => t.classList.remove('active'));
+                        contents.forEach(c => c.classList.remove('active'));
+                        
+                        // Agregar clase active al clickeado
+                        this.classList.add('active');
+                        const targetId = this.getAttribute('data-target');
+                        document.getElementById(targetId).classList.add('active');
+                    });
+                });
+            });
+        </script>
+    </th:block>
+</body>
+
+</html>

@@ -93,4 +93,54 @@ public class PacienteWebController {
         model.addAttribute("title", "Resultados Médicos");
         return "paciente/resultados";
     }
+
+    @GetMapping("/perfil")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String perfil(java.security.Principal principal, Model model) {
+        if (principal != null) {
+            String email = principal.getName();
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+            if (usuario != null) {
+                com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findByUsuarioId(usuario.getId()).orElse(null);
+                model.addAttribute("usuario", usuario);
+                model.addAttribute("paciente", paciente);
+            }
+        }
+        model.addAttribute("title", "Editar Perfil");
+        return "paciente/perfil";
+    }
+
+    @PostMapping("/perfil/actualizar")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String actualizarPerfil(
+            @org.springframework.web.bind.annotation.RequestParam("telefono") String telefono,
+            @org.springframework.web.bind.annotation.RequestParam("fechaNacimiento") @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate fechaNacimiento,
+            @org.springframework.web.bind.annotation.RequestParam("genero") String genero,
+            @org.springframework.web.bind.annotation.RequestParam(value = "contactoEmergenciaNombre", required = false) String contactoEmergenciaNombre,
+            @org.springframework.web.bind.annotation.RequestParam(value = "contactoEmergenciaParentesco", required = false) String contactoEmergenciaParentesco,
+            @org.springframework.web.bind.annotation.RequestParam(value = "contactoEmergenciaTelefono", required = false) String contactoEmergenciaTelefono,
+            java.security.Principal principal,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        
+        if (principal != null) {
+            String email = principal.getName();
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+            if (usuario != null) {
+                usuario.setTelefono(telefono);
+                usuarioRepository.save(usuario);
+                
+                com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findByUsuarioId(usuario.getId()).orElse(null);
+                if (paciente != null) {
+                    paciente.setFechaNacimiento(fechaNacimiento);
+                    paciente.setGenero(genero);
+                    paciente.setContactoEmergenciaNombre(contactoEmergenciaNombre);
+                    paciente.setContactoEmergenciaParentesco(contactoEmergenciaParentesco);
+                    paciente.setContactoEmergenciaTelefono(contactoEmergenciaTelefono);
+                    pacienteRepository.save(paciente);
+                }
+            }
+        }
+        redirectAttributes.addFlashAttribute("mensajeExito", "Perfil actualizado correctamente");
+        return "redirect:/paciente/perfil";
+    }
 }

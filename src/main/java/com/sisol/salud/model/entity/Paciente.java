@@ -53,6 +53,18 @@ public class Paciente {
     @Column(name = "grupo_sanguineo", length = 5)
     private String grupoSanguineo; // Grupo Sanguineo
 
+    @Column(length = 20)
+    private String genero; // Genero
+
+    @Column(name = "contacto_emergencia_nombre", length = 150)
+    private String contactoEmergenciaNombre;
+
+    @Column(name = "contacto_emergencia_parentesco", length = 50)
+    private String contactoEmergenciaParentesco;
+
+    @Column(name = "contacto_emergencia_telefono", length = 20)
+    private String contactoEmergenciaTelefono;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt; // Fecha de Creación
