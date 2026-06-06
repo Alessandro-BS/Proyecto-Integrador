@@ -168,34 +168,21 @@
                 <p class="text-muted mb-4">Elige la especialidad médica que necesitas para continuar.</p>
 
                 <div class="row g-4 mt-2">
-                    <!-- Specialty 1 -->
-                    <div class="col-md-6">
+                    <!-- Specialty Dinámica -->
+                    <div th:each="esp : ${especialidades}" class="col-md-6">
                         <form th:action="@{/paciente/reservar-cita/paso2}" method="post">
-                            <input type="hidden" name="especialidad" value="Cardiología">
+                            <input type="hidden" name="especialidadId" th:value="${esp.id}">
                             <button type="submit" class="w-100 p-0 border-0 bg-transparent text-start">
                                 <div class="specialty-card">
                                     <div class="specialty-icon">
-                                        <i class="bi bi-heart-pulse-fill"></i>
+                                        <i class="bi bi-heart-pulse-fill" th:if="${esp.nombre.toLowerCase().contains('cardi')}"></i>
+                                        <i class="bi bi-person-bounding-box" th:if="${esp.nombre.toLowerCase().contains('derma')}"></i>
+                                        <i class="bi bi-bandaid-fill" th:if="${esp.nombre.toLowerCase().contains('trauma')}"></i>
+                                        <i class="bi bi-eye-fill" th:if="${esp.nombre.toLowerCase().contains('oftalmo')}"></i>
+                                        <i class="bi bi-hospital-fill" th:if="${!esp.nombre.toLowerCase().contains('cardi') and !esp.nombre.toLowerCase().contains('derma') and !esp.nombre.toLowerCase().contains('trauma') and !esp.nombre.toLowerCase().contains('oftalmo')}"></i>
                                     </div>
-                                    <div class="specialty-name">Cardiología</div>
-                                    <div class="text-muted small">Cuidado del corazón y sistema cardiovascular.</div>
-                                    <div class="btn-select">Seleccionar</div>
-                                </div>
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Specialty 2 -->
-                    <div class="col-md-6">
-                        <form th:action="@{/paciente/reservar-cita/paso2}" method="post">
-                            <input type="hidden" name="especialidad" value="Dermatología">
-                            <button type="submit" class="w-100 p-0 border-0 bg-transparent text-start">
-                                <div class="specialty-card">
-                                    <div class="specialty-icon">
-                                        <i class="bi bi-person-bounding-box"></i>
-                                    </div>
-                                    <div class="specialty-name">Dermatología</div>
-                                    <div class="text-muted small">Cuidado y salud de la piel, cabello y uñas.</div>
+                                    <div class="specialty-name" th:text="${esp.nombre}">Cardiología</div>
+                                    <div class="text-muted small" th:text="${esp.descripcion}">Cuidado del corazón y sistema cardiovascular.</div>
                                     <div class="btn-select">Seleccionar</div>
                                 </div>
                             </button>

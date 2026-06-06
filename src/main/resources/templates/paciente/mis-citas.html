@@ -244,7 +244,7 @@
                 <p class="text-muted fs-6">Gestiona tus consultas médicas y revisa tu historial de salud.</p>
             </div>
             <button class="date-btn shadow-sm" id="btnDate">
-                <i class="bi bi-calendar3 me-2 text-muted"></i> Septiembre 2024
+                <i class="bi bi-calendar3 me-2 text-muted"></i> Mes Actual
             </button>
         </div>
 
@@ -265,48 +265,32 @@
 
             <!-- Citas List -->
             <div>
-                <div class="appointment-card">
-                    <div class="date-box primary shadow-sm">
-                        <span class="date-box-month">SEPT</span>
-                        <span class="date-box-day">18</span>
-                        <span class="date-box-time">10:30 AM</span>
-                    </div>
-                    <div class="appointment-info">
-                        <div class="specialty-text">CARDIOLOGÍA</div>
-                        <div class="doctor-name doctor-name-primary">Dr. Ricardo Palma</div>
-                        <div class="date-time-info">
-                            <span><i class="bi bi-geo-alt"></i> Sede Surco - Av. Los Jazmines 450</span>
-                            <span><i class="bi bi-door-open"></i> Consultorio 302</span>
-                        </div>
-                    </div>
-                    <div style="margin-left:auto;">
-                        <span class="status-badge status-confirmed"><i class="bi bi-check-circle me-1"></i> CONFIRMADA</span>
-                    </div>
-                    <div class="action-buttons flex-column" style="gap: 0.5rem; margin-left: 2rem;">
-                        <a href="#" class="btn-cita btn-outline-primary-custom w-100">Ver Detalles</a>
-                        <a href="#" class="btn-cita btn-primary-custom w-100">Reprogramar</a>
-                    </div>
+                <!-- Citas Dinámicas -->
+                <div th:if="${#lists.isEmpty(citasProximas)}" class="info-box py-4 my-2">
+                    <p class="text-muted m-0">No tienes citas próximas agendadas.</p>
                 </div>
-
-                <div class="appointment-card">
-                    <div class="date-box secondary shadow-sm">
-                        <span class="date-box-month">SEPT</span>
-                        <span class="date-box-day">24</span>
-                        <span class="date-box-time">03:45 PM</span>
+                
+                <div th:each="cita : ${citasProximas}" class="appointment-card">
+                    <div th:class="'date-box shadow-sm ' + (${cita.estado.name() == 'CONFIRMADA'} ? 'primary' : 'secondary')">
+                        <span class="date-box-month" th:text="${#temporals.format(cita.fecha, 'MMM')}">JUN</span>
+                        <span class="date-box-day" th:text="${#temporals.format(cita.fecha, 'dd')}">18</span>
+                        <span class="date-box-time" th:text="${#temporals.format(cita.horaInicio, 'hh:mm a')}">10:30 AM</span>
                     </div>
                     <div class="appointment-info">
-                        <div class="specialty-text">DERMATOLOGÍA</div>
-                        <div class="doctor-name doctor-name-primary">Dra. Elena Vazquez</div>
+                        <div class="specialty-text" th:text="${cita.especialidad.nombre}">CARDIOLOGÍA</div>
+                        <div class="doctor-name doctor-name-primary" th:text="'Dr. ' + ${cita.medico.usuario.nombre} + ' ' + ${cita.medico.usuario.apellido}">Dr. Ricardo Mendoza</div>
                         <div class="date-time-info">
-                            <span><i class="bi bi-geo-alt"></i> Sede Miraflores - Jr. Junín 122</span>
+                            <span><i class="bi bi-geo-alt"></i> Sede Principal</span>
                         </div>
                     </div>
                     <div style="margin-left:auto;">
-                        <span class="status-badge status-pending"><i class="bi bi-clock me-1"></i> PENDIENTE</span>
+                        <span th:if="${cita.estado.name() == 'CONFIRMADA'}" class="status-badge status-confirmed"><i class="bi bi-check-circle me-1"></i> CONFIRMADA</span>
+                        <span th:if="${cita.estado.name() == 'PENDIENTE'}" class="status-badge status-pending"><i class="bi bi-clock me-1"></i> PENDIENTE</span>
                     </div>
                     <div class="action-buttons flex-column" style="gap: 0.5rem; margin-left: 2rem;">
                         <a href="#" class="btn-cita btn-outline-primary-custom w-100">Ver Detalles</a>
-                        <a href="#" class="btn-cita btn-outline-danger-custom w-100">Cancelar</a>
+                        <a th:if="${cita.estado.name() == 'PENDIENTE'}" href="#" class="btn-cita btn-outline-danger-custom w-100">Cancelar</a>
+                        <a th:if="${cita.estado.name() == 'CONFIRMADA'}" href="#" class="btn-cita btn-primary-custom w-100">Reprogramar</a>
                     </div>
                 </div>
             </div>
@@ -316,35 +300,23 @@
         <!-- =================== TAB PASADAS =================== -->
         <div id="tab-pasadas" class="tab-content">
             
-            <div class="appointment-card">
-                <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Doctor" class="doctor-img">
-                <div class="appointment-info">
-                    <span class="specialty-badge">CARDIOLOGÍA</span>
-                    <div class="doctor-name">Dr. Ricardo Mendoza</div>
-                    <div class="date-time-info">
-                        <span><i class="bi bi-calendar3"></i> 15 de Agosto, 2024</span>
-                        <span><i class="bi bi-clock"></i> 09:30 AM</span>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <a href="#" class="btn-cita btn-outline-primary-custom">Ver Detalles</a>
-                    <a href="#" class="btn-cita btn-primary-custom"><i class="bi bi-download me-2"></i> Descargar Informe</a>
-                </div>
+            <div th:if="${#lists.isEmpty(citasPasadas)}" class="info-box py-4 my-2">
+                <p class="text-muted m-0">No hay citas pasadas en tu historial.</p>
             </div>
 
-            <div class="appointment-card">
-                <img src="https://images.unsplash.com/photo-1594824436998-d40ee3fc2cc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Doctor" class="doctor-img">
+            <div th:each="cita : ${citasPasadas}" class="appointment-card">
+                <img th:src="'https://ui-avatars.com/api/?name=' + ${cita.medico.usuario.nombre} + '+' + ${cita.medico.usuario.apellido} + '&background=random&size=150'" alt="Doctor" class="doctor-img">
                 <div class="appointment-info">
-                    <span class="specialty-badge">MEDICINA GENERAL</span>
-                    <div class="doctor-name">Dra. Elena Ramos</div>
+                    <span class="specialty-badge" th:text="${cita.especialidad.nombre}">CARDIOLOGÍA</span>
+                    <div class="doctor-name" th:text="'Dr. ' + ${cita.medico.usuario.nombre} + ' ' + ${cita.medico.usuario.apellido}">Dr. Ricardo Mendoza</div>
                     <div class="date-time-info">
-                        <span><i class="bi bi-calendar3"></i> 02 de Agosto, 2024</span>
-                        <span><i class="bi bi-clock"></i> 11:00 AM</span>
+                        <span><i class="bi bi-calendar3"></i> <span th:text="${#temporals.format(cita.fecha, 'dd MMMM, yyyy')}">15 de Mayo, 2026</span></span>
+                        <span><i class="bi bi-clock"></i> <span th:text="${#temporals.format(cita.horaInicio, 'hh:mm a')}">09:30 AM</span></span>
                     </div>
                 </div>
                 <div class="action-buttons">
                     <a href="#" class="btn-cita btn-outline-primary-custom">Ver Detalles</a>
-                    <a href="#" class="btn-cita btn-primary-custom"><i class="bi bi-download me-2"></i> Descargar Informe</a>
+                    <a th:if="${cita.estado.name() == 'COMPLETADA'}" href="#" class="btn-cita btn-primary-custom"><i class="bi bi-download me-2"></i> Descargar Informe</a>
                 </div>
             </div>
 
@@ -359,14 +331,18 @@
         <!-- =================== TAB CANCELADAS =================== -->
         <div id="tab-canceladas" class="tab-content">
             
-            <div class="appointment-card">
-                <img src="https://images.unsplash.com/photo-1594824436998-d40ee3fc2cc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Doctor" class="doctor-img">
+            <div th:if="${#lists.isEmpty(citasCanceladas)}" class="info-box py-4 my-2">
+                <p class="text-muted m-0">No hay citas canceladas.</p>
+            </div>
+
+            <div th:each="cita : ${citasCanceladas}" class="appointment-card">
+                <img th:src="'https://ui-avatars.com/api/?name=' + ${cita.medico.usuario.nombre} + '+' + ${cita.medico.usuario.apellido} + '&background=random&size=150'" alt="Doctor" class="doctor-img">
                 <div class="appointment-info">
-                    <span class="specialty-text" style="font-size: 0.8rem;">CARDIOLOGÍA</span>
-                    <div class="doctor-name" style="font-weight: 500; font-size: 1rem;">Dra. Elena Rossi</div>
+                    <span class="specialty-text" style="font-size: 0.8rem;" th:text="${cita.especialidad.nombre}">CARDIOLOGÍA</span>
+                    <div class="doctor-name" style="font-weight: 500; font-size: 1rem;" th:text="'Dra. ' + ${cita.medico.usuario.nombre} + ' ' + ${cita.medico.usuario.apellido}">Dra. Elena Rossi</div>
                     <div class="date-time-info mt-2">
-                        <span><i class="bi bi-calendar3"></i> 10 de Septiembre, 2024</span>
-                        <span><i class="bi bi-clock"></i> 09:30 AM</span>
+                        <span><i class="bi bi-calendar3"></i> <span th:text="${#temporals.format(cita.fecha, 'dd MMMM, yyyy')}">10 de Mayo, 2026</span></span>
+                        <span><i class="bi bi-clock"></i> <span th:text="${#temporals.format(cita.horaInicio, 'hh:mm a')}">09:30 AM</span></span>
                     </div>
                 </div>
                 <div style="margin-left: auto;">

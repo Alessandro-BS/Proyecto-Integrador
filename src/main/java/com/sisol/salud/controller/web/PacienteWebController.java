@@ -17,6 +17,10 @@ public class PacienteWebController {
     private final CitaService citaService;
     private final com.sisol.salud.repository.UsuarioRepository usuarioRepository;
     private final com.sisol.salud.repository.PacienteRepository pacienteRepository;
+    private final com.sisol.salud.repository.CitaRepository citaRepository;
+    private final com.sisol.salud.repository.EspecialidadRepository especialidadRepository;
+    private final com.sisol.salud.repository.MedicoRepository medicoRepository;
+    private final com.sisol.salud.repository.DisponibilidadMedicaRepository disponibilidadMedicaRepository;
 
     @GetMapping("/dashboard")
     @PreAuthorize("hasRole('PACIENTE')")
@@ -28,6 +32,20 @@ public class PacienteWebController {
                 com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findByUsuarioId(usuario.getId()).orElse(null);
                 model.addAttribute("usuario", usuario);
                 model.addAttribute("paciente", paciente);
+                
+                if (paciente != null) {
+                    java.util.List<com.sisol.salud.model.entity.Cita> citas = citaRepository.findByPacienteId(paciente.getId());
+                    java.util.List<com.sisol.salud.model.entity.Cita> proximasCitas = citas.stream()
+                        .filter(c -> c.getFecha().isAfter(java.time.LocalDate.now().minusDays(1)) && 
+                                    (c.getEstado() == com.sisol.salud.model.enums.EstadoCita.PENDIENTE || 
+                                     c.getEstado() == com.sisol.salud.model.enums.EstadoCita.CONFIRMADA))
+                        .sorted(java.util.Comparator.comparing(com.sisol.salud.model.entity.Cita::getFecha).thenComparing(com.sisol.salud.model.entity.Cita::getHoraInicio))
+                        .limit(3)
+                        .collect(java.util.stream.Collectors.toList());
+                        
+                    model.addAttribute("proximasCitas", proximasCitas);
+                    model.addAttribute("totalCitas", citas.size());
+                }
             }
         }
         
@@ -37,7 +55,40 @@ public class PacienteWebController {
 
     @GetMapping("/mis-citas")
     @PreAuthorize("hasRole('PACIENTE')")
-    public String misCitas(Model model) {
+    public String misCitas(java.security.Principal principal, Model model) {
+        if (principal != null) {
+            String email = principal.getName();
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+            if (usuario != null) {
+                com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findByUsuarioId(usuario.getId()).orElse(null);
+                if (paciente != null) {
+                    java.util.List<com.sisol.salud.model.entity.Cita> todasLasCitas = citaRepository.findByPacienteId(paciente.getId());
+                    
+                    java.util.List<com.sisol.salud.model.entity.Cita> proximas = todasLasCitas.stream()
+                        .filter(c -> c.getFecha().isAfter(java.time.LocalDate.now().minusDays(1)) && 
+                                    (c.getEstado() == com.sisol.salud.model.enums.EstadoCita.PENDIENTE || 
+                                     c.getEstado() == com.sisol.salud.model.enums.EstadoCita.CONFIRMADA))
+                        .sorted(java.util.Comparator.comparing(com.sisol.salud.model.entity.Cita::getFecha).thenComparing(com.sisol.salud.model.entity.Cita::getHoraInicio))
+                        .collect(java.util.stream.Collectors.toList());
+                        
+                    java.util.List<com.sisol.salud.model.entity.Cita> pasadas = todasLasCitas.stream()
+                        .filter(c -> c.getEstado() == com.sisol.salud.model.enums.EstadoCita.COMPLETADA || 
+                                     c.getEstado() == com.sisol.salud.model.enums.EstadoCita.NO_ASISTIO ||
+                                     (c.getFecha().isBefore(java.time.LocalDate.now()) && c.getEstado() != com.sisol.salud.model.enums.EstadoCita.CANCELADA))
+                        .sorted(java.util.Comparator.comparing(com.sisol.salud.model.entity.Cita::getFecha).reversed())
+                        .collect(java.util.stream.Collectors.toList());
+                        
+                    java.util.List<com.sisol.salud.model.entity.Cita> canceladas = todasLasCitas.stream()
+                        .filter(c -> c.getEstado() == com.sisol.salud.model.enums.EstadoCita.CANCELADA)
+                        .sorted(java.util.Comparator.comparing(com.sisol.salud.model.entity.Cita::getFecha).reversed())
+                        .collect(java.util.stream.Collectors.toList());
+
+                    model.addAttribute("citasProximas", proximas);
+                    model.addAttribute("citasPasadas", pasadas);
+                    model.addAttribute("citasCanceladas", canceladas);
+                }
+            }
+        }
         model.addAttribute("title", "Mis Citas");
         return "paciente/mis-citas";
     }
@@ -45,6 +96,8 @@ public class PacienteWebController {
     @GetMapping("/reservar-cita")
     @PreAuthorize("hasRole('PACIENTE')")
     public String reservarCitaPaso1(Model model) {
+        java.util.List<com.sisol.salud.model.entity.Especialidad> especialidades = especialidadRepository.findByActivoTrue();
+        model.addAttribute("especialidades", especialidades);
         model.addAttribute("title", "Selecciona una Especialidad");
         return "paciente/reservar-paso1";
     }
@@ -52,9 +105,13 @@ public class PacienteWebController {
     @PostMapping("/reservar-cita/paso2")
     @PreAuthorize("hasRole('PACIENTE')")
     public String procesarPaso1(
-            @org.springframework.web.bind.annotation.RequestParam("especialidad") String especialidad,
+            @org.springframework.web.bind.annotation.RequestParam("especialidadId") Long especialidadId,
             Model model) {
+        com.sisol.salud.model.entity.Especialidad especialidad = especialidadRepository.findById(especialidadId).orElse(null);
+        java.util.List<com.sisol.salud.model.entity.Medico> medicos = medicoRepository.findByEspecialidades_Id(especialidadId);
+        
         model.addAttribute("especialidad", especialidad);
+        model.addAttribute("medicos", medicos);
         model.addAttribute("title", "Selecciona un Especialista");
         return "paciente/reservar-paso2";
     }
@@ -62,11 +119,16 @@ public class PacienteWebController {
     @PostMapping("/reservar-cita/paso3")
     @PreAuthorize("hasRole('PACIENTE')")
     public String procesarPaso2(
-            @org.springframework.web.bind.annotation.RequestParam("especialidad") String especialidad,
-            @org.springframework.web.bind.annotation.RequestParam("medico") String medico,
+            @org.springframework.web.bind.annotation.RequestParam("especialidadId") Long especialidadId,
+            @org.springframework.web.bind.annotation.RequestParam("medicoId") Long medicoId,
             Model model) {
+        com.sisol.salud.model.entity.Especialidad especialidad = especialidadRepository.findById(especialidadId).orElse(null);
+        com.sisol.salud.model.entity.Medico medico = medicoRepository.findById(medicoId).orElse(null);
+        java.util.List<com.sisol.salud.model.entity.DisponibilidadMedica> disponibilidades = disponibilidadMedicaRepository.findByMedicoId(medicoId);
+        
         model.addAttribute("especialidad", especialidad);
         model.addAttribute("medico", medico);
+        model.addAttribute("disponibilidades", disponibilidades);
         model.addAttribute("title", "Selecciona Fecha y Horario");
         return "paciente/reservar-paso3";
     }
@@ -74,16 +136,76 @@ public class PacienteWebController {
     @PostMapping("/reservar-cita/finalizar")
     @PreAuthorize("hasRole('PACIENTE')")
     public String finalizarReserva(
-            @org.springframework.web.bind.annotation.RequestParam("especialidad") String especialidad,
-            @org.springframework.web.bind.annotation.RequestParam("medico") String medico,
-            @org.springframework.web.bind.annotation.RequestParam("fecha") String fecha,
-            @org.springframework.web.bind.annotation.RequestParam("hora") String hora,
+            @org.springframework.web.bind.annotation.RequestParam("especialidadId") Long especialidadId,
+            @org.springframework.web.bind.annotation.RequestParam("medicoId") Long medicoId,
+            @org.springframework.web.bind.annotation.RequestParam("fecha") @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate fecha,
+            @org.springframework.web.bind.annotation.RequestParam("hora") @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.TIME) java.time.LocalTime hora,
             @org.springframework.web.bind.annotation.RequestParam("metodoPago") String metodoPago,
+            java.security.Principal principal,
             org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         
-        // Simulación de guardado de cita
-        redirectAttributes.addFlashAttribute("mensajeExito", 
-            "¡Cita reservada exitosamente para el " + fecha + " a las " + hora + " con el doctor " + medico + "!");
+        System.out.println("====== INICIANDO FINALIZAR RESERVA ======");
+        System.out.println("EspecialidadId: " + especialidadId);
+        System.out.println("MedicoId: " + medicoId);
+        System.out.println("Fecha: " + fecha);
+        System.out.println("Hora: " + hora);
+        System.out.println("MetodoPago: " + metodoPago);
+        System.out.println("Principal name: " + (principal != null ? principal.getName() : "null"));
+
+        com.sisol.salud.model.entity.Paciente paciente = null;
+        if (principal != null) {
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(principal.getName()).orElse(null);
+            System.out.println("Usuario encontrado: " + (usuario != null ? usuario.getId() : "null"));
+            if (usuario != null) {
+                paciente = pacienteRepository.findByUsuarioId(usuario.getId()).orElse(null);
+                
+                if (paciente == null && usuario.getRol() == com.sisol.salud.model.enums.Rol.PACIENTE) {
+                    System.out.println("Paciente no encontrado. Creando registro de Paciente automáticamente...");
+                    paciente = new com.sisol.salud.model.entity.Paciente();
+                    paciente.setUsuario(usuario);
+                    paciente = pacienteRepository.save(paciente);
+                }
+                
+                System.out.println("Paciente encontrado/creado: " + (paciente != null ? paciente.getId() : "null"));
+            }
+        }
+
+        if (paciente != null) {
+            com.sisol.salud.model.entity.Especialidad especialidad = especialidadRepository.findById(especialidadId).orElse(null);
+            com.sisol.salud.model.entity.Medico medico = medicoRepository.findById(medicoId).orElse(null);
+            System.out.println("Especialidad encontrada: " + (especialidad != null ? especialidad.getNombre() : "null"));
+            System.out.println("Medico encontrado: " + (medico != null ? medico.getId() : "null"));
+
+            if (especialidad != null && medico != null) {
+                try {
+                    com.sisol.salud.model.entity.Cita nuevaCita = new com.sisol.salud.model.entity.Cita();
+                    nuevaCita.setPaciente(paciente);
+                    nuevaCita.setMedico(medico);
+                    nuevaCita.setEspecialidad(especialidad);
+                    nuevaCita.setFecha(fecha);
+                    nuevaCita.setHoraInicio(hora);
+                    nuevaCita.setHoraFin(hora.plusMinutes(30));
+                    nuevaCita.setEstado(com.sisol.salud.model.enums.EstadoCita.PENDIENTE);
+                    nuevaCita.setMotivoConsulta("Reserva por portal web");
+
+                    System.out.println("Guardando cita...");
+                    citaRepository.save(nuevaCita);
+                    System.out.println("Cita guardada con éxito. ID: " + nuevaCita.getId());
+
+                    redirectAttributes.addFlashAttribute("mensajeExito", 
+                        "¡Cita reservada exitosamente para el " + fecha.toString() + " a las " + hora.toString() + " con el doctor " + medico.getUsuario().getNombre() + " " + medico.getUsuario().getApellido() + "!");
+                } catch (Exception e) {
+                    System.err.println("Error al guardar cita: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("Especialidad o medico son nulos.");
+            }
+        } else {
+            System.out.println("Paciente es nulo.");
+        }
+        System.out.println("====== FIN FINALIZAR RESERVA ======");
+        
         return "redirect:/paciente/mis-citas";
     }
 

@@ -39,13 +39,17 @@ CREATE TABLE IF NOT EXISTS usuarios (
 -- Datos adicionales del paciente (relación 1:1 con usuarios)
 -- -------------------------------------------------------
 CREATE TABLE IF NOT EXISTS pacientes (
-    id                  BIGINT          AUTO_INCREMENT PRIMARY KEY,
-    usuario_id          BIGINT          NOT NULL,
-    fecha_nacimiento    DATE            NULL,
-    direccion           VARCHAR(255)    NULL,
-    grupo_sanguineo     VARCHAR(5)      NULL,
-    created_at          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    id                              BIGINT          AUTO_INCREMENT PRIMARY KEY,
+    usuario_id                      BIGINT          NOT NULL,
+    fecha_nacimiento                DATE            NULL,
+    direccion                       VARCHAR(255)    NULL,
+    grupo_sanguineo                 VARCHAR(5)      NULL,
+    genero                          VARCHAR(20)     NULL,
+    contacto_emergencia_nombre      VARCHAR(150)    NULL,
+    contacto_emergencia_parentesco  VARCHAR(50)     NULL,
+    contacto_emergencia_telefono    VARCHAR(20)     NULL,
+    created_at                      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at                      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT uk_paciente_usuario  UNIQUE (usuario_id),
     CONSTRAINT fk_paciente_usuario  FOREIGN KEY (usuario_id)
@@ -194,7 +198,7 @@ CREATE TABLE IF NOT EXISTS notificaciones (
     tipo            ENUM('EMAIL','SMS') NOT NULL DEFAULT 'EMAIL',
     asunto          VARCHAR(255)    NOT NULL,
     mensaje         TEXT            NOT NULL,
-    enviada         BOOLEAN         NOT NULL DEFAULT FALSE,
+    enviado         BOOLEAN         NOT NULL DEFAULT FALSE,
     fecha_envio     DATETIME        NULL,
     created_at      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -231,7 +235,7 @@ CREATE INDEX idx_pago_estado ON pagos(estado_pago);
 CREATE INDEX idx_disponibilidad_medico_dia ON disponibilidad_medica(medico_id, dia_semana);
 
 -- Buscar notificaciones pendientes de envío
-CREATE INDEX idx_notificacion_pendiente ON notificaciones(enviada, fecha_envio);
+CREATE INDEX idx_notificacion_pendiente ON notificaciones(enviado, fecha_envio);
 
 -- Buscar usuario por rol (listar médicos, pacientes)
 CREATE INDEX idx_usuario_rol ON usuarios(rol);
@@ -247,7 +251,28 @@ INSERT INTO usuarios (dni, nombre, apellido, email, password, telefono, rol, act
  '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
  '999000001', 'ADMIN', TRUE);
 
--- 10.2 Especialidades médicas iniciales con costo de consulta
+-- 10.2 Usuarios médicos de ejemplo
+INSERT INTO usuarios (dni, nombre, apellido, email, password, telefono, rol, activo) VALUES
+('10000002', 'Ricardo', 'Mendoza', 'r.mendoza@sisolsalud.pe',
+ '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+ '987654321', 'MEDICO', TRUE),
+('10000003', 'Elena', 'Vazquez', 'e.vazquez@sisolsalud.pe',
+ '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+ '987654322', 'MEDICO', TRUE),
+('10000004', 'Roberto', 'Valdivia Mendoza', 'r.valdivia@sisolsalud.pe',
+ '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+ '987654323', 'MEDICO', TRUE);
+
+-- 10.3 Usuarios pacientes de ejemplo
+INSERT INTO usuarios (dni, nombre, apellido, email, password, telefono, rol, activo) VALUES
+('45281900', 'Carlos Alberto', 'Ruiz', 'carlos.ruiz@gmail.com',
+ '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+ '912345678', 'PACIENTE', TRUE),
+('45281901', 'María', 'López García', 'maria.lopez@gmail.com',
+ '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+ '912345679', 'PACIENTE', TRUE);
+
+-- 10.4 Especialidades médicas iniciales con costo de consulta
 INSERT INTO especialidades (nombre, descripcion, costo) VALUES
 ('Medicina General',        'Atención primaria y diagnóstico general de enfermedades comunes', 30.00),
 ('Pediatría',               'Atención médica especializada para niños y adolescentes', 40.00),
@@ -259,6 +284,98 @@ INSERT INTO especialidades (nombre, descripcion, costo) VALUES
 ('Neurología',              'Enfermedades del sistema nervioso central y periférico', 70.00),
 ('Otorrinolaringología',    'Enfermedades del oído, nariz y garganta', 45.00),
 ('Psiquiatría',             'Diagnóstico y tratamiento de trastornos mentales', 50.00);
+
+-- 10.5 Registros de médicos (referencia a usuarios médicos)
+-- Dr. Ricardo Mendoza → Cardiología (usuario_id = 2)
+-- Dra. Elena Vazquez → Dermatología (usuario_id = 3)
+-- Dr. Roberto Valdivia → Cardiología (usuario_id = 4)
+INSERT INTO medicos (usuario_id, numero_colegiatura) VALUES
+(2, 'CMP-058401'),
+(3, 'CMP-058402'),
+(4, 'CMP-058422');
+
+-- 10.6 Asignación de especialidades a médicos
+INSERT INTO medico_especialidades (medico_id, especialidad_id) VALUES
+(1, 4),  -- Dr. Mendoza → Cardiología
+(2, 5),  -- Dra. Vazquez → Dermatología
+(3, 4);  -- Dr. Valdivia → Cardiología
+
+-- 10.7 Registros de pacientes
+INSERT INTO pacientes (usuario_id, fecha_nacimiento, direccion, grupo_sanguineo, genero,
+                       contacto_emergencia_nombre, contacto_emergencia_parentesco, contacto_emergencia_telefono) VALUES
+(5, '1990-03-15', 'Av. Los Jazmines 450, Surco', 'O+', 'Masculino',
+ 'María Pérez', 'Esposa', '912000001'),
+(6, '1995-08-22', 'Jr. Junín 122, Miraflores', 'A+', 'Femenino',
+ 'Jorge López', 'Hermano', '912000002');
+
+-- 10.8 Disponibilidad médica (Lunes a Viernes mañana + tarde, Sábado solo mañana)
+-- Dr. Mendoza (medico_id = 1)
+INSERT INTO disponibilidad_medica (medico_id, dia_semana, hora_inicio, hora_fin, duracion_consulta_min) VALUES
+(1, 'LUNES',    '08:00', '13:00', 30),
+(1, 'LUNES',    '15:00', '19:00', 30),
+(1, 'MARTES',   '08:00', '13:00', 30),
+(1, 'MARTES',   '15:00', '19:00', 30),
+(1, 'MIERCOLES','08:00', '13:00', 30),
+(1, 'MIERCOLES','15:00', '19:00', 30),
+(1, 'JUEVES',   '08:00', '13:00', 30),
+(1, 'JUEVES',   '15:00', '19:00', 30),
+(1, 'VIERNES',  '08:00', '13:00', 30),
+(1, 'VIERNES',  '15:00', '19:00', 30),
+(1, 'SABADO',   '08:00', '13:00', 30);
+
+-- Dra. Vazquez (medico_id = 2)
+INSERT INTO disponibilidad_medica (medico_id, dia_semana, hora_inicio, hora_fin, duracion_consulta_min) VALUES
+(2, 'LUNES',    '09:00', '14:00', 30),
+(2, 'LUNES',    '16:00', '20:00', 30),
+(2, 'MARTES',   '09:00', '14:00', 30),
+(2, 'MARTES',   '16:00', '20:00', 30),
+(2, 'MIERCOLES','09:00', '14:00', 30),
+(2, 'JUEVES',   '09:00', '14:00', 30),
+(2, 'JUEVES',   '16:00', '20:00', 30),
+(2, 'VIERNES',  '09:00', '14:00', 30),
+(2, 'VIERNES',  '16:00', '20:00', 30);
+
+-- Dr. Valdivia (medico_id = 3)
+INSERT INTO disponibilidad_medica (medico_id, dia_semana, hora_inicio, hora_fin, duracion_consulta_min) VALUES
+(3, 'LUNES',    '08:00', '13:00', 30),
+(3, 'LUNES',    '15:00', '19:00', 30),
+(3, 'MARTES',   '08:00', '13:00', 30),
+(3, 'MARTES',   '15:00', '19:00', 30),
+(3, 'MIERCOLES','08:00', '13:00', 30),
+(3, 'MIERCOLES','15:00', '19:00', 30),
+(3, 'JUEVES',   '08:00', '13:00', 30),
+(3, 'JUEVES',   '15:00', '19:00', 30),
+(3, 'VIERNES',  '08:00', '13:00', 30),
+(3, 'VIERNES',  '15:00', '19:00', 30),
+(3, 'SABADO',   '08:00', '13:00', 30);
+
+-- 10.9 Citas de ejemplo
+-- Cita CONFIRMADA próxima (Carlos → Dr. Mendoza, Cardiología)
+INSERT INTO citas (paciente_id, medico_id, especialidad_id, fecha, hora_inicio, hora_fin, estado, motivo_consulta) VALUES
+(1, 1, 4, '2026-06-18', '10:30', '11:00', 'CONFIRMADA', 'Control de presión arterial'),
+-- Cita PENDIENTE próxima (Carlos → Dra. Vazquez, Dermatología)
+(1, 2, 5, '2026-06-24', '15:45', '16:15', 'PENDIENTE', 'Revisión dermatológica anual'),
+-- Cita COMPLETADA pasada (Carlos → Dr. Mendoza, Cardiología)
+(1, 1, 4, '2026-05-15', '09:30', '10:00', 'COMPLETADA', 'Chequeo general cardíaco'),
+-- Cita COMPLETADA pasada (Carlos → Dra. Vazquez, Medicina General ID=1 — no, Dermatología)
+(1, 2, 5, '2026-05-02', '11:00', '11:30', 'COMPLETADA', 'Control dermatológico'),
+-- Cita CANCELADA (Carlos → Dra. Vazquez, Dermatología)
+(1, 2, 5, '2026-05-10', '09:30', '10:00', 'CANCELADA', 'Consulta de seguimiento');
+
+-- 10.10 Pagos asociados a las citas
+INSERT INTO pagos (cita_id, paciente_id, monto, metodo_pago, estado_pago, referencia_pago, fecha_pago) VALUES
+(1, 1, 60.00, 'TARJETA_CREDITO', 'PAGADO', 'REF-2026-001', '2026-06-10 14:30:00'),
+(2, 1, 45.00, 'YAPE', 'PENDIENTE', NULL, NULL),
+(3, 1, 60.00, 'EFECTIVO', 'PAGADO', 'REF-2026-002', '2026-05-15 09:00:00'),
+(4, 1, 45.00, 'PLIN', 'PAGADO', 'REF-2026-003', '2026-05-02 10:30:00'),
+(5, 1, 45.00, 'TARJETA_DEBITO', 'REEMBOLSADO', 'REF-2026-004', '2026-05-08 16:00:00');
+
+-- 10.11 Notificaciones de ejemplo
+INSERT INTO notificaciones (cita_id, usuario_id, tipo, asunto, mensaje, enviado, fecha_envio) VALUES
+(1, 5, 'EMAIL', 'Cita Confirmada', 'Tu cita con el Dr. Ricardo Mendoza para el 18 de Junio ha sido confirmada exitosamente.', TRUE, '2026-06-10 14:35:00'),
+(2, 5, 'EMAIL', 'Recordatorio de Cita', 'Recuerda que tu cita de seguimiento es en menos de 24 horas.', TRUE, '2026-06-23 10:00:00'),
+(3, 5, 'EMAIL', 'Resultados Listos', 'Tus análisis de sangre ya están disponibles en la sección de documentos.', TRUE, '2026-05-16 09:15:00'),
+(1, 5, 'EMAIL', 'Seguridad', 'Nuevo inicio de sesión detectado en un dispositivo desconocido.', FALSE, NULL);
 
 -- -------------------------------------------------------
 -- FIN DEL SCRIPT
