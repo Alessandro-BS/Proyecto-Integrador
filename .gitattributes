@@ -1,2 +1,5 @@
 /mvnw text eol=lf
 *.cmd text eol=crlf
+
+# Thymeleaf templates are server-side (managed by Java backend), not standalone frontend
+src/main/resources/templates/** linguist-generated=true
