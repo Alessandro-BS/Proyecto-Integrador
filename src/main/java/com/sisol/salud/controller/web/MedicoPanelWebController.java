@@ -56,7 +56,33 @@ public class MedicoPanelWebController {
 
     @GetMapping("/citas-hoy")
     @PreAuthorize("hasRole('MEDICO')")
-    public String citasDeHoy(Model model) {
+    public String citasDeHoy(
+            @org.springframework.web.bind.annotation.RequestParam(value = "fecha", required = false) 
+            @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate fecha,
+            java.security.Principal principal, Model model) {
+        if (principal != null) {
+            String email = principal.getName();
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+            if (usuario != null) {
+                com.sisol.salud.model.entity.Medico medico = medicoRepository.findByUsuarioId(usuario.getId()).orElse(null);
+                model.addAttribute("usuario", usuario);
+                model.addAttribute("medico", medico);
+                
+                if (medico != null) {
+                    java.time.LocalDate targetDate = (fecha != null) ? fecha : java.time.LocalDate.now();
+                    
+                    java.util.List<com.sisol.salud.model.entity.Cita> citasHoy = citaRepository.findByMedicoIdAndFecha(medico.getId(), targetDate)
+                        .stream()
+                        .sorted(java.util.Comparator.comparing(com.sisol.salud.model.entity.Cita::getHoraInicio))
+                        .collect(java.util.stream.Collectors.toList());
+                        
+                    model.addAttribute("citasHoy", citasHoy);
+                    model.addAttribute("fechaActual", targetDate);
+                    model.addAttribute("fechaAnterior", targetDate.minusDays(1));
+                    model.addAttribute("fechaSiguiente", targetDate.plusDays(1));
+                }
+            }
+        }
         model.addAttribute("title", "Mis Citas de Hoy");
         return "medico/citas-hoy";
     }
@@ -70,8 +96,59 @@ public class MedicoPanelWebController {
 
     @GetMapping("/consulta")
     @PreAuthorize("hasRole('MEDICO')")
-    public String iniciarConsulta(Model model) {
+    public String iniciarConsulta(@org.springframework.web.bind.annotation.RequestParam("citaId") Long citaId, java.security.Principal principal, Model model) {
+        if (principal != null) {
+            String email = principal.getName();
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+            if (usuario != null) {
+                com.sisol.salud.model.entity.Medico medico = medicoRepository.findByUsuarioId(usuario.getId()).orElse(null);
+                
+                if (medico != null) {
+                    com.sisol.salud.model.entity.Cita cita = citaRepository.findById(citaId).orElse(null);
+                    // Validar que la cita pertenece a este médico
+                    if (cita != null && cita.getMedico().getId().equals(medico.getId())) {
+                        model.addAttribute("cita", cita);
+                        model.addAttribute("paciente", cita.getPaciente());
+                        model.addAttribute("usuarioPaciente", cita.getPaciente().getUsuario());
+                    } else {
+                        return "redirect:/panel-medico/citas-hoy";
+                    }
+                }
+            }
+        }
+        
         model.addAttribute("title", "En Consulta");
         return "medico/consulta";
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping("/consulta/finalizar")
+    @PreAuthorize("hasRole('MEDICO')")
+    public String finalizarConsulta(
+            @org.springframework.web.bind.annotation.RequestParam("citaId") Long citaId,
+            @org.springframework.web.bind.annotation.RequestParam("observaciones") String observaciones,
+            java.security.Principal principal,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+            
+        if (principal != null) {
+            String email = principal.getName();
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+            if (usuario != null) {
+                com.sisol.salud.model.entity.Medico medico = medicoRepository.findByUsuarioId(usuario.getId()).orElse(null);
+                
+                if (medico != null) {
+                    com.sisol.salud.model.entity.Cita cita = citaRepository.findById(citaId).orElse(null);
+                    // Validar que la cita pertenece a este médico
+                    if (cita != null && cita.getMedico().getId().equals(medico.getId())) {
+                        cita.setEstado(com.sisol.salud.model.enums.EstadoCita.COMPLETADA);
+                        cita.setObservaciones(observaciones);
+                        citaRepository.save(cita);
+                        
+                        redirectAttributes.addFlashAttribute("mensajeExito", "Consulta finalizada exitosamente. El diagnóstico ha sido guardado.");
+                    }
+                }
+            }
+        }
+        
+        return "redirect:/panel-medico/citas-hoy";
     }
 }

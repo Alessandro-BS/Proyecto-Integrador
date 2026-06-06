@@ -315,8 +315,35 @@
                     </div>
                 </div>
                 <div class="action-buttons">
-                    <a href="#" class="btn-cita btn-outline-primary-custom">Ver Detalles</a>
+                    <button type="button" class="btn-cita btn-outline-primary-custom" data-bs-toggle="modal" th:data-bs-target="'#detalleModal' + ${cita.id}">Ver Detalles</button>
                     <a th:if="${cita.estado.name() == 'COMPLETADA'}" href="#" class="btn-cita btn-primary-custom"><i class="bi bi-download me-2"></i> Descargar Informe</a>
+                </div>
+            </div>
+
+            <!-- Modal Detalle Consulta -->
+            <div th:each="cita : ${citasPasadas}" class="modal fade" th:id="'detalleModal' + ${cita.id}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content" style="border-radius: 1rem; border: none;">
+                        <div class="modal-header" style="border-bottom: 1px dashed #e0e0e0; padding: 1.5rem;">
+                            <h5 class="modal-title page-title fs-5">Detalle de la Consulta</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" style="padding: 1.5rem;">
+                            <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Doctor</h6>
+                            <p class="mb-3" th:text="'Dr. ' + ${cita.medico.usuario.nombre} + ' ' + ${cita.medico.usuario.apellido} + ' - ' + ${cita.especialidad.nombre}"></p>
+                            
+                            <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Motivo Original</h6>
+                            <p class="mb-3" th:text="${cita.motivoConsulta ?: 'No especificado'}"></p>
+                            
+                            <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Observaciones / Diagnóstico</h6>
+                            <div class="p-3" style="background-color: #f8f9fa; border-radius: 0.5rem; border-left: 4px solid var(--sisol-primary);">
+                                <p class="mb-0" th:text="${cita.observaciones != null and !cita.observaciones.isEmpty() ? cita.observaciones : 'El médico no dejó notas adicionales en el sistema.'}"></p>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="border-top: none; padding: 1.5rem;">
+                            <button type="button" class="btn-cita btn-primary-custom w-100" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
