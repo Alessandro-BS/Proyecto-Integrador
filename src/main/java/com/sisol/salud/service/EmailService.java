@@ -1,64 +1,66 @@
 package com.sisol.salud.service;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class EmailService implements NotificacionSender {
 
     private final JavaMailSender javaMailSender;
-    private final SpringTemplateEngine templateEngine;
+    private final TemplateEngine templateEngine;
 
-    @Value("${app.mail.from}")
+    @Value("${app.mail.from:noreply@sisolsalud.pe}")
     private String mailFrom;
 
-    @Value("${app.mail.nombre-sistema}")
-    private String nombreSistema;
+    @Value("${app.mail.nombre-sistema:SISOL Salud}")
+    private String sistemaNombre;
 
-    /**
-     * Enviar correo con plantilla HTML de Thymeleaf.
-     * 
-     * @param to               Correo del destinatario
-     * @param subject          Asunto del correo
-     * @param templateName     Nombre de la plantilla HTML (sin la extensión .html)
-     * @param parametros       Variables a inyectar en la plantilla
-     */
+    @Async
     @Override
     public void enviar(String destino, String asunto, String templateName, Map<String, Object> parametros) {
+        log.info("Preparando notificación (genérica) para: {}", destino);
         try {
-            Context thymeleafContext = new Context();
-            thymeleafContext.setVariables(parametros);
-            
-            // Procesar la plantilla HTML con las variables
-            String htmlBody = templateEngine.process("emails/" + templateName, thymeleafContext);
+            Context context = new Context();
+            if (parametros != null) {
+                context.setVariables(parametros);
+            }
+            context.setVariable("sistemaNombre", sistemaNombre);
+
+            String htmlContent = templateEngine.process(templateName, context);
 
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             
-            // "SISOL Salud <noreply@sisolsalud.pe>"
-            helper.setFrom(mailFrom, nombreSistema);
+            helper.setFrom(mailFrom, sistemaNombre);
             helper.setTo(destino);
             helper.setSubject(asunto);
-            helper.setText(htmlBody, true); // true = es HTML
+            helper.setText(htmlContent, true);
 
             javaMailSender.send(message);
-            log.info("Email enviado exitosamente a: {}", destino);
-
-        } catch (MessagingException | java.io.UnsupportedEncodingException e) {
-            log.error("Error al enviar email a {}: {}", destino, e.getMessage());
-            // No lanzamos excepción para no romper el flujo principal si el correo falla
+            log.info("Notificación enviada exitosamente a: {}", destino);
+            
+        } catch (Exception e) {
+            log.warn("No se pudo enviar el correo a {}", destino);
+            log.warn("Error: {}", e.getMessage());
+            log.warn("HTML que se hubiera enviado:");
+            try {
+                Context context = new Context();
+                if (parametros != null) context.setVariables(parametros);
+                context.setVariable("sistemaNombre", sistemaNombre);
+                log.info(templateEngine.process(templateName, context));
+            } catch (Exception ignored) {}
         }
     }
 }

@@ -21,6 +21,8 @@ public class PacienteWebController {
     private final com.sisol.salud.repository.EspecialidadRepository especialidadRepository;
     private final com.sisol.salud.repository.MedicoRepository medicoRepository;
     private final com.sisol.salud.repository.DisponibilidadMedicaRepository disponibilidadMedicaRepository;
+    private final com.sisol.salud.service.NotificacionService notificacionService;
+    private final com.sisol.salud.repository.NotificacionRepository notificacionRepository;
 
     @GetMapping("/dashboard")
     @PreAuthorize("hasRole('PACIENTE')")
@@ -95,9 +97,13 @@ public class PacienteWebController {
 
     @GetMapping("/reservar-cita")
     @PreAuthorize("hasRole('PACIENTE')")
-    public String reservarCitaPaso1(Model model) {
-        java.util.List<com.sisol.salud.model.entity.Especialidad> especialidades = especialidadRepository.findByActivoTrue();
-        model.addAttribute("especialidades", especialidades);
+    public String reservarCitaPaso1(
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "0") int espPage,
+            Model model) {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(espPage, 4);
+        org.springframework.data.domain.Page<com.sisol.salud.model.entity.Especialidad> especialidadesPage = especialidadRepository.findByActivoTrue(pageable);
+        model.addAttribute("especialidadesPage", especialidadesPage);
+        model.addAttribute("especialidades", especialidadesPage.getContent());
         model.addAttribute("title", "Selecciona una Especialidad");
         return "paciente/reservar-paso1";
     }
@@ -192,6 +198,11 @@ public class PacienteWebController {
                     citaRepository.save(nuevaCita);
                     System.out.println("Cita guardada con éxito. ID: " + nuevaCita.getId());
 
+                    // Enviar correo de confirmación de forma asíncrona usando la arquitectura existente
+                    if (paciente.getUsuario().getEmail() != null) {
+                        notificacionService.enviarConfirmacionCita(nuevaCita);
+                    }
+
                     redirectAttributes.addFlashAttribute("mensajeExito", 
                         "¡Cita reservada exitosamente para el " + fecha.toString() + " a las " + hora.toString() + " con el doctor " + medico.getUsuario().getNombre() + " " + medico.getUsuario().getApellido() + "!");
                 } catch (Exception e) {
@@ -218,7 +229,10 @@ public class PacienteWebController {
 
     @GetMapping("/perfil")
     @PreAuthorize("hasRole('PACIENTE')")
-    public String perfil(java.security.Principal principal, Model model) {
+    public String perfil(
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "0") int notifPage,
+            java.security.Principal principal, 
+            Model model) {
         if (principal != null) {
             String email = principal.getName();
             com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
@@ -226,6 +240,18 @@ public class PacienteWebController {
                 com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findByUsuarioId(usuario.getId()).orElse(null);
                 model.addAttribute("usuario", usuario);
                 model.addAttribute("paciente", paciente);
+                
+                org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(notifPage, 5);
+                org.springframework.data.domain.Page<com.sisol.salud.model.entity.Notificacion> notificacionesPage = notificacionRepository.findByUsuarioIdOrderByFechaEnvioDesc(usuario.getId(), pageable);
+                model.addAttribute("notificacionesPage", notificacionesPage);
+                model.addAttribute("notificaciones", notificacionesPage.getContent());
+                
+                // Set the active tab to notifications if we are paginating
+                if (notifPage > 0) {
+                    model.addAttribute("activeTab", "notificaciones");
+                } else {
+                    model.addAttribute("activeTab", "perfil");
+                }
             }
         }
         model.addAttribute("title", "Editar Perfil");

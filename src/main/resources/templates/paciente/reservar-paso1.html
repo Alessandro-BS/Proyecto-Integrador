@@ -190,6 +190,32 @@
                     </div>
                 </div>
 
+                <!-- Paginación de Especialidades -->
+                <div class="d-flex justify-content-center align-items-center mt-5 gap-2" th:if="${especialidadesPage != null && especialidadesPage.totalPages > 1}">
+                    <!-- Botón Anterior -->
+                    <a th:if="${especialidadesPage.hasPrevious()}" 
+                       th:href="@{/paciente/reservar-cita(espPage=${especialidadesPage.number - 1})}" 
+                       class="btn" style="border: 1px solid var(--sisol-primary); color: var(--sisol-primary); border-radius: 5px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+
+                    <!-- Números de Página -->
+                    <div th:each="i : ${#numbers.sequence(0, especialidadesPage.totalPages - 1)}" class="d-inline-block">
+                        <a th:href="@{/paciente/reservar-cita(espPage=${i})}"
+                           th:text="${i + 1}"
+                           class="btn"
+                           th:style="${especialidadesPage.number == i} ? 'background-color: var(--sisol-primary); color: white; border: 1px solid var(--sisol-primary); border-radius: 5px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold;' : 'border: 1px solid var(--sisol-primary); color: var(--sisol-primary); border-radius: 5px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold;'">
+                        </a>
+                    </div>
+
+                    <!-- Botón Siguiente -->
+                    <a th:if="${especialidadesPage.hasNext()}" 
+                       th:href="@{/paciente/reservar-cita(espPage=${especialidadesPage.number + 1})}" 
+                       class="btn" style="border: 1px solid var(--sisol-primary); color: var(--sisol-primary); border-radius: 5px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+
             </div>
 
             <!-- Right Content: Summary Sidebar -->

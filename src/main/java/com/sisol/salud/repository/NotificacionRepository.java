@@ -12,5 +12,9 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
 
     List<Notificacion> findByUsuarioId(Long usuarioId); // Método para buscar notificaciones por usuario.
 
+    org.springframework.data.domain.Page<Notificacion> findByUsuarioIdOrderByFechaEnvioDesc(Long usuarioId, org.springframework.data.domain.Pageable pageable); // Paginación de notificaciones
+
+    List<Notificacion> findByUsuarioIdOrderByFechaEnvioDesc(Long usuarioId); // Método para buscar notificaciones por usuario ordenadas desc.
+
     List<Notificacion> findByEnviadoFalse(); // Método para buscar notificaciones no enviadas.
 }

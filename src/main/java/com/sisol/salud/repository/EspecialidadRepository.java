@@ -13,4 +13,6 @@ public interface EspecialidadRepository extends JpaRepository<Especialidad, Long
     Optional<Especialidad> findByNombre(String nombre); // Método para buscar una especialidad por nombre
 
     java.util.List<Especialidad> findByActivoTrue(); // Método para buscar especialidades activas
+
+    org.springframework.data.domain.Page<Especialidad> findByActivoTrue(org.springframework.data.domain.Pageable pageable); // Método para buscar especialidades activas paginadas
 }
