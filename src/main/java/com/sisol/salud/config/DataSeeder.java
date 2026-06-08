@@ -34,19 +34,43 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+
+        log.info("Verificando librerías requeridas...");
+
+        // 1. Google Guava: Creación de listas inmutables y utilidades de colecciones
+        java.util.List<String> nombresEspecialidades = com.google.common.collect.Lists.newArrayList(
+                "cardiología", "dermatología", "traumatología", "oftalmología", "neurología",
+                "pediatría", "ginecología", "psiquiatría", "gastroenterología", "oncología");
+        log.info("Google Guava cargado correctamente con {} elementos.", nombresEspecialidades.size());
+
+        // 2. Apache Commons Lang: Manipulación y formateo de cadenas seguras
+        String codigoGenerado = org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric(10).toUpperCase();
+        log.info("Apache Commons Lang funcionando. Código de sistema generado: {}", codigoGenerado);
+
+        // 3. Apache POI: Generación de archivo Excel de auditoría (demostración)
+        try (org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
+            org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Auditoria de Inicio");
+            org.apache.poi.ss.usermodel.Row row = sheet.createRow(0);
+            row.createCell(0).setCellValue("Fecha de Inicio Sistema");
+            row.createCell(1).setCellValue(java.time.LocalDateTime.now().toString());
+            log.info("Apache POI funcionando. Libro de Excel creado exitosamente en memoria.");
+        } catch (Exception e) {
+            log.error("Error probando Apache POI", e);
+        }
+
         if (especialidadRepository.count() == 0) {
             log.info("Sembrando base de datos desde 0 con 10 especialidades, 10 médicos y 2 pacientes...");
-            
-            String[] nombresEspecialidades = {
-                "Cardiología", "Dermatología", "Traumatología", "Oftalmología", "Neurología",
-                "Pediatría", "Ginecología", "Psiquiatría", "Gastroenterología", "Oncología"
-            };
 
             // Crear 10 Especialidades y 10 Médicos
             for (int i = 0; i < 10; i++) {
+                // Se utiliza Apache Commons para capitalizar (ej. "cardiología" ->
+                // "Cardiología")
+                String nombreCapitalizado = org.apache.commons.lang3.StringUtils
+                        .capitalize(nombresEspecialidades.get(i));
+
                 Especialidad esp = Especialidad.builder()
-                        .nombre(nombresEspecialidades[i])
-                        .descripcion("Atención especializada en " + nombresEspecialidades[i])
+                        .nombre(nombreCapitalizado)
+                        .descripcion("Atención especializada en " + nombreCapitalizado)
                         .costo(new BigDecimal("50.00"))
                         .activo(true)
                         .build();
@@ -54,7 +78,7 @@ public class DataSeeder implements CommandLineRunner {
 
                 Usuario usuarioMedico = Usuario.builder()
                         .dni("2000000" + i)
-                        .nombre("Dr. " + nombresEspecialidades[i].substring(0, 4))
+                        .nombre("Dr. " + nombreCapitalizado.substring(0, 4))
                         .apellido("Medico " + i)
                         .email("medico" + i + "@sisol.com")
                         .password(passwordEncoder.encode("123456"))
