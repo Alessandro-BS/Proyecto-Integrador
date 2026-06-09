@@ -36,37 +36,24 @@ public class DataSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         log.info("Verificando librerías requeridas...");
-
-        // 1. Google Guava: Creación de listas inmutables y utilidades de colecciones
-        java.util.List<String> nombresEspecialidades = com.google.common.collect.Lists.newArrayList(
-                "cardiología", "dermatología", "traumatología", "oftalmología", "neurología",
-                "pediatría", "ginecología", "psiquiatría", "gastroenterología", "oncología");
-        log.info("Google Guava cargado correctamente con {} elementos.", nombresEspecialidades.size());
-
-        // 2. Apache Commons Lang: Manipulación y formateo de cadenas seguras
-        String codigoGenerado = org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric(10).toUpperCase();
-        log.info("Apache Commons Lang funcionando. Código de sistema generado: {}", codigoGenerado);
-
-        // 3. Apache POI: Generación de archivo Excel de auditoría (demostración)
-        try (org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
-            org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Auditoria de Inicio");
-            org.apache.poi.ss.usermodel.Row row = sheet.createRow(0);
-            row.createCell(0).setCellValue("Fecha de Inicio Sistema");
-            row.createCell(1).setCellValue(java.time.LocalDateTime.now().toString());
-            log.info("Apache POI funcionando. Libro de Excel creado exitosamente en memoria.");
-        } catch (Exception e) {
-            log.error("Error probando Apache POI", e);
-        }
+        demostrarGoogleGuava();
+        demostrarApacheCommons();
+        demostrarApachePOI();
 
         if (especialidadRepository.count() == 0) {
             log.info("Sembrando base de datos desde 0 con 10 especialidades, 10 médicos y 2 pacientes...");
 
             // Crear 10 Especialidades y 10 Médicos
+            String[] nombresEspecialidades = {
+                    "cardiología", "dermatología", "traumatología", "oftalmología", "neurología",
+                    "pediatría", "ginecología", "psiquiatría", "gastroenterología", "oncología"
+            };
+
             for (int i = 0; i < 10; i++) {
                 // Se utiliza Apache Commons para capitalizar (ej. "cardiología" ->
                 // "Cardiología")
                 String nombreCapitalizado = org.apache.commons.lang3.StringUtils
-                        .capitalize(nombresEspecialidades.get(i));
+                        .capitalize(nombresEspecialidades[i]);
 
                 Especialidad esp = Especialidad.builder()
                         .nombre(nombreCapitalizado)
@@ -120,6 +107,27 @@ public class DataSeeder implements CommandLineRunner {
             log.info("Pacientes de prueba (contraseña: 123456): paciente1@sisol.com y paciente2@sisol.com");
         } else {
             log.info("La base de datos ya contiene registros, omitiendo el sembrado.");
+        }
+    }
+
+    private void demostrarGoogleGuava() {
+        java.util.List<String> especialidades = com.google.common.collect.Lists.newArrayList(
+                "Cardiología", "Dermatología", "Traumatología");
+        log.info("[Guava] Creada lista inmutable de {} elementos", especialidades.size());
+    }
+
+    private void demostrarApacheCommons() {
+        String codigo = org.apache.commons.lang3.RandomStringUtils
+                .randomAlphanumeric(10).toUpperCase();
+        log.info("[Apache Commons] Código seguro generado: {}", codigo);
+    }
+
+    private void demostrarApachePOI() {
+        try (org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
+            org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Reporte");
+            log.info("[Apache POI] Archivo Excel estructurado y creado en memoria exitosamente.");
+        } catch (Exception e) {
+            log.error("[Apache POI] Error", e);
         }
     }
 }
