@@ -287,13 +287,13 @@
             <!-- Sidebar -->
             <div class="col-lg-3">
                 <div class="settings-sidebar" id="perfilTabs">
-                    <a class="settings-nav-item active" data-target="tab-perfil">
+                    <a class="settings-nav-item" th:classappend="${activeTab == 'perfil'} ? 'active' : ''" data-target="tab-perfil">
                         <i class="bi bi-person"></i> Mi perfil
                     </a>
-                    <a class="settings-nav-item" data-target="tab-seguridad">
+                    <a class="settings-nav-item" th:classappend="${activeTab == 'seguridad'} ? 'active' : ''" data-target="tab-seguridad">
                         <i class="bi bi-shield-check"></i> Seguridad
                     </a>
-                    <a class="settings-nav-item" data-target="tab-notificaciones">
+                    <a class="settings-nav-item" th:classappend="${activeTab == 'notificaciones'} ? 'active' : ''" data-target="tab-notificaciones">
                         <i class="bi bi-bell"></i> Notificaciones
                     </a>
                 </div>
@@ -310,7 +310,7 @@
             <div class="col-lg-9">
                 
                 <!-- =================== TAB MI PERFIL =================== -->
-                <div id="tab-perfil" class="tab-content active">
+                <div id="tab-perfil" class="tab-content" th:classappend="${activeTab == 'perfil'} ? 'active' : ''">
                     <div class="settings-content">
                         <h2 class="page-title mb-1">Editar Perfil</h2>
                         <p class="text-muted mb-4 pb-3 border-bottom">Actualiza tus datos personales y cómo te ven los demás en el portal.</p>
@@ -404,7 +404,7 @@
 
 
                 <!-- =================== TAB SEGURIDAD =================== -->
-                <div id="tab-seguridad" class="tab-content">
+                <div id="tab-seguridad" class="tab-content" th:classappend="${activeTab == 'seguridad'} ? 'active' : ''">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="page-title m-0">Seguridad</h2>
                         <span class="text-muted small"><i class="bi bi-shield-check me-1"></i> Protege tu cuenta</span>
@@ -439,62 +439,42 @@
 
 
                 <!-- =================== TAB NOTIFICACIONES =================== -->
-                <div id="tab-notificaciones" class="tab-content">
+                <div id="tab-notificaciones" class="tab-content" th:classappend="${activeTab == 'notificaciones'} ? 'active' : ''">
                     <h2 class="page-title mb-1">Centro de Notificaciones</h2>
                     <p class="text-muted mb-4">Mantente al tanto de tus citas, resultados y seguridad de tu cuenta.</p>
 
-                    <!-- Notif 1 -->
-                    <div class="notification-card unread">
-                        <div class="notif-icon text-danger">
-                            <i class="bi bi-calendar-check"></i>
+                    <!-- Notificaciones Dinámicas -->
+                    <div th:if="${#lists.isEmpty(notificaciones)}" class="text-center my-5">
+                        <i class="bi bi-bell-slash text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3">No tienes notificaciones por el momento.</p>
+                    </div>
+
+                    <div th:each="notif : ${notificaciones}" class="notification-card unread">
+                        <div class="notif-icon text-danger" th:classappend="${notif.tipo.name() == 'EMAIL'} ? 'text-danger' : 'text-secondary'">
+                            <i class="bi bi-envelope-check"></i>
                         </div>
                         <div class="notif-content">
-                            <div class="notif-title">Cita Confirmada</div>
-                            <p class="notif-desc">Tu cita con el Dr. Ricardo Mendoza para el 15 de Marzo ha sido confirmada exitosamente.</p>
+                            <div class="notif-title" th:text="${notif.asunto}">Asunto</div>
+                            <p class="notif-desc" th:text="${notif.mensaje}">Mensaje descriptivo</p>
                         </div>
                         <div class="notif-meta">
-                            Hace 2 horas <span class="unread-dot"></span>
+                            <span th:text="${#temporals.format(notif.fechaEnvio, 'dd MMM yyyy, hh:mm a')}">01 Ene 2026</span>
                         </div>
                     </div>
 
-                    <!-- Notif 2 -->
-                    <div class="notification-card">
-                        <div class="notif-icon text-secondary">
-                            <i class="bi bi-file-earmark-medical"></i>
-                        </div>
-                        <div class="notif-content">
-                            <div class="notif-title">Resultados Listos</div>
-                            <p class="notif-desc">Tus análisis de sangre ya están disponibles en la sección de documentos.</p>
-                        </div>
-                        <div class="notif-meta">Hoy, 09:15 AM</div>
-                    </div>
-
-                    <!-- Notif 3 -->
-                    <div class="notification-card">
-                        <div class="notif-icon text-secondary">
-                            <i class="bi bi-bell"></i>
-                        </div>
-                        <div class="notif-content">
-                            <div class="notif-title">Recordatorio</div>
-                            <p class="notif-desc">Recuerda que tu cita de seguimiento es en menos de 24 horas.</p>
-                        </div>
-                        <div class="notif-meta">Ayer</div>
-                    </div>
-
-                    <!-- Notif 4 -->
-                    <div class="notification-card">
-                        <div class="notif-icon text-danger" style="background-color: #fff0f0;">
-                            <i class="bi bi-shield-exclamation text-danger"></i>
-                        </div>
-                        <div class="notif-content">
-                            <div class="notif-title">Seguridad</div>
-                            <p class="notif-desc">Nuevo inicio de sesión detectado en un dispositivo desconocido. ¿Fuiste tú?</p>
-                        </div>
-                        <div class="notif-meta">Hace 2 días</div>
-                    </div>
-
-                    <div class="text-center my-4">
-                        <a href="#" class="text-decoration-none fw-bold" style="color: var(--sisol-primary);">Cargar notificaciones anteriores</a>
+                    <!-- Paginación -->
+                    <div class="d-flex justify-content-center align-items-center my-4 gap-3" th:if="${notificacionesPage != null && notificacionesPage.totalPages > 1}">
+                        <a th:if="${notificacionesPage.hasPrevious()}" 
+                           th:href="@{/paciente/perfil(notifPage=${notificacionesPage.number - 1})}" 
+                           class="btn btn-outline-secondary btn-sm" style="border-radius: 20px;">
+                            <i class="bi bi-chevron-left"></i> Anteriores
+                        </a>
+                        <span class="text-muted small">Página <span th:text="${notificacionesPage.number + 1}">1</span> de <span th:text="${notificacionesPage.totalPages}">1</span></span>
+                        <a th:if="${notificacionesPage.hasNext()}" 
+                           th:href="@{/paciente/perfil(notifPage=${notificacionesPage.number + 1})}" 
+                           class="btn btn-outline-secondary btn-sm" style="border-radius: 20px;">
+                            Siguientes <i class="bi bi-chevron-right"></i>
+                        </a>
                     </div>
 
                     <!-- Bottom blocks -->

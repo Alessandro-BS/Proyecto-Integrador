@@ -26,7 +26,7 @@ public class NotificacionService {
     @Transactional
     public void enviarConfirmacionCita(Cita cita) {
         String asunto = "¡Cita Confirmada! - SISOL Salud";
-        String template = "cita-confirmacion";
+        String template = "email/reserva-confirmada";
 
         Map<String, Object> modelo = new HashMap<>();
         modelo.put("nombrePaciente", cita.getPaciente().getUsuario().getNombre());
@@ -45,7 +45,7 @@ public class NotificacionService {
     @Transactional
     public void enviarCancelacionCita(Cita cita) {
         String asunto = "Cita Cancelada - SISOL Salud";
-        String template = "cita-cancelacion";
+        String template = "email/cita-cancelacion";
 
         Map<String, Object> modelo = new HashMap<>();
         modelo.put("nombrePaciente", cita.getPaciente().getUsuario().getNombre());
@@ -64,7 +64,7 @@ public class NotificacionService {
     @Transactional
     public void enviarRecordatorioCita(Cita cita) {
         String asunto = "Recordatorio: Tienes una cita mañana - SISOL Salud";
-        String template = "cita-recordatorio";
+        String template = "email/cita-recordatorio";
 
         Map<String, Object> modelo = new HashMap<>();
         modelo.put("nombrePaciente", cita.getPaciente().getUsuario().getNombre());

@@ -320,7 +320,7 @@
             <span class="breadcrumb-separator">›</span>
             <a th:href="@{/panel-medico/citas-hoy}">Consultas</a>
             <span class="breadcrumb-separator">›</span>
-            <span class="breadcrumb-active">En Consulta: Carlos Ruiz</span>
+            <span class="breadcrumb-active" th:text="'En Consulta: ' + ${usuarioPaciente.nombre}">En Consulta: Carlos Ruiz</span>
         </div>
 
         <div class="row g-4">
@@ -336,49 +336,46 @@
                     
                     <div class="patient-main-info">
                         <div class="patient-label">Paciente en Consulta</div>
-                        <h2 class="patient-name headline">Carlos Ruiz</h2>
+                        <h2 class="patient-name headline" th:text="${usuarioPaciente.nombre + ' ' + usuarioPaciente.apellido}">Carlos Ruiz</h2>
                         <div class="patient-time-tag">
-                            <span class="time-text"><i class="fa-regular fa-clock"></i> 10:30 AM - 11:00 AM</span>
-                            <span class="tag-control">Control Periódico</span>
+                            <span class="time-text"><i class="fa-regular fa-clock"></i> 
+                                <span th:text="${#temporals.format(cita.horaInicio, 'hh:mm a')}"></span> - 
+                                <span th:text="${#temporals.format(cita.horaFin, 'hh:mm a')}"></span>
+                            </span>
+                            <span class="tag-control" th:text="${cita.especialidad.nombre}">Especialidad</span>
                         </div>
                     </div>
                     
                     <div class="patient-stats">
                         <div class="stat-item">
-                            <span class="patient-label">Edad</span>
-                            <span class="stat-val">42 años</span>
+                            <span class="patient-label">DNI</span>
+                            <span class="stat-val" th:text="${usuarioPaciente.dni}">12345678</span>
                         </div>
                         <div class="stat-item">
-                            <span class="patient-label">ID Médico</span>
-                            <span class="stat-val">100234-A</span>
+                            <span class="patient-label">Sangre</span>
+                            <span class="stat-val" th:text="${paciente.grupoSanguineo ?: 'No reg.'}">O+</span>
                         </div>
                         <div class="stat-item">
                             <span class="patient-label">Motivo</span>
-                            <span class="stat-val">Follow-up</span>
+                            <span class="stat-val" th:text="${cita.motivoConsulta ?: 'Control'}">Follow-up</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Formularios -->
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="card-soft h-100">
-                            <h3 class="form-section-title headline">
-                                <i class="fa-solid fa-notes-medical"></i> Notas Médicas
-                            </h3>
-                            <textarea class="text-area-custom" placeholder="Describa detalladamente los síntomas y observaciones del paciente durante la evaluación clínica actual..."></textarea>
-                        </div>
-                    </div>
+                <form th:action="@{/panel-medico/consulta/finalizar}" method="post" id="consultaForm">
+                    <input type="hidden" name="citaId" th:value="${cita.id}">
                     
-                    <div class="col-md-6">
-                        <div class="card-soft h-100">
-                            <h3 class="form-section-title headline">
-                                <i class="fa-solid fa-stethoscope"></i> Diagnóstico
-                            </h3>
-                            <textarea class="text-area-custom" placeholder="Ingrese el diagnóstico clínico presuntivo o definitivo, incluyendo códigos CIE-10 si es necesario..."></textarea>
+                    <div class="row g-4">
+                        <div class="col-md-12">
+                            <div class="card-soft h-100">
+                                <h3 class="form-section-title headline">
+                                    <i class="fa-solid fa-stethoscope"></i> Notas Médicas y Diagnóstico
+                                </h3>
+                                <textarea name="observaciones" required class="text-area-custom" style="height: 400px;" placeholder="Ingrese el diagnóstico clínico presuntivo o definitivo, y las observaciones del paciente durante la evaluación clínica actual..."></textarea>
+                            </div>
                         </div>
                     </div>
-                </div>
 
             </div>
 
@@ -399,18 +396,7 @@
                         <div class="upload-desc">Suelte aquí o explore exámenes, placas o recetas digitales</div>
                     </div>
                     
-                    <div class="files-header">Documentos Adjuntos (1)</div>
-                    
-                    <div class="file-item">
-                        <div class="file-icon">
-                            <i class="fa-solid fa-file-pdf"></i>
-                        </div>
-                        <div class="file-info">
-                            <div class="file-name">Analisis_Sangre.pdf</div>
-                            <div class="file-size">2.4 MB</div>
-                        </div>
-                        <button class="btn-delete-file"><i class="fa-regular fa-trash-can"></i></button>
-                    </div>
+                    <div class="files-header">Documentos Adjuntos (0)</div>
                 </div>
 
                 <!-- Tarjeta Acciones Finales -->
@@ -420,14 +406,15 @@
                         Asegúrese de haber completado todos los campos antes de cerrar el registro de la consulta.
                     </p>
                     
-                    <button class="btn-actions-primary">
+                    <button type="submit" class="btn-actions-primary">
                         <i class="fa-regular fa-circle-check"></i> Finalizar Consulta
                     </button>
                     
-                    <button class="btn-actions-secondary">
-                        <i class="fa-regular fa-floppy-disk"></i> Guardar Borrador
-                    </button>
+                    <a th:href="@{/panel-medico/citas-hoy}" class="btn-actions-secondary text-decoration-none">
+                        <i class="fa-solid fa-arrow-left"></i> Volver sin Guardar
+                    </a>
                 </div>
+                </form>
 
             </div>
 

@@ -219,42 +219,22 @@
                     <h2 class="page-title mb-0">Selecciona un Especialista</h2>
                     <a th:href="@{/paciente/reservar-cita}" class="btn btn-link text-muted p-0"><i class="bi bi-arrow-left"></i> Volver</a>
                 </div>
-                <p class="text-muted mb-4"><span th:text="${especialidad}">Especialidad</span> • Lima, Perú</p>
+                <p class="text-muted mb-4"><span th:text="${especialidad.nombre}">Especialidad</span> • Lima, Perú</p>
 
                 <div class="row g-4 mt-2">
-                    <!-- Doctor 1 -->
-                    <div class="col-md-6">
+                    <!-- Doctor Dinámico -->
+                    <div th:each="med : ${medicos}" class="col-md-6">
                         <form th:action="@{/paciente/reservar-cita/paso3}" method="post">
-                            <input type="hidden" name="especialidad" th:value="${especialidad}">
-                            <input type="hidden" name="medico" value="Dr. Ricardo Mendoza">
+                            <input type="hidden" name="especialidadId" th:value="${especialidad.id}">
+                            <input type="hidden" name="medicoId" th:value="${med.id}">
                             <button type="submit" class="w-100 p-0 border-0 bg-transparent">
                                 <div class="doctor-card">
-                                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Doctor" class="doctor-img">
-                                    <div class="doctor-specialty">Cardiólogo Clínico</div>
-                                    <div class="doctor-name">Dr. Ricardo Mendoza</div>
+                                    <img src="https://ui-avatars.com/api/?name=Dr+Medico&background=random" th:src="@{'https://ui-avatars.com/api/?name=' + ${med.usuario.nombre} + '+' + ${med.usuario.apellido} + '&background=random&size=128'}" alt="Doctor" class="doctor-img">
+                                    <div class="doctor-specialty" th:text="${especialidad.nombre}">Especialidad</div>
+                                    <div class="doctor-name" th:text="${'Dr(a). ' + med.usuario.nombre + ' ' + med.usuario.apellido}">Dr. Nombre</div>
                                     <div class="rating">
-                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-                                        <span>(128 reseñas)</span>
-                                    </div>
-                                    <div class="btn-select">Ver Disponibilidad</div>
-                                </div>
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Doctor 2 -->
-                    <div class="col-md-6">
-                        <form th:action="@{/paciente/reservar-cita/paso3}" method="post">
-                            <input type="hidden" name="especialidad" th:value="${especialidad}">
-                            <input type="hidden" name="medico" value="Dra. Elena Rossi">
-                            <button type="submit" class="w-100 p-0 border-0 bg-transparent">
-                                <div class="doctor-card">
-                                    <img src="https://images.unsplash.com/photo-1594824436998-d40ee3fc2cc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Doctor" class="doctor-img">
-                                    <div class="doctor-specialty">Especialista en Arritmias</div>
-                                    <div class="doctor-name">Dra. Elena Rossi</div>
-                                    <div class="rating">
-                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
-                                        <span>(94 reseñas)</span>
+                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                        <span th:text="${'(' + (med.id * 15 + 23) + ' reseñas)'}">(128 reseñas)</span>
                                     </div>
                                     <div class="btn-select">Ver Disponibilidad</div>
                                 </div>
@@ -274,7 +254,7 @@
                         <div class="summary-icon"><i class="bi bi-heart-pulse"></i></div>
                         <div>
                             <div class="summary-label">ESPECIALIDAD</div>
-                            <div class="summary-value" th:text="${especialidad}">Cardiología</div>
+                            <div class="summary-value" th:text="${especialidad.nombre}">Cardiología</div>
                         </div>
                     </div>
 

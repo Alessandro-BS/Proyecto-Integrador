@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Cita - SISOL Salud</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            color: #333333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .header {
+            background-color: #721c24; /* Color Maroon de SISOL */
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+        .body-content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #721c24;
+            margin-bottom: 20px;
+        }
+        .message {
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #555555;
+        }
+        .details-box {
+            background-color: #fdf3f3;
+            border-left: 4px solid #721c24;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        .detail-row {
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #721c24;
+            display: inline-block;
+            width: 120px;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #999999;
+            border-top: 1px solid #eeeeee;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #721c24;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1 th:text="${sistemaNombre}">SISOL Salud</h1>
+        </div>
+        
+        <!-- Body -->
+        <div class="body-content">
+            <div class="greeting">¡Hola, <span th:text="${nombrePaciente}">Paciente</span>!</div>
+            
+            <div class="message">
+                Nos complace informarte que tu cita médica ha sido registrada y confirmada exitosamente en nuestro sistema. A continuación, te detallamos la información de tu reserva:
+            </div>
+            
+            <div class="details-box">
+                <div class="detail-row">
+                    <span class="detail-label">Especialidad:</span>
+                    <span th:text="${especialidad}">Medicina General</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Médico:</span>
+                    <span th:text="'Dr(a). ' + ${nombreMedico}">Dr. Nombre Apellido</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Fecha:</span>
+                    <span th:text="${fecha}">01 Enero, 2026</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Hora:</span>
+                    <span th:text="${hora}">09:00 AM</span>
+                </div>
+            </div>
+            
+            <div class="message" style="font-size: 14px; background-color: #fff8e1; border-left: 4px solid #ffc107; padding: 15px;">
+                <strong>Recordatorio Importante:</strong> Por favor preséntate 15 minutos antes de tu cita en la recepción del hospital con tu DNI físico. Si necesitas reprogramar o cancelar, puedes hacerlo desde el Portal del Paciente.
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Este es un mensaje automático generado por <span th:text="${sistemaNombre}">SISOL Salud</span>, por favor no respondas a este correo.</p>
+            <p>&copy; 2026 Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

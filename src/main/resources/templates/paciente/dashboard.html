@@ -137,7 +137,7 @@
         <div class="row mb-5 dashboard-header">
             <div class="col-12">
                 <h1
-                    th:text="'Bienvenido, ' + ${usuario != null ? usuario.nombre + ' ' + usuario.apellido : 'Paciente'}">
+                    th:text="'Bienvenido, ' + ${usuario != null ? usuario.nombre : 'Paciente'}">
                     Bienvenido, Carlos Alberto</h1>
                 <p class="text-muted fs-5">Tu salud es nuestra prioridad. Aquí tienes un resumen de tu actividad
                     reciente.</p>
@@ -162,8 +162,8 @@
                             th:text="${usuario != null ? usuario.nombre + ' ' + usuario.apellido : 'Carlos Alberto Ruiz'}">
                             Carlos Alberto Ruiz</h4>
                         <p class="text-muted small mb-4"
-                            th:text="${paciente != null && paciente.createdAt != null} ? 'Paciente desde ' + ${#temporals.format(paciente.createdAt, 'yyyy')} : 'Paciente desde 2021'">
-                            Paciente desde 2021</p>
+                            th:text="${paciente != null && paciente.createdAt != null} ? 'Paciente desde ' + ${#temporals.format(paciente.createdAt, 'yyyy')} : 'Paciente desde 2026'">
+                            Paciente desde 2026</p>
 
                         <div class="text-start mb-4">
                             <div class="d-flex justify-content-between border-bottom py-2">
@@ -187,7 +187,7 @@
                     <div class="col-6">
                         <div class="dashboard-stat-card">
                             <div class="text-primary mb-2"><i class="bi bi-calendar-check fs-4"></i></div>
-                            <div class="dashboard-stat-value">12</div>
+                            <div class="dashboard-stat-value" th:text="${totalCitas != null ? totalCitas : 12}">12</div>
                             <div class="dashboard-stat-label">Citas Totales</div>
                         </div>
                     </div>
@@ -233,46 +233,24 @@
                             <a th:href="@{/paciente/mis-citas}" class="text-primary text-decoration-none small fw-bold">Ver todas</a>
                         </div>
 
-                        <!-- Sample Appointment 1 -->
-                        <div class="appointment-list-item">
-                            <div class="appointment-date-box me-3">
-                                <div class="text-muted small fw-bold text-uppercase">OCT</div>
-                                <div class="fs-4 fw-bold">24</div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-1">Dr. Ricardo Mendoza</h6>
-                                <p class="text-muted small m-0">Cardiología &bull; Clínica San Borja</p>
-                            </div>
-                            <div class="text-end me-3">
-                                <div class="fw-bold mb-1">10:30 AM</div>
-                                <span
-                                    class="badge bg-danger bg-opacity-25 text-danger rounded-pill px-3">CONFIRMADA</span>
-                            </div>
-                            <div class="dropdown">
-                                <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown">
-                                    <i class="bi bi-three-dots-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="#">Ver detalle</a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">Cancelar</a></li>
-                                </ul>
-                            </div>
+                        <div th:if="${#lists.isEmpty(proximasCitas)}" class="text-center text-muted p-3">
+                            No tienes citas próximas.
                         </div>
 
-                        <!-- Sample Appointment 2 -->
-                        <div class="appointment-list-item">
+                        <!-- Sample Appointment 1 (Dinámico) -->
+                        <div th:each="cita : ${proximasCitas}" class="appointment-list-item">
                             <div class="appointment-date-box me-3">
-                                <div class="text-muted small fw-bold text-uppercase">NOV</div>
-                                <div class="fs-4 fw-bold">02</div>
+                                <div class="text-muted small fw-bold text-uppercase" th:text="${#temporals.format(cita.fecha, 'MMM')}">OCT</div>
+                                <div class="fs-4 fw-bold" th:text="${#temporals.format(cita.fecha, 'dd')}">24</div>
                             </div>
                             <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-1">Dra. Elena Vazquez</h6>
-                                <p class="text-muted small m-0">Dermatología &bull; Sisol Surquillo</p>
+                                <h6 class="fw-bold mb-1" th:text="'Dr. ' + ${cita.medico.usuario.nombre} + ' ' + ${cita.medico.usuario.apellido}">Dr. Ricardo Mendoza</h6>
+                                <p class="text-muted small m-0" th:text="${cita.especialidad.nombre} + ' &bull; Sisol Salud'">Cardiología &bull; Clínica San Borja</p>
                             </div>
                             <div class="text-end me-3">
-                                <div class="fw-bold mb-1">04:15 PM</div>
-                                <span
-                                    class="badge bg-secondary bg-opacity-25 text-secondary rounded-pill px-3">PENDIENTE</span>
+                                <div class="fw-bold mb-1" th:text="${#temporals.format(cita.horaInicio, 'hh:mm a')}">10:30 AM</div>
+                                <span th:if="${cita.estado.name() == 'CONFIRMADA'}" class="badge bg-success bg-opacity-25 text-success rounded-pill px-3">CONFIRMADA</span>
+                                <span th:if="${cita.estado.name() == 'PENDIENTE'}" class="badge bg-warning bg-opacity-25 text-warning rounded-pill px-3">PENDIENTE</span>
                             </div>
                             <div class="dropdown">
                                 <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown">
