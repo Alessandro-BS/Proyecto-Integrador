@@ -38,8 +38,23 @@ public class DataSeeder implements CommandLineRunner {
 
         log.info("Verificando librerías requeridas...");
         demostrarGoogleGuava();
-        demostrarApacheCommons();
         demostrarApachePOI();
+
+        // 1. Asegurar que exista el Admin (independiente del seeder general)
+        if (usuarioRepository.findByEmail("admin@sisol.com").isEmpty()) {
+            Usuario adminUser = Usuario.builder()
+                    .dni("00000000")
+                    .nombre("Administrador")
+                    .apellido("Sistema")
+                    .email("admin@sisol.com")
+                    .password(passwordEncoder.encode("123456"))
+                    .telefono("000000000")
+                    .rol(Rol.ADMIN)
+                    .activo(true)
+                    .build();
+            usuarioRepository.save(adminUser);
+            log.info("Usuario Admin creado correctamente.");
+        }
 
         if (especialidadRepository.count() == 0) {
             log.info("Sembrando base de datos desde 0 con 10 especialidades, 10 médicos y 2 pacientes...");
@@ -119,6 +134,7 @@ public class DataSeeder implements CommandLineRunner {
             }
 
             log.info("¡Sembrado completado con éxito!");
+            log.info("Admin de prueba (contraseña: 123456): admin@sisol.com");
             log.info("Médicos de prueba (contraseña: 123456): medico0@sisol.com a medico9@sisol.com");
             log.info("Pacientes de prueba (contraseña: 123456): paciente1@sisol.com y paciente2@sisol.com");
         } else {

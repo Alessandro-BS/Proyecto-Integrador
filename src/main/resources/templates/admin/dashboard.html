@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_base}">
 <head>
     <title>Panel de Administración</title>
 </head>
@@ -7,65 +7,92 @@
     <div layout:fragment="content">
         <div class="row mb-4 align-items-center">
             <div class="col-md-8">
-                <h2 class="fw-bold"><i class="bi bi-speedometer2 text-primary me-2"></i>Dashboard Administrativo</h2>
+                <h2 class="fw-bold" style="color: var(--primary);"><i class="bi bi-speedometer2 text-danger me-2"></i>Dashboard Administrativo</h2>
                 <p class="text-muted">Visión general y métricas de la clínica SISOL Salud.</p>
             </div>
             <div class="col-md-4 text-md-end">
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-secondary active">Esta Semana</button>
-                    <button type="button" class="btn btn-outline-secondary">Este Mes</button>
-                    <button type="button" class="btn btn-outline-secondary">Año</button>
+                    <a th:href="@{/admin/dashboard(period='week')}" class="btn btn-outline-secondary" th:classappend="${period == 'week' ? 'active' : ''}">Esta Semana</a>
+                    <a th:href="@{/admin/dashboard(period='month')}" class="btn btn-outline-secondary" th:classappend="${period == 'month' ? 'active' : ''}">Este Mes</a>
+                    <a th:href="@{/admin/dashboard(period='year')}" class="btn btn-outline-secondary" th:classappend="${period == 'year' ? 'active' : ''}">Este Año</a>
                 </div>
             </div>
         </div>
 
         <!-- Tarjetas de Resumen (KPIs) -->
         <div class="row g-4 mb-5">
+            <!-- Total Citas (Azul) -->
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 bg-primary text-white h-100">
-                    <div class="card-body">
-                        <h6 class="text-uppercase fw-semibold mb-2">Total Citas</h6>
-                        <h2 class="display-5 fw-bold mb-0">1,284</h2>
-                        <div class="mt-2 small"><i class="bi bi-arrow-up-circle-fill me-1"></i> +15% vs mes anterior</div>
+                <div class="card shadow-sm border-0 h-100 bg-white" style="border-radius: 1rem; border-bottom: 4px solid #3b82f6 !important;">
+                    <div class="card-body position-relative overflow-hidden p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-uppercase fw-bold text-muted mb-0" style="letter-spacing: 0.05em; font-size: 0.75rem;">Total Citas</h6>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #60a5fa, #3b82f6);">
+                                <i class="bi bi-journal-medical text-white fs-4"></i>
+                            </div>
+                        </div>
+                        <h2 class="display-6 fw-bold mb-1" style="color: #1e293b;" th:text="${totalCitas}">0</h2>
+                        <div class="small fw-semibold text-primary"><i class="bi bi-graph-up me-1"></i> Histórico general</div>
                     </div>
                 </div>
             </div>
+            <!-- Pacientes (Esmeralda) -->
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 bg-success text-white h-100">
-                    <div class="card-body">
-                        <h6 class="text-uppercase fw-semibold mb-2">Pacientes Atendidos</h6>
-                        <h2 class="display-5 fw-bold mb-0">945</h2>
-                        <div class="mt-2 small"><i class="bi bi-arrow-up-circle-fill me-1"></i> +8% vs mes anterior</div>
+                <div class="card shadow-sm border-0 h-100 bg-white" style="border-radius: 1rem; border-bottom: 4px solid #10b981 !important;">
+                    <div class="card-body position-relative overflow-hidden p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-uppercase fw-bold text-muted mb-0" style="letter-spacing: 0.05em; font-size: 0.75rem;">Pacientes Registrados</h6>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #34d399, #10b981);">
+                                <i class="bi bi-people text-white fs-4"></i>
+                            </div>
+                        </div>
+                        <h2 class="display-6 fw-bold mb-1" style="color: #1e293b;" th:text="${pacientesAtendidos}">0</h2>
+                        <div class="small fw-semibold text-success"><i class="bi bi-person-check me-1"></i> Pacientes en el sistema</div>
                     </div>
                 </div>
             </div>
+            <!-- Médicos (Ambar) -->
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 bg-warning text-dark h-100">
-                    <div class="card-body">
-                        <h6 class="text-uppercase fw-semibold mb-2">Tasa de Ausentismo</h6>
-                        <h2 class="display-5 fw-bold mb-0">12.5%</h2>
-                        <div class="mt-2 small"><i class="bi bi-arrow-down-circle-fill me-1"></i> -2% vs mes anterior</div>
+                <div class="card shadow-sm border-0 h-100 bg-white" style="border-radius: 1rem; border-bottom: 4px solid #f59e0b !important;">
+                    <div class="card-body position-relative overflow-hidden p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-uppercase fw-bold text-muted mb-0" style="letter-spacing: 0.05em; font-size: 0.75rem;">Médicos Activos</h6>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #fbbf24, #f59e0b);">
+                                <i class="bi bi-heart-pulse text-white fs-4"></i>
+                            </div>
+                        </div>
+                        <h2 class="display-6 fw-bold mb-1" style="color: #1e293b;" th:text="${medicosActivos}">0</h2>
+                        <div class="small fw-semibold text-warning" style="color: #d97706 !important;"><i class="bi bi-star me-1"></i> Especialistas</div>
                     </div>
                 </div>
             </div>
+            <!-- Reservas Hoy (Índigo) -->
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 bg-info text-white h-100">
-                    <div class="card-body">
-                        <h6 class="text-uppercase fw-semibold mb-2">Nuevos Registros</h6>
-                        <h2 class="display-5 fw-bold mb-0">156</h2>
-                        <div class="mt-2 small"><i class="bi bi-arrow-up-circle-fill me-1"></i> +24% vs mes anterior</div>
+                <div class="card shadow-sm border-0 h-100 bg-white" style="border-radius: 1rem; border-bottom: 4px solid #6366f1 !important;">
+                    <div class="card-body position-relative overflow-hidden p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-uppercase fw-bold text-muted mb-0" style="letter-spacing: 0.05em; font-size: 0.75rem;">Reservas Hoy</h6>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #818cf8, #6366f1);">
+                                <i class="bi bi-calendar-plus text-white fs-4"></i>
+                            </div>
+                        </div>
+                        <h2 class="display-6 fw-bold mb-1" style="color: #1e293b;" th:text="${nuevasReservasHoy}">0</h2>
+                        <div class="small fw-semibold" style="color: #6366f1;"><i class="bi bi-clock-history me-1"></i> Citas creadas hoy</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Gráficos -->
-        <div class="row g-4">
+        <div class="row g-4 mb-5">
             <!-- Gráfico de Líneas: Evolución de Citas -->
             <div class="col-lg-8">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white border-0 pt-4 pb-0">
-                        <h5 class="card-title fw-bold">Evolución de Reservas (Últimos 7 días)</h5>
+                <div class="card card-soft h-100">
+                    <div class="card-header bg-white border-0 pt-3 pb-0 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title fw-bold mb-0" id="citasChartTitle" 
+                            th:text="'Evolución de Reservas (Últimos ' + (${period == 'year'} ? '12 meses' : (${period == 'month'} ? '30 días' : '7 días')) + ')'">
+                            Evolución de Reservas
+                        </h5>
                     </div>
                     <div class="card-body">
                         <canvas id="citasChart" height="100"></canvas>
@@ -75,12 +102,66 @@
             
             <!-- Gráfico de Dona: Especialidades más solicitadas -->
             <div class="col-lg-4">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white border-0 pt-4 pb-0">
+                <div class="card card-soft h-100">
+                    <div class="card-header bg-white border-0 pt-2 pb-0">
                         <h5 class="card-title fw-bold">Top Especialidades</h5>
                     </div>
                     <div class="card-body d-flex justify-content-center align-items-center">
                         <canvas id="especialidadesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Últimas Citas -->
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="card card-soft">
+                    <div class="card-header bg-white border-0 pt-2 pb-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title fw-bold mb-0">Últimas Citas Registradas</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Paciente</th>
+                                        <th>Médico</th>
+                                        <th>Especialidad</th>
+                                        <th>Fecha / Hora</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="cita : ${ultimasCitas}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-secondary rounded-circle text-white d-flex justify-content-center align-items-center me-3" style="width: 32px; height: 32px; font-size: 14px;">
+                                                    <span th:text="${#strings.substring(cita.paciente.usuario.nombre,0,1)}"></span>
+                                                </div>
+                                                <span th:text="${cita.paciente.usuario.nombre + ' ' + cita.paciente.usuario.apellido}">Nombre</span>
+                                            </div>
+                                        </td>
+                                        <td th:text="${'Dr. ' + cita.medico.usuario.nombre + ' ' + cita.medico.usuario.apellido}">Médico</td>
+                                        <td><span class="badge bg-info text-dark" th:text="${cita.especialidad.nombre}">Especialidad</span></td>
+                                        <td>
+                                            <div th:text="${#temporals.format(cita.fecha, 'dd MMM yyyy')}"></div>
+                                            <small class="text-muted" th:text="${cita.horaInicio + ' - ' + cita.horaFin}"></small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success" th:if="${cita.estado.name() == 'COMPLETADA'}">Completada</span>
+                                            <span class="badge bg-warning text-dark" th:if="${cita.estado.name() == 'PENDIENTE'}">Pendiente</span>
+                                            <span class="badge bg-primary" th:if="${cita.estado.name() == 'CONFIRMADA'}">Confirmada</span>
+                                            <span class="badge bg-danger" th:if="${cita.estado.name() == 'CANCELADA'}">Cancelada</span>
+                                            <span class="badge bg-secondary" th:if="${cita.estado.name() == 'NO_ASISTIO'}">No Asistió</span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${ultimasCitas.isEmpty()}">
+                                        <td colspan="5" class="text-center py-4 text-muted">No hay citas registradas.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,58 +173,92 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                // Gráfico de Citas (Líneas)
-                const ctxCitas = document.getElementById('citasChart').getContext('2d');
-                new Chart(ctxCitas, {
-                    type: 'line',
-                    data: {
-                        labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                        datasets: [{
-                            label: 'Citas Reservadas',
-                            data: [45, 59, 80, 81, 56, 55, 40],
-                            borderColor: '#0d6efd',
-                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            y: { beginAtZero: true }
-                        }
-                    }
-                });
+                let citasChart;
+                let especialidadesChart;
 
-                // Gráfico de Especialidades (Dona)
-                const ctxEsp = document.getElementById('especialidadesChart').getContext('2d');
-                new Chart(ctxEsp, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Cardiología', 'Pediatría', 'Dermatología', 'Otros'],
-                        datasets: [{
-                            data: [35, 25, 20, 20],
-                            backgroundColor: [
-                                '#0d6efd',
-                                '#198754',
-                                '#ffc107',
-                                '#0dcaf0'
-                            ],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        cutout: '70%',
-                        plugins: {
-                            legend: { position: 'bottom' }
-                        }
-                    }
-                });
+                function loadStats(period = 'week') {
+                    fetch('/admin/api/stats?period=' + period)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Procesar datos para gráfico de citas por día
+                            const diasLabels = Object.keys(data.citasPorDia).sort(); // Fechas ordenadas
+                            const citasData = diasLabels.map(fecha => data.citasPorDia[fecha]);
+
+                            // Actualizar o crear Gráfico de Citas (Líneas)
+                            const ctxCitas = document.getElementById('citasChart').getContext('2d');
+                            if (citasChart) {
+                                citasChart.data.labels = diasLabels;
+                                citasChart.data.datasets[0].data = citasData;
+                                citasChart.update();
+                            } else {
+                                citasChart = new Chart(ctxCitas, {
+                                    type: 'line',
+                                    data: {
+                                        labels: diasLabels,
+                                        datasets: [{
+                                            label: 'Citas Reservadas',
+                                            data: citasData,
+                                            borderColor: '#6366f1',
+                                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                                            borderWidth: 3,
+                                            pointBackgroundColor: '#ffffff',
+                                            pointBorderColor: '#6366f1',
+                                            pointBorderWidth: 2,
+                                            pointRadius: 4,
+                                            fill: true,
+                                            tension: 0.4
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        plugins: { legend: { display: false } },
+                                        scales: {
+                                            y: { 
+                                                beginAtZero: true,
+                                                ticks: { stepSize: 1 }
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+
+                            // Gráfico de Especialidades (Dona)
+                            const espLabels = Object.keys(data.citasPorEspecialidad);
+                            const espData = Object.values(data.citasPorEspecialidad);
+                            
+                            const ctxEsp = document.getElementById('especialidadesChart').getContext('2d');
+                            if (especialidadesChart) {
+                                especialidadesChart.data.labels = espLabels.length > 0 ? espLabels : ['Sin Datos'];
+                                especialidadesChart.data.datasets[0].data = espData.length > 0 ? espData : [1];
+                                especialidadesChart.update();
+                            } else {
+                                especialidadesChart = new Chart(ctxEsp, {
+                                    type: 'doughnut',
+                                    data: {
+                                        labels: espLabels.length > 0 ? espLabels : ['Sin Datos'],
+                                        datasets: [{
+                                            data: espData.length > 0 ? espData : [1],
+                                            backgroundColor: [
+                                                '#3b82f6', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6', '#06b6d4', '#64748b'
+                                            ],
+                                            borderWidth: 2,
+                                            borderColor: '#ffffff',
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        cutout: '70%',
+                                        plugins: { legend: { position: 'bottom' } }
+                                    }
+                                });
+                            }
+                        })
+                        .catch(error => console.error('Error fetching stats:', error));
+                }
+
+                // Carga inicial basada en el parámetro actual
+                const currentPeriod = '[[${period}]]' || 'week';
+                loadStats(currentPeriod);
             });
         </script>
     </th:block>

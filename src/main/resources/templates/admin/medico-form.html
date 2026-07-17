@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_base}">
+<head>
+    <title th:text="${medico.id == null ? 'Registrar Médico' : 'Editar Médico'}">Médico Form</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-8">
+                <a th:href="@{/admin/medicos}" class="text-decoration-none text-muted mb-2 d-inline-block"><i class="bi bi-arrow-left me-1"></i> Volver a Médicos</a>
+                <h2 class="fw-bold" style="color: #0f172a;" th:text="${medico.id == null ? 'Registrar Nuevo Médico' : 'Editar Información del Médico'}">Registrar Médico</h2>
+                <p class="text-muted" th:text="${medico.id == null ? 'Completa el formulario para dar de alta a un especialista en el sistema.' : 'Actualiza los datos personales o profesionales del médico.'}"></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card card-soft">
+                    <div class="card-body p-4">
+                        <form th:action="${medico.id == null ? '/admin/medicos/guardar' : '/admin/medicos/actualizar'}" method="post">
+                            <input type="hidden" th:if="${medico.id != null}" name="medicoId" th:value="${medico.id}" />
+
+                            <h5 class="fw-bold mb-4 text-primary border-bottom pb-2">Información Personal</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Nombres <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="nombre" th:value="${usuarioMedico.nombre}" required placeholder="Ej. Juan Carlos">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Apellidos <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="apellido" th:value="${usuarioMedico.apellido}" required placeholder="Ej. Pérez Gómez">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">DNI <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="dni" th:value="${usuarioMedico.dni}" th:readonly="${medico.id != null}" required maxlength="8" pattern="\d{8}" title="El DNI debe tener 8 dígitos numéricos" placeholder="12345678">
+                                    <div th:if="${medico.id != null}" class="form-text text-muted">El DNI no se puede modificar.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Teléfono</label>
+                                    <input type="text" class="form-control" name="telefono" th:value="${usuarioMedico.telefono}" placeholder="Opcional">
+                                </div>
+                            </div>
+
+                            <h5 class="fw-bold mb-4 text-primary border-bottom pb-2">Información Profesional & Acceso</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Número de Colegiatura (CMP) <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="numeroColegiatura" th:value="${medico.numeroColegiatura}" required placeholder="Ej. 12345">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Especialidades <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="especialidadIds" id="especialidades-select" multiple required>
+                                        <option th:each="esp : ${especialidadesTodas}" 
+                                                th:value="${esp.id}" 
+                                                th:text="${esp.nombre}"
+                                                th:selected="${medico.especialidades != null and #lists.contains(medico.especialidades, esp)}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Correo Electrónico <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" name="email" th:value="${usuarioMedico.email}" th:readonly="${medico.id != null}" required placeholder="medico@sisol.com">
+                                    <div th:if="${medico.id != null}" class="form-text text-muted">El correo electrónico no se puede modificar.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Contraseña <span th:if="${medico.id == null}" class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" name="password" th:required="${medico.id == null}" placeholder="******">
+                                    <div th:if="${medico.id != null}" class="form-text text-muted">Deja en blanco para mantener la contraseña actual.</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-5">
+                                <a th:href="@{/admin/medicos}" class="btn btn-light px-4">Cancelar</a>
+                                <button type="submit" class="btn btn-slate px-5" th:text="${medico.id == null ? 'Registrar Médico' : 'Guardar Cambios'}">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Panel lateral informativo -->
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <div class="card bg-light border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Información Importante</h5>
+                        <ul class="text-muted small mb-0 ps-3">
+                            <li class="mb-2">Al registrar un nuevo médico, se creará automáticamente su usuario de acceso al sistema con rol `MEDICO`.</li>
+                            <li class="mb-2">Se configurará un horario de disponibilidad por defecto (Lunes a Viernes, de 08:00 a 17:00 con intervalos de 30 minutos). El médico podrá ajustarlo desde su propio panel.</li>
+                            <li class="mb-2">El correo electrónico servirá como nombre de usuario para iniciar sesión.</li>
+                            <li>La cuenta se creará activa por defecto.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+        <!-- Choices.js CSS para multiselect moderno -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+        <!-- Script para Choices.js -->
+        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const element = document.getElementById('especialidades-select');
+                if (element) {
+                    new Choices(element, {
+                        removeItemButton: true,
+                        searchPlaceholderValue: 'Buscar especialidad...',
+                        noResultsText: 'No se encontraron especialidades',
+                        noChoicesText: 'No hay más especialidades para elegir',
+                        itemSelectText: 'Presiona para seleccionar',
+                        placeholder: true,
+                        placeholderValue: 'Seleccione especialidades',
+                        shouldSort: false
+                    });
+                }
+            });
+        </script>
+    </th:block>
+</body>
+</html>
