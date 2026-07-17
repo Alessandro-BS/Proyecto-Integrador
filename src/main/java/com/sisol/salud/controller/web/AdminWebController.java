@@ -343,4 +343,118 @@ public class AdminWebController {
         }
         return "redirect:/admin/medicos";
     }
+    @GetMapping("/pacientes")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String listarPacientes(Model model, Principal principal) {
+        if (principal != null) {
+            Usuario usuario = usuarioRepository.findByEmail(principal.getName()).orElse(null);
+            model.addAttribute("usuario", usuario);
+        }
+        
+        List<com.sisol.salud.model.entity.Paciente> pacientes = pacienteRepository.findAll();
+        model.addAttribute("pacientes", pacientes);
+        model.addAttribute("title", "Gestión de Pacientes");
+        return "admin/pacientes";
+    }
+
+    @GetMapping("/pacientes/nuevo")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String nuevoPaciente(Model model, Principal principal) {
+        if (principal != null) {
+            Usuario usuario = usuarioRepository.findByEmail(principal.getName()).orElse(null);
+            model.addAttribute("usuario", usuario);
+        }
+        model.addAttribute("paciente", new com.sisol.salud.model.entity.Paciente());
+        model.addAttribute("usuarioPaciente", new Usuario());
+        model.addAttribute("title", "Registrar Paciente");
+        return "admin/paciente-form";
+    }
+
+    @PostMapping("/pacientes/guardar")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public String guardarPaciente(@ModelAttribute Usuario formUser, RedirectAttributes redirectAttributes) {
+        try {
+            if (usuarioRepository.findByEmail(formUser.getEmail()).isPresent()) {
+                redirectAttributes.addFlashAttribute("error", "El correo ya está en uso.");
+                return "redirect:/admin/pacientes/nuevo";
+            }
+            if (usuarioRepository.findByDni(formUser.getDni()).isPresent()) {
+                redirectAttributes.addFlashAttribute("error", "El DNI ya está registrado.");
+                return "redirect:/admin/pacientes/nuevo";
+            }
+
+            formUser.setPassword(passwordEncoder.encode(formUser.getPassword()));
+            formUser.setRol(Rol.PACIENTE);
+            formUser.setActivo(true);
+            Usuario savedUser = usuarioRepository.save(formUser);
+
+            com.sisol.salud.model.entity.Paciente paciente = new com.sisol.salud.model.entity.Paciente();
+            paciente.setUsuario(savedUser);
+            pacienteRepository.save(paciente);
+
+            redirectAttributes.addFlashAttribute("success", "Paciente registrado exitosamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al guardar el paciente.");
+        }
+        return "redirect:/admin/pacientes";
+    }
+
+    @GetMapping("/pacientes/editar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String editarPaciente(@PathVariable Long id, Model model, Principal principal) {
+        if (principal != null) {
+            Usuario usuario = usuarioRepository.findByEmail(principal.getName()).orElse(null);
+            model.addAttribute("usuario", usuario);
+        }
+        com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findById(id).orElse(null);
+        if (paciente == null) {
+            return "redirect:/admin/pacientes";
+        }
+        model.addAttribute("paciente", paciente);
+        model.addAttribute("usuarioPaciente", paciente.getUsuario());
+        model.addAttribute("title", "Editar Paciente");
+        return "admin/paciente-form";
+    }
+
+    @PostMapping("/pacientes/actualizar")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public String actualizarPaciente(@RequestParam Long pacienteId, @ModelAttribute Usuario formUser, RedirectAttributes redirectAttributes) {
+        try {
+            com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findById(pacienteId).orElse(null);
+            if (paciente != null) {
+                Usuario userToUpdate = paciente.getUsuario();
+                
+                userToUpdate.setNombre(formUser.getNombre());
+                userToUpdate.setApellido(formUser.getApellido());
+                userToUpdate.setTelefono(formUser.getTelefono());
+                
+                if (formUser.getPassword() != null && !formUser.getPassword().trim().isEmpty()) {
+                    userToUpdate.setPassword(passwordEncoder.encode(formUser.getPassword()));
+                }
+                usuarioRepository.save(userToUpdate);
+                
+                redirectAttributes.addFlashAttribute("success", "Datos del paciente actualizados.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar al paciente.");
+        }
+        return "redirect:/admin/pacientes";
+    }
+
+    @GetMapping("/pacientes/toggle-status/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public String toggleStatusPaciente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findById(id).orElse(null);
+        if (paciente != null) {
+            Usuario usuario = paciente.getUsuario();
+            usuario.setActivo(!usuario.isActivo());
+            usuarioRepository.save(usuario);
+            String action = usuario.isActivo() ? "activado" : "desactivado";
+            redirectAttributes.addFlashAttribute("success", "Paciente " + action + " correctamente.");
+        }
+        return "redirect:/admin/pacientes";
+    }
 }

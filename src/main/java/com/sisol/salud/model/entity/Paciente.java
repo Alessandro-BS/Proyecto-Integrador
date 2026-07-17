@@ -72,4 +72,8 @@ public class Paciente {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt; // Fecha de Actualización
+
+    @jakarta.persistence.OneToMany(mappedBy = "paciente", fetch = jakarta.persistence.FetchType.LAZY)
+    @lombok.Builder.Default
+    private java.util.List<Cita> citas = new java.util.ArrayList<>();
 }

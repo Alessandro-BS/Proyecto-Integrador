@@ -18,6 +18,7 @@ public interface MedicoMapper {
     @Mapping(target = "apellido", source = "usuario.apellido")
     @Mapping(target = "email", source = "usuario.email")
     @Mapping(target = "especialidades", source = "especialidades")
+    @Mapping(target = "cpm", source = "numeroColegiatura")
     MedicoResponse toResponse(Medico medico);
 
     default List<String> mapEspecialidades(java.util.Set<com.sisol.salud.model.entity.Especialidad> especialidades) {

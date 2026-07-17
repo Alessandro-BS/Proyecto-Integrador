@@ -258,7 +258,11 @@
                 th:classappend="${title != null and title.contains('Médicos')} ? 'active' : ''" class="admin-nav-item">
                 <i class="fa-solid fa-user-doctor"></i> Gestión de Médicos
             </a>
-            <!-- Futuras secciones: Pacientes, Citas, Reportes -->
+            <a th:href="@{/admin/pacientes}"
+                th:classappend="${title != null and title.contains('Pacientes')} ? 'active' : ''" class="admin-nav-item">
+                <i class="fa-solid fa-users"></i> Gestión de Pacientes
+            </a>
+            <!-- Futuras secciones: Citas, Reportes -->
         </div>
 
         <div class="admin-profile-container">
