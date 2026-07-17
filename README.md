@@ -1,7 +1,7 @@
 # 🏥 SISOL Salud
 
-> Sistema Inteligente de Gestión de Citas Médicas para Hospitales Públicos.
-> Plataforma fullstack construida con Spring Boot 3.5 + Thymeleaf que permite a pacientes reservar citas, a médicos gestionar su agenda y consultas, y a administradores supervisar el sistema.
+> Sistema Inteligente de Gestión de Citas Médicas para Centros de Salud.
+> Plataforma web fullstack construida con Spring Boot 3.5 y Arquitectura MVC que permite a los pacientes reservar citas, a los médicos gestionar sus consultas, y a los administradores supervisar la operatividad del sistema de manera centralizada.
 
 ![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.9-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
@@ -13,41 +13,42 @@
 
 ## 📖 Índice
 
-- [Arquitectura](#-arquitectura)
-- [Modelo de Base de Datos](#-modelo-de-base-de-datos)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Arquitectura del Sistema](#-arquitectura-del-sistema)
+- [Modelo de Base de Datos (ERD)](#-modelo-de-base-de-datos-erd)
+- [Estructura del Proyecto (Clean Code)](#-estructura-del-proyecto-clean-code)
 - [Roles y Flujos de Usuario](#-roles-y-flujos-de-usuario)
+- [Mantenimiento y DevOps](#-mantenimiento-y-devops)
 - [Stack Tecnológico](#-stack-tecnológico)
-- [Requisitos Previos](#-requisitos-previos)
+- [Endpoints REST y Controladores Web](#-endpoints-rest-y-controladores-web)
 - [Instalación y Ejecución](#-instalación-y-ejecución)
-- [Endpoints REST API](#-endpoints-rest-api)
-- [Vistas Thymeleaf](#-vistas-thymeleaf)
-- [Seguridad](#-seguridad)
-- [Sistema de Notificaciones](#-sistema-de-notificaciones)
 
 ---
 
-## 🏗️ Arquitectura
+## 🏗️ Arquitectura del Sistema
 
-La aplicación sigue una **arquitectura en capas** (Layered Architecture) con separación clara de responsabilidades:
+La aplicación sigue una **arquitectura de n-capas** (Layered Architecture) con separación estricta de responsabilidades, integrando procesamiento síncrono para peticiones HTTP y procesamiento asíncrono para tareas de fondo.
 
 ```mermaid
 graph TB
-    subgraph "🌐 Cliente - Browser"
-        TH["Thymeleaf + Bootstrap 5 + FontAwesome"]
+    subgraph "🌐 Capa de Presentación (Frontend)"
+        TH["Thymeleaf Templates<br/>(Bootstrap 5 + JS)"]
     end
 
-    subgraph "🔒 Spring Boot Application"
+    subgraph "🔒 Capa de Aplicación (Spring Boot)"
         direction TB
-        SC["Security Layer<br/>(Spring Security + JWT)"]
-        WC["Web Controllers<br/>(MVC - Thymeleaf)"]
-        AC["API Controllers<br/>(REST - JSON)"]
-        SV["Service Layer<br/>(Business Logic)"]
+        SC["Filtros de Seguridad<br/>(Spring Security + JWT)"]
+        WC["Web Controllers<br/>(Renderizado MVC)"]
+        AC["API Controllers<br/>(Endpoints REST)"]
+        SV["Service Layer<br/>(Lógica de Negocio Central)"]
         RP["Repository Layer<br/>(Spring Data JPA)"]
-        NT["Async Services<br/>(Mail + Scheduler)"]
+        
+        subgraph "⚙️ Tareas en Segundo Plano"
+            NT["Servicio Asíncrono<br/>(Envío de Emails)"]
+            CR["Scheduler / Cron Jobs<br/>(Mantenimiento Automático)"]
+        end
     end
 
-    subgraph "💾 Persistencia"
+    subgraph "💾 Capa de Persistencia"
         DB[("MySQL 8<br/>sisol_salud_db")]
     end
 
@@ -58,16 +59,17 @@ graph TB
     AC --> SV
     SV --> RP
     RP <--> DB
-    SV -.->|"Trigger"| NT
+    SV -.->|"Llamada @Async"| NT
+    CR -.->|"Ejecución @Scheduled"| SV
 ```
 
-> **Nota:** El proyecto es fullstack monolítico. Las vistas se renderizan con **Thymeleaf** (Server-Side Rendering) y coexisten con controladores REST para la API documentada con Swagger.
+> **Nota Arquitectónica:** El proyecto es un monolito estructurado. Las vistas se renderizan desde el servidor (Server-Side Rendering) y coexisten con controladores REST para futuras integraciones móviles.
 
 ---
 
-## 🗄️ Modelo de Base de Datos
+## 🗄️ Modelo de Base de Datos (ERD)
 
-### Diagrama Entidad-Relación
+El diseño relacional asegura la integridad referencial y está auditado mediante *Hibernate Envers* (generación automática de tablas `_aud`).
 
 ```mermaid
 erDiagram
@@ -76,7 +78,6 @@ erDiagram
     
     MEDICOS ||--o{ MEDICO_ESPECIALIDADES : "1:N"
     ESPECIALIDADES ||--o{ MEDICO_ESPECIALIDADES : "1:N"
-    
     MEDICOS ||--o{ DISPONIBILIDAD_MEDICA : "1:N"
     
     PACIENTES ||--o{ CITAS : "1:N"
@@ -85,472 +86,177 @@ erDiagram
     
     CITAS ||--o| PAGOS : "1:1"
     CITAS ||--o| CONSULTAS : "1:1"
-    
     CITAS ||--o{ NOTIFICACIONES : "1:N"
-    USUARIOS ||--o{ NOTIFICACIONES : "1:N"
 
     USUARIOS {
         bigint id PK
         varchar dni UK
-        varchar nombre
-        varchar apellido
         varchar email UK
-        varchar password
-        varchar telefono
-        enum rol
+        enum rol "ADMIN, MEDICO, PACIENTE"
         boolean activo
-        datetime created_at
-        datetime updated_at
     }
 
     PACIENTES {
         bigint id PK
-        bigint usuario_id FK
         date fecha_nacimiento
-        varchar direccion
         varchar grupo_sanguineo
-        varchar genero
-        varchar contacto_emergencia_nombre
-        varchar contacto_emergencia_parentesco
-        varchar contacto_emergencia_telefono
     }
 
     MEDICOS {
         bigint id PK
-        bigint usuario_id FK
         varchar numero_colegiatura UK
-        varchar rne
-        varchar foto_url
-    }
-
-    ESPECIALIDADES {
-        bigint id PK
-        varchar nombre UK
-        varchar descripcion
-        decimal costo
-        boolean activo
-    }
-
-    MEDICO_ESPECIALIDADES {
-        bigint medico_id PK_FK
-        bigint especialidad_id PK_FK
-    }
-
-    DISPONIBILIDAD_MEDICA {
-        bigint id PK
-        bigint medico_id FK
-        enum dia_semana
-        time hora_inicio
-        time hora_fin
-        int duracion_consulta_min
-        boolean activo
     }
 
     CITAS {
         bigint id PK
-        bigint paciente_id FK
-        bigint medico_id FK
-        bigint especialidad_id FK
         date fecha
         time hora_inicio
-        time hora_fin
-        enum estado
-        varchar motivo_consulta
-        text observaciones
-    }
-
-    CONSULTAS {
-        bigint id PK
-        bigint cita_id FK
-        text notas_medicas
-        text diagnostico
-        varchar archivo_url
-    }
-
-    PAGOS {
-        bigint id PK
-        bigint cita_id FK
-        decimal monto
-        enum metodo_pago
-        enum estado_pago
-        varchar referencia_pago
-        datetime fecha_pago
-    }
-
-    NOTIFICACIONES {
-        bigint id PK
-        bigint cita_id FK
-        bigint usuario_id FK
-        enum tipo
-        varchar asunto
-        text mensaje
-        boolean enviado
-        datetime fecha_envio
+        enum estado "PENDIENTE, CONFIRMADA, CANCELADA..."
     }
 ```
-
-### Tabla intermedia (ManyToMany)
-
-| Tabla | Columnas | Descripción |
-|-------|----------|-------------|
-| `medico_especialidades` | `medico_id`, `especialidad_id` | Un médico puede tener N especialidades |
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura del Proyecto (Clean Code)
 
-```
-com.sisol.salud/
-├── config/                          # Configuraciones
-│   ├── DataSeeder.java              # Datos de prueba al iniciar
-│   ├── SecurityConfig.java          # Configuración Spring Security
-│   ├── SwaggerConfig.java           # Configuración OpenAPI
-│   └── MailConfig.java              # Configuración SMTP
-│
-├── security/                        # Capa de seguridad
-│   ├── jwt/
-│   │   ├── JwtTokenProvider.java    # Generación/validación JWT
-│   │   ├── JwtAuthenticationFilter.java
-│   │   └── JwtAuthEntryPoint.java
-│   └── CustomUserDetailsService.java
-│
-├── model/                           # Capa de dominio
-│   ├── entity/
-│   │   ├── Usuario.java             # Tabla madre de autenticación
-│   │   ├── Paciente.java            # Datos clínicos del paciente
-│   │   ├── Medico.java              # Datos profesionales del médico
-│   │   ├── Especialidad.java        # Catálogo de especialidades
-│   │   ├── DisponibilidadMedica.java # Horarios del médico
-│   │   ├── Cita.java                # Reservas de citas
-│   │   ├── Consulta.java            # Registro de la consulta médica
-│   │   ├── Pago.java                # Pagos de citas
-│   │   └── Notificacion.java        # Notificaciones al usuario
-│   └── enums/
-│       ├── Rol.java                 # PACIENTE, MEDICO, ADMIN
-│       ├── EstadoCita.java          # PENDIENTE, CONFIRMADA, CANCELADA, COMPLETADA, NO_ASISTIO
-│       ├── EstadoPago.java          # PENDIENTE, PAGADO, REEMBOLSADO
-│       ├── MetodoPago.java          # EFECTIVO, TARJETA_DEBITO, YAPE, PLIN, etc.
-│       ├── DiaSemana.java           # LUNES a DOMINGO
-│       └── TipoNotificacion.java    # EMAIL, SMS
-│
-├── repository/                      # Capa de acceso a datos (JPA)
-│   ├── UsuarioRepository.java
-│   ├── PacienteRepository.java
-│   ├── MedicoRepository.java
-│   ├── EspecialidadRepository.java
-│   ├── DisponibilidadMedicaRepository.java
-│   ├── CitaRepository.java
-│   ├── ConsultaRepository.java
-│   ├── PagoRepository.java
-│   └── NotificacionRepository.java
-│
-├── service/                         # Capa de lógica de negocio
-│   ├── AuthService.java             # Registro + login
-│   ├── CitaService.java             # Reserva, cancelación, estados
-│   ├── DisponibilidadService.java   # CRUD horarios médicos
-│   ├── MedicoService.java           # Consultas de médicos
-│   ├── PagoService.java             # Procesamiento de pagos
-│   ├── NotificacionService.java     # Envío de notificaciones
-│   ├── EmailService.java            # Servicio SMTP
-│   ├── ReporteService.java          # Estadísticas y reportes
-│   └── NotificacionSender.java      # Interfaz Strategy (Email/SMS)
-│
-├── controller/
-│   ├── web/                         # Controladores MVC (Thymeleaf)
-│   │   ├── HomeController.java      # Páginas públicas (index, servicios, etc.)
-│   │   ├── AuthWebController.java   # Login, registro, redirección por rol
-│   │   ├── PacienteWebController.java # Dashboard, perfil, reservas paciente
-│   │   ├── MedicoPanelWebController.java # Panel interno del médico
-│   │   ├── MedicoWebController.java # Vista pública de médicos
-│   │   └── AdminWebController.java  # Panel de administración
-│   └── api/                         # Controladores REST (JSON)
-│       ├── AuthRestController.java
-│       ├── CitaRestController.java
-│       ├── MedicoRestController.java
-│       └── ReporteRestController.java
-│
-├── dto/                             # Data Transfer Objects
-├── mapper/                          # MapStruct mappers
-├── exception/                       # Excepciones personalizadas
-├── scheduler/                       # Tareas programadas (@Scheduled)
-└── SisolSaludApplication.java       # Punto de entrada
-```
+La distribución de directorios respeta los principios de Clean Architecture y mantenibilidad de código.
 
-### Estructura de Vistas (Thymeleaf)
+```text
+src/main/java/com/sisol/salud/
+├── config/             # Configuraciones globales (Seguridad, Swagger, Mail, DataSeeder)
+├── controller/         # Puntos de entrada HTTP
+│   ├── api/            # Controladores que retornan JSON (@RestController)
+│   └── web/            # Controladores que retornan vistas HTML (@Controller)
+├── dto/                # Objetos de Transferencia de Datos
+├── exception/          # Manejadores globales de errores (@ControllerAdvice)
+├── mapper/             # Mapeos automáticos Entity <-> DTO (MapStruct)
+├── model/              # Dominio del negocio
+│   ├── entity/         # Entidades persistentes (JPA)
+│   └── enums/          # Enumeradores de estado (Roles, Estados de cita)
+├── repository/         # Interfaces de acceso a base de datos (Spring Data)
+├── scheduler/          # Procesos automatizados y Cron Jobs
+└── service/            # Lógica de negocio core (Transaccional)
 
-```
-src/main/resources/templates/
-├── layout/
-│   ├── base.html                    # Layout público (navbar + footer)
-│   └── medico_base.html             # Layout médico (sidebar granate)
-│
-├── index.html                       # Página principal pública
-├── servicios.html                   # Servicios de SISOL Salud
-├── medicos.html                     # Directorio público de médicos
-├── nosotros.html                    # Acerca de nosotros
-│
-├── auth/
-│   ├── login.html                   # Inicio de sesión
-│   └── registro.html                # Registro de pacientes
-│
-├── paciente/
-│   ├── dashboard.html               # Panel principal del paciente
-│   ├── mis-citas.html               # Historial de citas (próximas + pasadas)
-│   ├── perfil.html                  # Editar perfil + Seguridad + Notificaciones
-│   ├── resultados.html              # Resultados médicos (PDFs)
-│   ├── reservar-paso1.html          # Paso 1: Seleccionar especialidad
-│   ├── reservar-paso2.html          # Paso 2: Seleccionar médico
-│   └── reservar-paso3.html          # Paso 3: Fecha, hora y pago
-│
-├── medico/
-│   ├── dashboard.html               # Panel principal del médico
-│   ├── citas-hoy.html               # Agenda semanal (Schedule)
-│   ├── consulta.html                # Vista "En Consulta" (notas + diagnóstico)
-│   └── disponibilidad.html          # Perfil + horario de trabajo
-│
-├── fragments/                       # Fragmentos reutilizables
-└── email/                           # Plantillas de correo
+src/main/resources/
+├── templates/          # Vistas HTML Thymeleaf
+│   ├── admin/          # Interfaz de gestión
+│   ├── auth/           # Login y registro
+│   ├── email/          # Plantillas de notificaciones (HTML/CSS inline)
+│   ├── medico/         # Panel del médico
+│   ├── paciente/       # Panel del paciente
+│   └── layout/         # Componentes base (Header, Sidebar, Footer)
+└── application.yml     # Configuración de propiedades del entorno
 ```
 
 ---
 
 ## 👥 Roles y Flujos de Usuario
 
-### 🔵 Paciente (`PACIENTE`)
+El sistema cuenta con un control de acceso basado en roles (RBAC).
 
+### 🔵 Paciente (`ROLE_PACIENTE`)
 ```mermaid
 flowchart LR
-    A["Registro"] --> B["Login"]
-    B --> C["Dashboard"]
-    C --> D["Reservar Cita"]
-    D --> D1["Paso 1: Especialidad"]
-    D1 --> D2["Paso 2: Médico"]
-    D2 --> D3["Paso 3: Fecha + Hora + Pago"]
-    C --> E["Mis Citas"]
-    C --> F["Resultados Médicos"]
-    C --> G["Editar Perfil"]
+    A("Autenticación") --> B("Panel Paciente")
+    B --> C("Reservar Cita Médica")
+    C --> C1("Elegir Especialidad") --> C2("Elegir Médico y Hora") --> C3("Confirmar")
+    B --> D("Ver Historial Médico")
+    B --> E("Actualizar Perfil")
 ```
 
-### 🔴 Médico (`MEDICO`)
-
+### 🔴 Médico (`ROLE_MEDICO`)
 ```mermaid
 flowchart LR
-    A["Login"] --> B["Dashboard"]
-    B --> C["Iniciar Consulta"]
-    C --> C1["Notas Médicas + Diagnóstico"]
-    C1 --> C2["Finalizar / Guardar Borrador"]
-    B --> D["Agenda Semanal"]
-    B --> E["Mi Perfil + Horarios"]
+    A("Autenticación") --> B("Panel Médico")
+    B --> C("Agenda del Día")
+    B --> D("Atender Cita (En Consulta)")
+    D --> D1("Registrar Diagnóstico y Notas")
+    B --> E("Ver Historial de Citas")
 ```
 
-### ⚙️ Admin (`ADMIN`)
-> Panel de administración planificado para implementación futura.
+### ⚙️ Administrador (`ROLE_ADMIN`)
+```mermaid
+flowchart LR
+    A("Autenticación") --> B("Panel Admin")
+    B --> C("Gestión de Médicos")
+    B --> D("Gestión de Pacientes")
+    C --> C1("Crear/Editar Médico")
+    D --> D1("Auditar Citas de Paciente")
+```
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Mantenimiento y DevOps
 
-| Capa | Tecnología | Versión |
-|------|-----------|---------|
-| **Lenguaje** | Java | 17 |
-| **Framework** | Spring Boot | 3.5.9 |
-| **ORM** | Hibernate / Spring Data JPA | 6.x |
-| **Auditoría** | Hibernate Envers | 6.x |
-| **Seguridad** | Spring Security + JWT (jjwt) | 0.12.6 |
-| **Motor de vistas** | Thymeleaf + Layout Dialect | 3.x |
-| **Base de datos** | MySQL | 8.0 |
-| **CSS Framework** | Bootstrap | 5.3 |
-| **Iconos** | FontAwesome + Bootstrap Icons | 6.4 / 1.11 |
-| **Fuentes** | Google Fonts (Manrope, Inter, Outfit) | — |
-| **Documentación API** | SpringDoc OpenAPI (Swagger UI) | 2.x |
-| **Email** | Spring Mail (SMTP) | — |
-| **Mapeo DTO** | MapStruct | 1.5.5 |
-| **Utilidades** | Lombok | — |
-| **Build Tool** | Maven (con Maven Wrapper) | 3.x |
-| **Testing** | JUnit 5 + Mockito + H2 | — |
+El sistema incluye operabilidad a nivel de infraestructura para asegurar la continuidad del negocio.
+
+### 1. Tareas Programadas (Cron Jobs)
+El proyecto utiliza `@EnableScheduling` nativo de Spring Boot. 
+En el paquete `scheduler`, la clase `MantenimientoCronService.java` ejecuta limpieza de datos y cancelaciones automáticas (Ej: Citas vencidas no pagadas).
+
+### 2. Copias de Seguridad (Backups Automáticos)
+Se incluye un script ejecutable en la raíz del proyecto (`backup_sisol.bat`) que automatiza el volcado de la base de datos `sisol_salud` usando `mysqldump`.
+**Uso sugerido en Producción:** Asociar este archivo al _Programador de Tareas de Windows_ o _Cron_ en Linux para generar backups a las 02:00 AM diarios en el directorio `C:\Backups\`.
 
 ---
 
-## 📋 Requisitos Previos
+## 💻 Stack Tecnológico
 
-- **Java 17** o superior ([Descargar](https://adoptium.net/))
-- **MySQL 8.0** ([Descargar](https://dev.mysql.com/downloads/))
-- **Git** ([Descargar](https://git-scm.com/))
-- Un IDE como IntelliJ IDEA, Eclipse o VS Code
-
-> **Nota:** No necesitas instalar Maven. El proyecto incluye Maven Wrapper (`mvnw`).
+| Componente | Tecnología | Versión |
+|------------|-----------|---------|
+| **Core Backend** | Java / Spring Boot | 17 / 3.5.9 |
+| **Persistencia** | MySQL / Spring Data JPA | 8.0 / Hibernate 6.x |
+| **Seguridad** | Spring Security + JWT | 6.x |
+| **Frontend** | Thymeleaf + Bootstrap | 3.x / 5.3 |
+| **Documentación**| SpringDoc OpenAPI | 2.x |
+| **Mapeo / Utils**| MapStruct / Lombok | 1.5.5 / - |
 
 ---
 
 ## 🚀 Instalación y Ejecución
 
-### 1. Clonar el repositorio
+### Requisitos
+- **Java 17 JDK** instalado.
+- **MySQL 8** ejecutándose en el puerto 3306.
+- (Opcional) **Git** para clonar el repositorio.
 
-```bash
-git clone https://github.com/Alessandro-BS/Proyecto-Integrador.git
-cd Proyecto-Integrador
-```
-
-### 2. Crear la base de datos
-
+### Paso 1: Base de Datos
+Crea la base de datos en tu entorno local de MySQL:
 ```sql
 CREATE DATABASE sisol_salud_db;
 ```
 
-### 3. Configurar credenciales
-
-Editar `src/main/resources/application.properties`:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/sisol_salud_db
-spring.datasource.username=TU_USUARIO
-spring.datasource.password=TU_PASSWORD
+### Paso 2: Configuración (application.yml)
+Navega a `src/main/resources/application.yml` y verifica tus credenciales locales:
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/sisol_salud_db
+    username: root
+    password: tu_password_local
 ```
 
-### 4. Ejecutar la aplicación
+### Paso 3: Ejecución del Proyecto
+Abre tu terminal en la carpeta raíz del proyecto y ejecuta el Wrapper de Maven (No necesitas descargar Maven manualmente):
 
-```bash
-# Windows
+**En Windows:**
+```cmd
 .\mvnw.cmd spring-boot:run
+```
 
-# Linux / Mac
+**En Linux / Mac:**
+```bash
 ./mvnw spring-boot:run
 ```
 
-### 5. Acceder
+El DataSeeder automático inyectará las especialidades, y los usuarios de prueba en la base de datos al arrancar por primera vez.
 
-| Recurso | URL |
-|---------|-----|
-| Portal público | `http://localhost:8080` |
-| Login | `http://localhost:8080/auth/login` |
-| Swagger UI | `http://localhost:8080/swagger-ui.html` |
-
-### Credenciales de prueba
-
-| Rol | Email | Contraseña |
-|-----|-------|------------|
-| Médico | `doctor@sisol.com` | `123456` |
-
-> Se crean automáticamente al iniciar la aplicación gracias a `DataSeeder.java`.
+### Paso 4: Accesos de Prueba
+Ingresa a `http://localhost:8080` y utiliza las credenciales que se imprimen en la consola al iniciar el sistema.
+Por defecto:
+- **Admin:** `admin@sisol.com` / `123456`
+- **Médico:** `carlos.mendoza@sisol.com` / `123456`
+- **Paciente:** `juan.perez@gmail.com` / `123456`
 
 ---
-
-## 🌐 Endpoints REST API
-
-### Auth (`/api/auth`)
-| Método | Endpoint | Acceso | Descripción |
-|--------|----------|--------|-------------|
-| `POST` | `/register` | Público | Registrar paciente |
-| `POST` | `/login` | Público | Autenticarse → JWT |
-
-### Citas (`/api/citas`)
-| Método | Endpoint | Acceso | Descripción |
-|--------|----------|--------|-------------|
-| `POST` | `/` | PACIENTE | Reservar una cita |
-| `GET` | `/mis-citas` | PACIENTE | Listar citas del paciente |
-| `GET` | `/medico` | MEDICO | Listar citas del médico |
-| `PUT` | `/{id}/cancelar` | PACIENTE | Cancelar cita (>2h antes) |
-| `PUT` | `/{id}/completar` | MEDICO | Marcar cita completada |
-| `PUT` | `/{id}/no-asistio` | MEDICO | Marcar inasistencia |
-| `GET` | `/disponibilidad` | AUTH | Consultar slots disponibles |
-
-### Médicos (`/api/medicos`)
-| Método | Endpoint | Acceso | Descripción |
-|--------|----------|--------|-------------|
-| `GET` | `/` | AUTH | Listar todos los médicos |
-| `GET` | `/{id}` | AUTH | Detalle de un médico |
-| `GET` | `/especialidad/{id}` | AUTH | Médicos por especialidad |
-| `GET` | `/{id}/disponibilidad` | AUTH | Horarios de un médico |
-
-### Reportes (`/api/reportes`)
-| Método | Endpoint | Acceso | Descripción |
-|--------|----------|--------|-------------|
-| `GET` | `/dashboard` | ADMIN | Estadísticas generales |
-
-> 📘 Documentación interactiva completa en **Swagger UI**: `http://localhost:8080/swagger-ui.html`
-
----
-
-## 🔐 Seguridad
-
-```mermaid
-sequenceDiagram
-    participant C as Browser
-    participant SC as Spring Security
-    participant CT as Controller
-    participant SV as AuthService
-    participant DB as MySQL
-
-    C->>SC: POST /auth/login (email, password)
-    SC->>CT: Delegar autenticación
-    CT->>SV: authenticate(credentials)
-    SV->>DB: findByEmail(email)
-    DB-->>SV: Usuario
-    SV->>SV: BCrypt.matches(password)
-    SV-->>CT: Sesión autenticada
-    CT-->>C: Redirect según rol
-
-    Note over C: PACIENTE → /paciente/dashboard
-    Note over C: MEDICO → /panel-medico/dashboard
-    Note over C: ADMIN → /admin/dashboard
-```
-
-### Características de seguridad
-- Passwords hasheados con **BCrypt**
-- Protección CSRF habilitada para formularios
-- Sesiones gestionadas por Spring Security
-- JWT disponible para endpoints REST API
-- Redirección automática por rol al hacer login
-- Modal de confirmación al cerrar sesión (panel médico)
-
----
-
-## 📧 Sistema de Notificaciones
-
-```mermaid
-flowchart LR
-    A["Paciente reserva cita"] --> B["CitaService"]
-    B --> C["NotificacionService"]
-    C --> D["EmailService (SMTP)"]
-
-    E["@Scheduled - 8:00 AM diario"] --> F["RecordatorioCitaScheduler"]
-    F --> G["Buscar citas de mañana"]
-    G --> C
-```
-
-| Evento | Canal | Momento |
-|--------|-------|---------|
-| Cita reservada | Email | Inmediato |
-| Cita cancelada | Email | Inmediato |
-| Recordatorio de cita | Email | 24h antes (8:00 AM) |
-
-> Diseño extensible mediante interfaz `NotificacionSender` (patrón Strategy) para agregar SMS en el futuro.
-
----
-
-## 🧪 Testing
-
-```bash
-# Ejecutar todos los tests
-.\mvnw.cmd test
-
-# Ejecutar un test específico
-.\mvnw.cmd test -Dtest=MedicoServiceTest
-```
-
-| Tipo | Framework | Base de datos |
-|------|-----------|---------------|
-| Unitarios | JUnit 5 + Mockito | — |
-| Integración | Spring Boot Test + MockMvc | H2 (en memoria) |
-
----
-
-## 📄 Licencia
-
-Este proyecto es de uso académico — Proyecto Integrador.
-
----
-
-<p align="center">
-  <b>SISOL Salud</b> — Brindando atención médica de calidad accesible para todos los peruanos con la calidez que nos caracteriza.
-</p>
+*Desarrollado con altos estándares de calidad e ingeniería de software para el Proyecto Integrador.*
