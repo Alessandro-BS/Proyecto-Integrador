@@ -1,0 +1,1789 @@
+2026-06-18 21:13:42.816  INFO 10100 --- [restartedMain] com.sisol.salud.SisolSaludApplication    : Starting SisolSaludApplication using Java 21.0.10 with PID 10100 (C:\Users\fabri\OneDrive\Desktop\Repositorios\Proyecto-Integrador\target\classes started by fabri in C:\Users\fabri\OneDrive\Desktop\Repositorios\Proyecto-Integrador)
+2026-06-18 21:13:42.818 DEBUG 10100 --- [restartedMain] com.sisol.salud.SisolSaludApplication    : Running with Spring Boot v3.5.9, Spring v6.2.15
+2026-06-18 21:13:42.819  INFO 10100 --- [restartedMain] com.sisol.salud.SisolSaludApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-06-18 21:13:43.034  INFO 10100 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-06-18 21:13:43.034  INFO 10100 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-06-18 21:13:44.067  INFO 10100 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-18 21:13:44.132  INFO 10100 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 57 ms. Found 8 JPA repository interfaces.
+2026-06-18 21:13:44.819  INFO 10100 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-06-18 21:13:44.835  INFO 10100 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-18 21:13:44.836  INFO 10100 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+2026-06-18 21:13:44.892  INFO 10100 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-18 21:13:44.892  INFO 10100 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1857 ms
+2026-06-18 21:13:45.131  INFO 10100 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-18 21:13:45.190  INFO 10100 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.39.Final
+2026-06-18 21:13:45.222  INFO 10100 --- [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-18 21:13:45.285  INFO 10100 --- [restartedMain] o.h.e.boot.internal.EnversServiceImpl    : Envers integration enabled? : true
+2026-06-18 21:13:45.443  INFO 10100 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-18 21:13:45.502  INFO 10100 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-18 21:13:45.989  INFO 10100 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:sisoldb user=SA
+2026-06-18 21:13:45.991  INFO 10100 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-18 21:13:46.025  WARN 10100 --- [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-18 21:13:46.055  INFO 10100 --- [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-18 21:13:46.490  INFO 10100 --- [restartedMain] o.h.e.c.i.m.AuditMetadataGenerator       : Adding properties for entity: com.sisol.salud.model.entity.Cita
+2026-06-18 21:13:46.492  INFO 10100 --- [restartedMain] o.h.e.c.i.m.AuditMetadataGenerator       : Adding properties for entity: com.sisol.salud.model.entity.Paciente
+2026-06-18 21:13:46.493  INFO 10100 --- [restartedMain] o.h.e.c.i.m.AuditMetadataGenerator       : Adding properties for entity: com.sisol.salud.model.entity.Especialidad
+2026-06-18 21:13:46.493  INFO 10100 --- [restartedMain] o.h.e.c.i.m.AuditMetadataGenerator       : Adding properties for entity: com.sisol.salud.model.entity.Medico
+2026-06-18 21:13:46.496  INFO 10100 --- [restartedMain] o.h.e.c.i.m.AuditMetadataGenerator       : Adding properties for entity: com.sisol.salud.model.entity.Pago
+2026-06-18 21:13:46.497  INFO 10100 --- [restartedMain] o.h.e.c.i.m.AuditMetadataGenerator       : Adding properties for entity: com.sisol.salud.model.entity.Usuario
+2026-06-18 21:13:47.774  INFO 10100 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-18 21:13:47.798 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists citas cascade 
+2026-06-18 21:13:47.803 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists citas_aud cascade 
+2026-06-18 21:13:47.804 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists disponibilidad_medica cascade 
+2026-06-18 21:13:47.805 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists especialidades cascade 
+2026-06-18 21:13:47.806 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists especialidades_aud cascade 
+2026-06-18 21:13:47.807 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists medico_especialidades cascade 
+2026-06-18 21:13:47.808 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists medico_especialidades_aud cascade 
+2026-06-18 21:13:47.809 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists medicos cascade 
+2026-06-18 21:13:47.811 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists medicos_aud cascade 
+2026-06-18 21:13:47.812 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists notificaciones cascade 
+2026-06-18 21:13:47.813 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists pacientes cascade 
+2026-06-18 21:13:47.814 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists pacientes_aud cascade 
+2026-06-18 21:13:47.815 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists pagos cascade 
+2026-06-18 21:13:47.816 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists pagos_aud cascade 
+2026-06-18 21:13:47.817 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists revinfo cascade 
+2026-06-18 21:13:47.818 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists usuarios cascade 
+2026-06-18 21:13:47.820 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    drop table if exists usuarios_aud cascade 
+2026-06-18 21:13:47.829 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table citas (
+        fecha date not null,
+        hora_fin time(6) not null,
+        hora_inicio time(6) not null,
+        created_at timestamp(6),
+        especialidad_id bigint not null,
+        id bigint generated by default as identity,
+        medico_id bigint not null,
+        paciente_id bigint not null,
+        updated_at timestamp(6),
+        motivo_consulta varchar(500),
+        observaciones TEXT,
+        estado enum ('CANCELADA','COMPLETADA','CONFIRMADA','NO_ASISTIO','PENDIENTE') not null,
+        primary key (id)
+    )
+2026-06-18 21:13:47.846 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table citas_aud (
+        fecha date,
+        hora_fin time(6),
+        hora_inicio time(6),
+        rev integer not null,
+        revtype tinyint,
+        created_at timestamp(6),
+        especialidad_id bigint,
+        id bigint not null,
+        medico_id bigint,
+        paciente_id bigint,
+        updated_at timestamp(6),
+        motivo_consulta varchar(500),
+        observaciones TEXT,
+        estado enum ('CANCELADA','COMPLETADA','CONFIRMADA','NO_ASISTIO','PENDIENTE'),
+        primary key (rev, id)
+    )
+2026-06-18 21:13:47.850 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table disponibilidad_medica (
+        activo boolean not null,
+        duracion_consulta_min integer not null,
+        hora_fin time(6) not null,
+        hora_inicio time(6) not null,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        medico_id bigint not null,
+        updated_at timestamp(6),
+        dia_semana enum ('DOMINGO','JUEVES','LUNES','MARTES','MIERCOLES','SABADO','VIERNES') not null,
+        primary key (id)
+    )
+2026-06-18 21:13:47.855 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table especialidades (
+        activo boolean not null,
+        costo numeric(10,2) not null,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        nombre varchar(100) not null unique,
+        descripcion varchar(500),
+        primary key (id)
+    )
+2026-06-18 21:13:47.859 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table especialidades_aud (
+        activo boolean,
+        costo numeric(10,2),
+        rev integer not null,
+        revtype tinyint,
+        created_at timestamp(6),
+        id bigint not null,
+        nombre varchar(100),
+        descripcion varchar(500),
+        primary key (rev, id)
+    )
+2026-06-18 21:13:47.861 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table medico_especialidades (
+        especialidad_id bigint not null,
+        medico_id bigint not null,
+        primary key (especialidad_id, medico_id)
+    )
+2026-06-18 21:13:47.864 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table medico_especialidades_aud (
+        rev integer not null,
+        revtype tinyint,
+        especialidad_id bigint not null,
+        medico_id bigint not null,
+        primary key (rev, especialidad_id, medico_id)
+    )
+2026-06-18 21:13:47.868 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table medicos (
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        updated_at timestamp(6),
+        usuario_id bigint not null unique,
+        numero_colegiatura varchar(20) not null unique,
+        primary key (id)
+    )
+2026-06-18 21:13:47.872 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table medicos_aud (
+        rev integer not null,
+        revtype tinyint,
+        created_at timestamp(6),
+        id bigint not null,
+        updated_at timestamp(6),
+        usuario_id bigint,
+        numero_colegiatura varchar(20),
+        primary key (rev, id)
+    )
+2026-06-18 21:13:47.879 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table notificaciones (
+        enviado boolean not null,
+        cita_id bigint not null,
+        created_at timestamp(6),
+        fecha_envio timestamp(6),
+        id bigint generated by default as identity,
+        usuario_id bigint not null,
+        asunto varchar(255) not null,
+        mensaje TEXT not null,
+        tipo enum ('EMAIL','SMS') not null,
+        primary key (id)
+    )
+2026-06-18 21:13:47.881 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table pacientes (
+        fecha_nacimiento date,
+        grupo_sanguineo varchar(5),
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        updated_at timestamp(6),
+        usuario_id bigint not null unique,
+        contacto_emergencia_telefono varchar(20),
+        genero varchar(20),
+        contacto_emergencia_parentesco varchar(50),
+        contacto_emergencia_nombre varchar(150),
+        direccion varchar(255),
+        primary key (id)
+    )
+2026-06-18 21:13:47.886 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table pacientes_aud (
+        fecha_nacimiento date,
+        rev integer not null,
+        revtype tinyint,
+        grupo_sanguineo varchar(5),
+        created_at timestamp(6),
+        id bigint not null,
+        updated_at timestamp(6),
+        usuario_id bigint,
+        contacto_emergencia_telefono varchar(20),
+        genero varchar(20),
+        contacto_emergencia_parentesco varchar(50),
+        contacto_emergencia_nombre varchar(150),
+        direccion varchar(255),
+        primary key (rev, id)
+    )
+2026-06-18 21:13:47.893 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table pagos (
+        monto numeric(10,2) not null,
+        cita_id bigint not null unique,
+        created_at timestamp(6),
+        fecha_pago timestamp(6),
+        id bigint generated by default as identity,
+        paciente_id bigint not null,
+        updated_at timestamp(6),
+        referencia_pago varchar(100),
+        notas varchar(500),
+        estado_pago enum ('PAGADO','PENDIENTE','REEMBOLSADO') not null,
+        metodo_pago enum ('EFECTIVO','PLIN','TARJETA_CREDITO','TARJETA_DEBITO','TRANSFERENCIA','YAPE') not null,
+        primary key (id)
+    )
+2026-06-18 21:13:47.896 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table pagos_aud (
+        monto numeric(10,2),
+        rev integer not null,
+        revtype tinyint,
+        cita_id bigint,
+        created_at timestamp(6),
+        fecha_pago timestamp(6),
+        id bigint not null,
+        paciente_id bigint,
+        updated_at timestamp(6),
+        referencia_pago varchar(100),
+        notas varchar(500),
+        estado_pago enum ('PAGADO','PENDIENTE','REEMBOLSADO'),
+        metodo_pago enum ('EFECTIVO','PLIN','TARJETA_CREDITO','TARJETA_DEBITO','TRANSFERENCIA','YAPE'),
+        primary key (rev, id)
+    )
+2026-06-18 21:13:47.899 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table revinfo (
+        rev integer generated by default as identity,
+        revtstmp bigint,
+        primary key (rev)
+    )
+2026-06-18 21:13:47.904 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table usuarios (
+        activo boolean not null,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        updated_at timestamp(6),
+        dni varchar(15) not null unique,
+        telefono varchar(20),
+        apellido varchar(100) not null,
+        nombre varchar(100) not null,
+        email varchar(150) not null unique,
+        password varchar(255) not null,
+        rol enum ('ADMIN','MEDICO','PACIENTE') not null,
+        primary key (id)
+    )
+2026-06-18 21:13:47.908 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    create table usuarios_aud (
+        activo boolean,
+        rev integer not null,
+        revtype tinyint,
+        created_at timestamp(6),
+        id bigint not null,
+        updated_at timestamp(6),
+        dni varchar(15),
+        telefono varchar(20),
+        apellido varchar(100),
+        nombre varchar(100),
+        email varchar(150),
+        password varchar(255),
+        rol enum ('ADMIN','MEDICO','PACIENTE'),
+        primary key (rev, id)
+    )
+2026-06-18 21:13:47.911 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists citas 
+       add constraint FKapkrvku8ylaqff5yx6gmv7hfb 
+       foreign key (especialidad_id) 
+       references especialidades
+2026-06-18 21:13:47.934 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists citas 
+       add constraint FKbfl57ey8hx1a3ubtrpy8x9ll 
+       foreign key (medico_id) 
+       references medicos
+2026-06-18 21:13:47.938 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists citas 
+       add constraint FKnqrsxxcuysfcxiekvixm7h8r1 
+       foreign key (paciente_id) 
+       references pacientes
+2026-06-18 21:13:47.942 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists citas_aud 
+       add constraint FK3qxb7u9ddr5a1v8iyp2ew7j7a 
+       foreign key (rev) 
+       references revinfo
+2026-06-18 21:13:47.945 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists disponibilidad_medica 
+       add constraint FK2gp5w61ar5b1ncquajq6jtxvx 
+       foreign key (medico_id) 
+       references medicos
+2026-06-18 21:13:47.947 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists especialidades_aud 
+       add constraint FK47semrxdveencd7ehm5mybrur 
+       foreign key (rev) 
+       references revinfo
+2026-06-18 21:13:47.949 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists medico_especialidades 
+       add constraint FKg053qn341nw53yhgoq1c2mjj0 
+       foreign key (especialidad_id) 
+       references especialidades
+2026-06-18 21:13:47.952 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists medico_especialidades 
+       add constraint FK7xw32fy03axlyq7bwcu476vl3 
+       foreign key (medico_id) 
+       references medicos
+2026-06-18 21:13:47.954 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists medico_especialidades_aud 
+       add constraint FK76j86sh57tifk0laqf5huqv9j 
+       foreign key (rev) 
+       references revinfo
+2026-06-18 21:13:47.957 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists medicos 
+       add constraint FKa0dd5a1r4o7vgnqr0aigr69td 
+       foreign key (usuario_id) 
+       references usuarios
+2026-06-18 21:13:47.962 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists medicos_aud 
+       add constraint FKcyfyosarrcjqc36531rjwa8f8 
+       foreign key (rev) 
+       references revinfo
+2026-06-18 21:13:47.965 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists notificaciones 
+       add constraint FKf6vsd72tpuysbhes31nygw0v0 
+       foreign key (cita_id) 
+       references citas
+2026-06-18 21:13:47.968 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists notificaciones 
+       add constraint FK1mxbjb81ft61gwlh0kabubndc 
+       foreign key (usuario_id) 
+       references usuarios
+2026-06-18 21:13:47.970 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists pacientes 
+       add constraint FK96vvhaactwhv7l8ymuq6b4r6j 
+       foreign key (usuario_id) 
+       references usuarios
+2026-06-18 21:13:47.974 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists pacientes_aud 
+       add constraint FK9mhanil692brifthmv83puxb3 
+       foreign key (rev) 
+       references revinfo
+2026-06-18 21:13:47.977 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists pagos 
+       add constraint FKdyyqrbd5gg0lhhcijte5qkt88 
+       foreign key (cita_id) 
+       references citas
+2026-06-18 21:13:47.985 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists pagos 
+       add constraint FKtrjk63m5s2jlwfdvx16p8ehbi 
+       foreign key (paciente_id) 
+       references pacientes
+2026-06-18 21:13:47.988 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists pagos_aud 
+       add constraint FKk5yir6kvro5c15qd8q5vacmtl 
+       foreign key (rev) 
+       references revinfo
+2026-06-18 21:13:47.991 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    alter table if exists usuarios_aud 
+       add constraint FKn9o74udlh4qxjv04akbysl83b 
+       foreign key (rev) 
+       references revinfo
+2026-06-18 21:13:48.000  INFO 10100 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-18 21:13:48.595 DEBUG 10100 --- [restartedMain] c.s.s.s.jwt.JwtAuthenticationFilter      : Filter 'jwtAuthenticationFilter' configured for use
+2026-06-18 21:13:48.716  INFO 10100 --- [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-06-18 21:13:50.252  INFO 10100 --- [restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-06-18 21:13:50.253  WARN 10100 --- [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-06-18 21:13:50.968  WARN 10100 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-18 21:13:51.023  INFO 10100 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-06-18 21:13:51.839  INFO 10100 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 5 endpoints beneath base path '/actuator'
+2026-06-18 21:13:52.626  INFO 10100 --- [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:sisoldb'
+2026-06-18 21:13:52.723  INFO 10100 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-06-18 21:13:52.826  INFO 10100 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-06-18 21:13:52.858  INFO 10100 --- [restartedMain] com.sisol.salud.SisolSaludApplication    : Started SisolSaludApplication in 10.528 seconds (process running for 11.025)
+2026-06-18 21:13:52.875  INFO 10100 --- [restartedMain] com.sisol.salud.config.DataSeeder        : Verificando librerías requeridas...
+2026-06-18 21:13:52.882  INFO 10100 --- [restartedMain] com.sisol.salud.config.DataSeeder        : [Guava] Creada lista inmutable de 3 elementos
+2026-06-18 21:13:52.884  INFO 10100 --- [restartedMain] com.sisol.salud.config.DataSeeder        : [Apache Commons] Código seguro generado: N8N1UDRK0I
+2026-06-18 21:13:53.420  INFO 10100 --- [restartedMain] com.sisol.salud.config.DataSeeder        : [Apache POI] Archivo Excel estructurado y creado en memoria exitosamente.
+2026-06-18 21:13:53.619 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        especialidades e1_0
+2026-06-18 21:13:53.659  INFO 10100 --- [restartedMain] com.sisol.salud.config.DataSeeder        : Sembrando base de datos desde 0 con 10 especialidades, 10 médicos y 2 pacientes...
+2026-06-18 21:13:53.684 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades
+        (activo, costo, created_at, descripcion, nombre, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+2026-06-18 21:13:53.796 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:53.809 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos
+        (created_at, numero_colegiatura, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, default)
+2026-06-18 21:13:53.813 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades
+        (activo, costo, created_at, descripcion, nombre, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+2026-06-18 21:13:53.879 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:53.881 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos
+        (created_at, numero_colegiatura, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, default)
+2026-06-18 21:13:53.885 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades
+        (activo, costo, created_at, descripcion, nombre, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+2026-06-18 21:13:53.951 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:53.954 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos
+        (created_at, numero_colegiatura, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, default)
+2026-06-18 21:13:53.956 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades
+        (activo, costo, created_at, descripcion, nombre, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.023 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.025 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos
+        (created_at, numero_colegiatura, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, default)
+2026-06-18 21:13:54.027 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades
+        (activo, costo, created_at, descripcion, nombre, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.093 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.095 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos
+        (created_at, numero_colegiatura, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, default)
+2026-06-18 21:13:54.098 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades
+        (activo, costo, created_at, descripcion, nombre, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.163 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.166 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos
+        (created_at, numero_colegiatura, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, default)
+2026-06-18 21:13:54.168 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades
+        (activo, costo, created_at, descripcion, nombre, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.234 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.236 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos
+        (created_at, numero_colegiatura, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, default)
+2026-06-18 21:13:54.238 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades
+        (activo, costo, created_at, descripcion, nombre, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.304 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.306 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos
+        (created_at, numero_colegiatura, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, default)
+2026-06-18 21:13:54.308 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades
+        (activo, costo, created_at, descripcion, nombre, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.374 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.376 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos
+        (created_at, numero_colegiatura, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, default)
+2026-06-18 21:13:54.378 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades
+        (activo, costo, created_at, descripcion, nombre, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.446 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.448 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos
+        (created_at, numero_colegiatura, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, default)
+2026-06-18 21:13:54.520 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.525 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        pacientes
+        (contacto_emergencia_nombre, contacto_emergencia_parentesco, contacto_emergencia_telefono, created_at, direccion, fecha_nacimiento, genero, grupo_sanguineo, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.604 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios
+        (activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.606 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        pacientes
+        (contacto_emergencia_nombre, contacto_emergencia_parentesco, contacto_emergencia_telefono, created_at, direccion, fecha_nacimiento, genero, grupo_sanguineo, updated_at, usuario_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-06-18 21:13:54.608  INFO 10100 --- [restartedMain] com.sisol.salud.config.DataSeeder        : ¡Sembrado completado con éxito!
+2026-06-18 21:13:54.608  INFO 10100 --- [restartedMain] com.sisol.salud.config.DataSeeder        : Médicos de prueba (contraseña: 123456): medico0@sisol.com a medico9@sisol.com
+2026-06-18 21:13:54.609  INFO 10100 --- [restartedMain] com.sisol.salud.config.DataSeeder        : Pacientes de prueba (contraseña: 123456): paciente1@sisol.com y paciente2@sisol.com
+2026-06-18 21:13:54.627 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades
+        (medico_id, especialidad_id) 
+    values
+        (?, ?)
+2026-06-18 21:13:54.661 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades
+        (medico_id, especialidad_id) 
+    values
+        (?, ?)
+2026-06-18 21:13:54.687 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades
+        (medico_id, especialidad_id) 
+    values
+        (?, ?)
+2026-06-18 21:13:54.703 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades
+        (medico_id, especialidad_id) 
+    values
+        (?, ?)
+2026-06-18 21:13:54.716 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades
+        (medico_id, especialidad_id) 
+    values
+        (?, ?)
+2026-06-18 21:13:54.719 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades
+        (medico_id, especialidad_id) 
+    values
+        (?, ?)
+2026-06-18 21:13:54.720 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades
+        (medico_id, especialidad_id) 
+    values
+        (?, ?)
+2026-06-18 21:13:54.721 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades
+        (medico_id, especialidad_id) 
+    values
+        (?, ?)
+2026-06-18 21:13:54.722 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades
+        (medico_id, especialidad_id) 
+    values
+        (?, ?)
+2026-06-18 21:13:54.725 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades
+        (medico_id, especialidad_id) 
+    values
+        (?, ?)
+2026-06-18 21:13:54.728 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        revinfo
+        (revtstmp, rev) 
+    values
+        (?, default)
+2026-06-18 21:13:54.764 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades_aud
+        (revtype, activo, costo, created_at, descripcion, nombre, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.770 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.772 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos_aud
+        (revtype, created_at, numero_colegiatura, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.775 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades_aud
+        (revtype, activo, costo, created_at, descripcion, nombre, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.777 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.778 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos_aud
+        (revtype, created_at, numero_colegiatura, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.781 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades_aud
+        (revtype, activo, costo, created_at, descripcion, nombre, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.782 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.783 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos_aud
+        (revtype, created_at, numero_colegiatura, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.784 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades_aud
+        (revtype, activo, costo, created_at, descripcion, nombre, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.786 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.789 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos_aud
+        (revtype, created_at, numero_colegiatura, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.791 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades_aud
+        (revtype, activo, costo, created_at, descripcion, nombre, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.791 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.795 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos_aud
+        (revtype, created_at, numero_colegiatura, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.796 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades_aud
+        (revtype, activo, costo, created_at, descripcion, nombre, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.798 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.800 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos_aud
+        (revtype, created_at, numero_colegiatura, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.803 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades_aud
+        (revtype, activo, costo, created_at, descripcion, nombre, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.810 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.812 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos_aud
+        (revtype, created_at, numero_colegiatura, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.813 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades_aud
+        (revtype, activo, costo, created_at, descripcion, nombre, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.815 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.815 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos_aud
+        (revtype, created_at, numero_colegiatura, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.816 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades_aud
+        (revtype, activo, costo, created_at, descripcion, nombre, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.818 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.820 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos_aud
+        (revtype, created_at, numero_colegiatura, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.821 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        especialidades_aud
+        (revtype, activo, costo, created_at, descripcion, nombre, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.822 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.823 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medicos_aud
+        (revtype, created_at, numero_colegiatura, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.824 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.825 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        pacientes_aud
+        (revtype, contacto_emergencia_nombre, contacto_emergencia_parentesco, contacto_emergencia_telefono, created_at, direccion, fecha_nacimiento, genero, grupo_sanguineo, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.827 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        usuarios_aud
+        (revtype, activo, apellido, created_at, dni, email, nombre, password, rol, telefono, updated_at, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.830 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        pacientes_aud
+        (revtype, contacto_emergencia_nombre, contacto_emergencia_parentesco, contacto_emergencia_telefono, created_at, direccion, fecha_nacimiento, genero, grupo_sanguineo, updated_at, usuario_id, rev, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-06-18 21:13:54.831 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades_aud
+        (revtype, medico_id, rev, especialidad_id) 
+    values
+        (?, ?, ?, ?)
+2026-06-18 21:13:54.834 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades_aud
+        (revtype, medico_id, rev, especialidad_id) 
+    values
+        (?, ?, ?, ?)
+2026-06-18 21:13:54.836 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades_aud
+        (revtype, medico_id, rev, especialidad_id) 
+    values
+        (?, ?, ?, ?)
+2026-06-18 21:13:54.837 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades_aud
+        (revtype, medico_id, rev, especialidad_id) 
+    values
+        (?, ?, ?, ?)
+2026-06-18 21:13:54.838 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades_aud
+        (revtype, medico_id, rev, especialidad_id) 
+    values
+        (?, ?, ?, ?)
+2026-06-18 21:13:54.838 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades_aud
+        (revtype, medico_id, rev, especialidad_id) 
+    values
+        (?, ?, ?, ?)
+2026-06-18 21:13:54.839 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades_aud
+        (revtype, medico_id, rev, especialidad_id) 
+    values
+        (?, ?, ?, ?)
+2026-06-18 21:13:54.841 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades_aud
+        (revtype, medico_id, rev, especialidad_id) 
+    values
+        (?, ?, ?, ?)
+2026-06-18 21:13:54.841 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades_aud
+        (revtype, medico_id, rev, especialidad_id) 
+    values
+        (?, ?, ?, ?)
+2026-06-18 21:13:54.843 DEBUG 10100 --- [restartedMain] org.hibernate.SQL                        : 
+    insert 
+    into
+        medico_especialidades_aud
+        (revtype, medico_id, rev, especialidad_id) 
+    values
+        (?, ?, ?, ?)
+2026-06-18 21:13:55.343  INFO 10100 --- [RMI TCP Connection(2)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-18 21:13:55.345  INFO 10100 --- [RMI TCP Connection(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-18 21:13:55.347  INFO 10100 --- [RMI TCP Connection(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-06-18 21:23:27.532  INFO 10100 --- [http-nio-8080-exec-7] com.sisol.salud.service.AuthService      : Intento de inicio de sesión para el usuario: correo@sisol.com
+2026-06-18 21:23:27.638 DEBUG 10100 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:25:14.752  INFO 10100 --- [http-nio-8080-exec-8] com.sisol.salud.service.AuthService      : Intento de inicio de sesión para el usuario: correo@sisol.com
+2026-06-18 21:25:14.756 DEBUG 10100 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:26:06.729  INFO 10100 --- [http-nio-8080-exec-2] com.sisol.salud.service.AuthService      : Intento de inicio de sesión para el usuario: medico0@sisol.com
+2026-06-18 21:26:06.731 DEBUG 10100 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:26:06.798 DEBUG 10100 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:26:06.802 DEBUG 10100 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:26:06.977 DEBUG 10100 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:26:06.990 DEBUG 10100 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:26:06.996 DEBUG 10100 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        m1_0.id,
+        m1_0.created_at,
+        m1_0.numero_colegiatura,
+        m1_0.updated_at,
+        m1_0.usuario_id 
+    from
+        medicos m1_0 
+    left join
+        usuarios u1_0 
+            on u1_0.id=m1_0.usuario_id 
+    where
+        u1_0.id=?
+2026-06-18 21:26:07.016 DEBUG 10100 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.created_at,
+        c1_0.especialidad_id,
+        c1_0.estado,
+        c1_0.fecha,
+        c1_0.hora_fin,
+        c1_0.hora_inicio,
+        c1_0.medico_id,
+        c1_0.motivo_consulta,
+        c1_0.observaciones,
+        c1_0.paciente_id,
+        c1_0.updated_at 
+    from
+        citas c1_0 
+    left join
+        medicos m1_0 
+            on m1_0.id=c1_0.medico_id 
+    where
+        m1_0.id=? 
+        and c1_0.fecha=?
+2026-06-18 21:26:07.473 DEBUG 10100 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:26:07.492  WARN 10100 --- [http-nio-8080-exec-10] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2026-06-18 21:26:10.121 DEBUG 10100 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:01.916  INFO 10100 --- [http-nio-8080-exec-6] com.sisol.salud.service.AuthService      : Intento de inicio de sesión para el usuario: paciente1@sisol.com
+2026-06-18 21:27:01.918 DEBUG 10100 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:12.970  INFO 10100 --- [http-nio-8080-exec-10] com.sisol.salud.service.AuthService      : Intento de inicio de sesión para el usuario: paciente1@sisol.com
+2026-06-18 21:27:12.972 DEBUG 10100 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:13.033 DEBUG 10100 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:13.036 DEBUG 10100 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:13.044 DEBUG 10100 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:13.049 DEBUG 10100 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:13.052 DEBUG 10100 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        p1_0.id,
+        p1_0.contacto_emergencia_nombre,
+        p1_0.contacto_emergencia_parentesco,
+        p1_0.contacto_emergencia_telefono,
+        p1_0.created_at,
+        p1_0.direccion,
+        p1_0.fecha_nacimiento,
+        p1_0.genero,
+        p1_0.grupo_sanguineo,
+        p1_0.updated_at,
+        p1_0.usuario_id 
+    from
+        pacientes p1_0 
+    left join
+        usuarios u1_0 
+            on u1_0.id=p1_0.usuario_id 
+    where
+        u1_0.id=?
+2026-06-18 21:27:13.056 DEBUG 10100 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.created_at,
+        c1_0.especialidad_id,
+        c1_0.estado,
+        c1_0.fecha,
+        c1_0.hora_fin,
+        c1_0.hora_inicio,
+        c1_0.medico_id,
+        c1_0.motivo_consulta,
+        c1_0.observaciones,
+        c1_0.paciente_id,
+        c1_0.updated_at 
+    from
+        citas c1_0 
+    left join
+        pacientes p1_0 
+            on p1_0.id=c1_0.paciente_id 
+    where
+        p1_0.id=?
+2026-06-18 21:27:13.208 DEBUG 10100 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:13.209 DEBUG 10100 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:13.209 DEBUG 10100 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:13.216 DEBUG 10100 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:13.244 DEBUG 10100 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:13.322 DEBUG 10100 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:27:13.330  WARN 10100 --- [http-nio-8080-exec-9] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2026-06-18 21:31:23.082 DEBUG 10100 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:08.695  INFO 10100 --- [http-nio-8080-exec-8] com.sisol.salud.service.AuthService      : Intento de inicio de sesión para el usuario: medico0@sisol.com
+2026-06-18 21:35:08.696 DEBUG 10100 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:08.759 DEBUG 10100 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:08.762 DEBUG 10100 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:08.770 DEBUG 10100 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:08.777 DEBUG 10100 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:08.780 DEBUG 10100 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        m1_0.id,
+        m1_0.created_at,
+        m1_0.numero_colegiatura,
+        m1_0.updated_at,
+        m1_0.usuario_id 
+    from
+        medicos m1_0 
+    left join
+        usuarios u1_0 
+            on u1_0.id=m1_0.usuario_id 
+    where
+        u1_0.id=?
+2026-06-18 21:35:08.782 DEBUG 10100 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.created_at,
+        c1_0.especialidad_id,
+        c1_0.estado,
+        c1_0.fecha,
+        c1_0.hora_fin,
+        c1_0.hora_inicio,
+        c1_0.medico_id,
+        c1_0.motivo_consulta,
+        c1_0.observaciones,
+        c1_0.paciente_id,
+        c1_0.updated_at 
+    from
+        citas c1_0 
+    left join
+        medicos m1_0 
+            on m1_0.id=c1_0.medico_id 
+    where
+        m1_0.id=? 
+        and c1_0.fecha=?
+2026-06-18 21:35:08.902 DEBUG 10100 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:08.911  WARN 10100 --- [http-nio-8080-exec-3] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2026-06-18 21:35:12.871 DEBUG 10100 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:30.665  INFO 10100 --- [http-nio-8080-exec-7] com.sisol.salud.service.AuthService      : Intento de inicio de sesión para el usuario: medico0@sisol.com
+2026-06-18 21:35:30.667 DEBUG 10100 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:30.732 DEBUG 10100 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:30.733 DEBUG 10100 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:30.740 DEBUG 10100 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:30.744 DEBUG 10100 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:30.748 DEBUG 10100 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        m1_0.id,
+        m1_0.created_at,
+        m1_0.numero_colegiatura,
+        m1_0.updated_at,
+        m1_0.usuario_id 
+    from
+        medicos m1_0 
+    left join
+        usuarios u1_0 
+            on u1_0.id=m1_0.usuario_id 
+    where
+        u1_0.id=?
+2026-06-18 21:35:30.751 DEBUG 10100 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.created_at,
+        c1_0.especialidad_id,
+        c1_0.estado,
+        c1_0.fecha,
+        c1_0.hora_fin,
+        c1_0.hora_inicio,
+        c1_0.medico_id,
+        c1_0.motivo_consulta,
+        c1_0.observaciones,
+        c1_0.paciente_id,
+        c1_0.updated_at 
+    from
+        citas c1_0 
+    left join
+        medicos m1_0 
+            on m1_0.id=c1_0.medico_id 
+    where
+        m1_0.id=? 
+        and c1_0.fecha=?
+2026-06-18 21:35:30.794 DEBUG 10100 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.activo,
+        u1_0.apellido,
+        u1_0.created_at,
+        u1_0.dni,
+        u1_0.email,
+        u1_0.nombre,
+        u1_0.password,
+        u1_0.rol,
+        u1_0.telefono,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-06-18 21:35:30.800  WARN 10100 --- [http-nio-8080-exec-4] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]

@@ -5,181 +5,173 @@
 <head>
     <title>Mis Citas de Hoy</title>
     <style>
-        .schedule-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+        /* Calendar Container Styling */
+        #calendar {
+            background-color: var(--pure-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(107, 21, 21, 0.08);
+            margin-top: 1.5rem;
+            font-family: var(--font-body);
+        }
+
+        /* Toolbar Styling */
+        .fc .fc-toolbar.fc-header-toolbar {
             margin-bottom: 2rem;
         }
-
-        .schedule-title {
-            font-size: 2rem;
-            margin-bottom: 0.25rem;
-            color: #141d23;
+        
+        .fc .fc-toolbar-title {
+            font-family: var(--font-headline);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
         }
 
-        .schedule-date {
-            color: #676462;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .schedule-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            font-size: 1.25rem;
-            color: #564240;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .view-toggle {
+        /* Buttons Styling */
+        .fc .fc-button-primary {
             background-color: var(--pure-white);
+            border: 1px solid #e2e8f0;
+            color: var(--text-main);
             border-radius: 8px;
-            display: inline-flex;
-            overflow: hidden;
-            border: 1px solid #E5E5E5;
-        }
-
-        .view-btn {
-            padding: 0.5rem 1.5rem;
-            background: none;
-            border: none;
             font-weight: 600;
-            color: #676462;
-            cursor: pointer;
-            font-size: 0.9rem;
+            text-transform: capitalize;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
-        .view-btn.active {
+        .fc .fc-button-primary:not(:disabled):active,
+        .fc .fc-button-primary:not(:disabled).fc-button-active {
+            background-color: var(--primary-container);
+            border-color: var(--primary-container);
+            color: var(--pure-white);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .fc .fc-button-primary:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+            color: var(--primary);
+        }
+
+        .fc .fc-button-primary:not(:disabled):active:hover,
+        .fc .fc-button-primary:not(:disabled).fc-button-active:hover {
             background-color: var(--primary);
+            border-color: var(--primary);
             color: var(--pure-white);
         }
 
-        .date-navigator {
-            background-color: var(--pure-white);
-            border: 1px solid #E5E5E5;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem;
+        /* Grid Styling */
+        .fc-theme-standard td, .fc-theme-standard th {
+            border-color: #f1f5f9;
         }
 
-        .date-nav-btn {
-            background: none;
-            border: none;
-            padding: 0.25rem 0.75rem;
-            color: #141d23;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .date-label {
-            padding: 0 1rem;
+        .fc .fc-col-header-cell-cushion {
+            padding: 1rem 0.5rem;
             font-weight: 700;
-            font-size: 0.95rem;
-            color: #141d23;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        .fc-timegrid-slot-label-cushion {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Events Styling */
+        .fc-event {
+            cursor: pointer;
+            border-radius: 6px;
+            padding: 4px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .fc-event:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            filter: brightness(1.05);
+        }
+
+        /* Current time indicator */
+        .fc .fc-timegrid-now-indicator-line {
+            border-color: var(--primary);
+            border-width: 2px;
+        }
+        
+        .fc .fc-timegrid-now-indicator-arrow {
+            border-color: var(--primary);
+            border-width: 6px;
+            margin-top: -6px;
+        }
+
+        /* Today highlight */
+        .fc .fc-day-today {
+            background-color: #fffaf9 !important;
         }
     </style>
+    <!-- FullCalendar CDN -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 </head>
 
 <body>
     <div layout:fragment="content">
         
         <!-- Header -->
-        <div class="schedule-header">
+        <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h1 class="schedule-title headline" th:text="'Buenos días, Dr(a). ' + ${usuario != null ? usuario.apellido : 'Mendoza'}">Buenos días, Dr. Ricardo</h1>
-                <p class="schedule-date">
-                    <i class="fa-regular fa-calendar"></i> 
-                    <span th:text="${#temporals.format(fechaActual, 'EEEE, dd ''de'' MMMM yyyy')}">Lunes, 24 de Junio 2024</span>
-                </p>
-            </div>
-            <div class="schedule-actions">
-                <button class="icon-btn">
-                    <i class="fa-regular fa-bell"></i>
-                </button>
-                <button class="btn-maroon ms-3">
-                    <i class="fa-solid fa-calendar-plus me-2"></i> Añadir Bloqueo
-                </button>
+                <h1 class="headline mb-1" th:text="'Buenos días, Dr(a). ' + ${usuario != null ? usuario.apellido : 'Médico'}">Buenos días</h1>
+                <p class="text-muted">Aquí está tu agenda médica completa. Puedes ver tus citas programadas, pasadas y canceladas.</p>
             </div>
         </div>
 
-        <!-- Toolbar -->
-        <div class="toolbar">
-            <div class="view-toggle">
-                <button class="view-btn active">Día</button>
-                <a th:href="@{/panel-medico/citas-hoy}" class="view-btn text-decoration-none">Ir a Hoy</a>
-            </div>
-            
-            <div class="date-navigator">
-                <a th:href="@{/panel-medico/citas-hoy(fecha=${fechaAnterior})}" class="date-nav-btn text-decoration-none"><i class="fa-solid fa-chevron-left"></i></a>
-                <span class="date-label" th:text="${#temporals.format(fechaActual, 'dd MMM yyyy')}">Junio 24</span>
-                <a th:href="@{/panel-medico/citas-hoy(fecha=${fechaSiguiente})}" class="date-nav-btn text-decoration-none"><i class="fa-solid fa-chevron-right"></i></a>
-            </div>
-        </div>
+        <!-- FullCalendar Container -->
+        <div id='calendar'></div>
 
-        <!-- Citas List -->
-        <div class="mt-4">
-            <div th:if="${#lists.isEmpty(citasHoy)}" class="alert alert-info text-center" style="background-color: #f8f9fa; border: 1px dashed #ced4da; padding: 3rem;">
-                <i class="fa-regular fa-calendar-check" style="font-size: 3rem; color: #adb5bd; margin-bottom: 1rem; display: block;"></i>
-                <h4 class="text-muted">No tienes citas programadas para esta fecha</h4>
-                <p class="text-muted mb-0">Disfruta tu día o selecciona otra fecha para ver tu agenda.</p>
-            </div>
-
-            <div class="row gx-4">
-                <div th:each="cita : ${citasHoy}" class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100" style="border-radius: 12px; border: none; border-left: 5px solid var(--primary);">
-                        <div class="card-body p-4 d-flex flex-column">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <span class="badge bg-light text-dark mb-2 border" style="font-size: 0.8rem;">
-                                        <i class="fa-regular fa-clock me-1"></i>
-                                        <span th:text="${#temporals.format(cita.horaInicio, 'hh:mm a')}"></span> - 
-                                        <span th:text="${#temporals.format(cita.horaFin, 'hh:mm a')}"></span>
-                                    </span>
-                                    <h5 class="card-title fw-bold mb-1" th:text="${cita.paciente.usuario.nombre + ' ' + cita.paciente.usuario.apellido}">Nombre Paciente</h5>
-                                    <p class="text-muted small mb-0" th:text="'DNI: ' + ${cita.paciente.usuario.dni}">DNI: 0000000</p>
-                                </div>
-                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2" th:if="${cita.estado.name() == 'CONFIRMADA'}">Confirmada</span>
-                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-2" th:if="${cita.estado.name() == 'PENDIENTE'}">Pendiente</span>
-                                <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-3 py-2" th:if="${cita.estado.name() == 'COMPLETADA'}">Completada</span>
-                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2" th:if="${cita.estado.name() == 'CANCELADA'}">Cancelada</span>
-                            </div>
-                            
-                            <hr class="text-muted opacity-25">
-                            
-                            <div class="mb-4">
-                                <p class="text-muted small mb-1 fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Motivo de Consulta</p>
-                                <p class="mb-0" th:text="${cita.motivoConsulta ?: 'No especificado'}">Motivo...</p>
-                            </div>
-                            
-                            <div class="mt-auto pt-4">
-                                <a th:href="@{/panel-medico/consulta(citaId=${cita.id})}" class="btn-maroon d-block text-center text-decoration-none" style="border-radius: 8px;">
-                                    <i class="fa-solid fa-stethoscope me-2"></i> 
-                                    <span th:text="${cita.estado.name() == 'COMPLETADA' ? 'Ver Consulta' : 'Iniciar Consulta'}">Iniciar Consulta</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var calendarEl = document.getElementById('calendar');
+                
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'timeGridWeek',
+                    locale: 'es',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    buttonText: {
+                        today: 'Hoy',
+                        month: 'Mes',
+                        week: 'Semana',
+                        day: 'Día'
+                    },
+                    slotMinTime: '07:00:00',
+                    slotMaxTime: '21:00:00',
+                    allDaySlot: false,
+                    events: '/panel-medico/api/citas',
+                    eventClick: function(info) {
+                        var citaId = info.event.id;
+                        var estado = info.event.extendedProps.extendedProps;
+                        
+                        // Si la cita no está cancelada, puede verla/iniciarla
+                        if(estado !== 'CANCELADA') {
+                            window.location.href = '/panel-medico/consulta?citaId=' + citaId;
+                        } else {
+                            alert('Esta cita ha sido cancelada.');
+                        }
+                    }
+                });
+                
+                calendar.render();
+            });
+        </script>
 
     </div>
 </body>

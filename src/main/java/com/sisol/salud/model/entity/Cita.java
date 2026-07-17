@@ -79,4 +79,8 @@ public class Cita {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt; // Fecha de modificación
+
+    @jakarta.persistence.OneToMany(mappedBy = "cita", cascade = jakarta.persistence.CascadeType.ALL, fetch = jakarta.persistence.FetchType.LAZY)
+    @lombok.Builder.Default
+    private java.util.List<ArchivoCita> archivos = new java.util.ArrayList<>();
 }

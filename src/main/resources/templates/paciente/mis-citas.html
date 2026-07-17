@@ -288,9 +288,64 @@
                         <span th:if="${cita.estado.name() == 'PENDIENTE'}" class="status-badge status-pending"><i class="bi bi-clock me-1"></i> PENDIENTE</span>
                     </div>
                     <div class="action-buttons flex-column" style="gap: 0.5rem; margin-left: 2rem;">
-                        <a href="#" class="btn-cita btn-outline-primary-custom w-100">Ver Detalles</a>
-                        <a th:if="${cita.estado.name() == 'PENDIENTE'}" href="#" class="btn-cita btn-outline-danger-custom w-100">Cancelar</a>
+                        <button type="button" class="btn-cita btn-outline-primary-custom w-100" data-bs-toggle="modal" th:data-bs-target="'#detalleModalProxima' + ${cita.id}">Ver Detalles</button>
+                        <button type="button" th:if="${cita.estado.name() == 'PENDIENTE'}" class="btn-cita btn-outline-danger-custom w-100" data-bs-toggle="modal" th:data-bs-target="'#cancelarModalProxima' + ${cita.id}">Cancelar</button>
                         <a th:if="${cita.estado.name() == 'CONFIRMADA'}" href="#" class="btn-cita btn-primary-custom w-100">Reprogramar</a>
+                    </div>
+                </div>
+                
+                <!-- Modales para Próximas Citas -->
+                <div th:each="cita : ${citasProximas}">
+                    <!-- Modal Detalle Cita -->
+                    <div class="modal fade" th:id="'detalleModalProxima' + ${cita.id}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content" style="border-radius: 1rem; border: none;">
+                                <div class="modal-header" style="border-bottom: 1px dashed #e0e0e0; padding: 1.5rem;">
+                                    <h5 class="modal-title fs-5 fw-bold text-primary">Detalle de la Cita</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" style="padding: 1.5rem;">
+                                    <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Doctor</h6>
+                                    <p class="mb-3" th:text="'Dr. ' + ${cita.medico.usuario.nombre} + ' ' + ${cita.medico.usuario.apellido} + ' - ' + ${cita.especialidad.nombre}"></p>
+                                    
+                                    <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Fecha y Hora</h6>
+                                    <p class="mb-3" th:text="${#temporals.format(cita.fecha, 'dd MMMM, yyyy')} + ' a las ' + ${#temporals.format(cita.horaInicio, 'hh:mm a')}"></p>
+                                    
+                                    <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Sede</h6>
+                                    <p class="mb-3">Sede Principal</p>
+                                    
+                                    <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Motivo de Consulta</h6>
+                                    <p class="mb-0" th:text="${cita.motivoConsulta ?: 'No especificado'}"></p>
+                                </div>
+                                <div class="modal-footer" style="border-top: none; padding: 1.5rem;">
+                                    <button type="button" class="btn btn-outline-dark btn-pill fw-bold w-100" data-bs-dismiss="modal">Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Cancelar Cita -->
+                    <div class="modal fade" th:id="'cancelarModalProxima' + ${cita.id}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content" style="border-radius: 1rem; border: none;">
+                                <div class="modal-header" style="border-bottom: 1px dashed #e0e0e0; padding: 1.5rem;">
+                                    <h5 class="modal-title fs-5 fw-bold text-danger">Cancelar Cita</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form th:action="@{/paciente/cita/cancelar}" method="post">
+                                    <div class="modal-body" style="padding: 1.5rem;">
+                                        <p>¿Estás seguro de que deseas cancelar tu cita con el <strong>Dr. <span th:text="${cita.medico.usuario.nombre} + ' ' + ${cita.medico.usuario.apellido}"></span></strong> para el <strong><span th:text="${#temporals.format(cita.fecha, 'dd/MM/yyyy')}"></span></strong> a las <strong><span th:text="${#temporals.format(cita.horaInicio, 'hh:mm a')}"></span></strong>?</p>
+                                        <p class="text-muted small">Esta acción no se puede deshacer.</p>
+                                        <input type="hidden" name="citaId" th:value="${cita.id}">
+                                        <input type="hidden" name="origen" value="miscitas">
+                                    </div>
+                                    <div class="modal-footer" style="border-top: none; padding: 1.5rem;">
+                                        <button type="button" class="btn btn-outline-dark btn-pill fw-bold" data-bs-dismiss="modal">Mantener Cita</button>
+                                        <button type="submit" class="btn btn-danger btn-pill fw-bold">Sí, Cancelar Cita</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -374,10 +429,6 @@
                 </div>
                 <div style="margin-left: auto;">
                     <span class="status-badge status-cancelled">CANCELADA</span>
-                </div>
-                <div class="action-buttons flex-row" style="margin-left: 2rem;">
-                    <a href="#" class="btn-cita btn-outline-primary-custom">Ver Detalles</a>
-                    <a href="#" class="btn-cita btn-primary-custom">Agendar de Nuevo</a>
                 </div>
             </div>
 

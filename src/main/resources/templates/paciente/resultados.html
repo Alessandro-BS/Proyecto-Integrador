@@ -247,9 +247,14 @@
     <div layout:fragment="content">
         
         <!-- Header -->
-        <div class="mb-4 mt-2">
-            <h1 class="page-title mb-2">Resultados Médicos</h1>
-            <p class="text-muted fs-6">Consulta y descarga tus exámenes de laboratorio e imágenes desde la comodidad de tu hogar.</p>
+        <div class="mb-4 mt-2 d-flex align-items-center">
+            <a th:href="@{/paciente/dashboard}" class="btn btn-outline-secondary rounded-circle me-3 shadow-sm d-flex justify-content-center align-items-center" style="width: 45px; height: 45px; border: none; background-color: white; color: var(--sisol-primary);">
+                <i class="bi bi-arrow-left fs-5"></i>
+            </a>
+            <div>
+                <h1 class="page-title mb-2">Resultados Médicos</h1>
+                <p class="text-muted fs-6 mb-0">Consulta y descarga tus exámenes de laboratorio e imágenes desde la comodidad de tu hogar.</p>
+            </div>
         </div>
 
         <!-- Filter -->
@@ -286,109 +291,106 @@
 
         <!-- Results List -->
         <div class="mb-5">
-            <!-- Result 1 -->
-            <div class="result-card type-lab">
-                <div class="icon-circle">
-                    <i class="bi bi-eyedropper"></i>
-                </div>
-                <div class="result-info">
-                    <div class="result-category">LABORATORIO CLÍNICO</div>
-                    <div class="result-title">Hemograma Completo y Perfil Lipídico</div>
-                    <div class="result-meta">
-                        <i class="bi bi-calendar3"></i> 14 de Mayo, 2024 • Dr. Ricardo Palma
-                    </div>
-                </div>
-                <div class="result-actions">
-                    <span class="status-badge status-ready">Listo para descargar</span>
-                    <a href="#" class="btn-action btn-action-primary"><i class="bi bi-download"></i> Descargar PDF</a>
-                </div>
+            <div th:if="${#lists.isEmpty(resultados)}" class="text-center py-5 bg-white rounded-3 shadow-sm" style="border-radius: 1rem;">
+                <i class="bi bi-folder2-open text-muted" style="font-size: 3rem;"></i>
+                <p class="text-muted mt-3 mb-0">Aún no tienes resultados médicos o exámenes registrados.</p>
             </div>
 
-            <!-- Result 2 -->
-            <div class="result-card type-img">
+            <!-- Dynamic Result -->
+            <div th:each="cita : ${resultados}" 
+                 th:class="'result-card ' + (${cita.especialidad.nombre.toLowerCase().contains('cardi')} ? 'type-cardio' : 'type-lab')">
                 <div class="icon-circle">
-                    <i class="bi bi-person-bounding-box"></i>
+                    <i th:if="${cita.especialidad.nombre.toLowerCase().contains('cardi')}" class="bi bi-heart-pulse"></i>
+                    <i th:unless="${cita.especialidad.nombre.toLowerCase().contains('cardi')}" class="bi bi-journal-medical"></i>
                 </div>
                 <div class="result-info">
-                    <div class="result-category">RAYOS X</div>
-                    <div class="result-title">Radiografía de Tórax Frontal</div>
+                    <div class="result-category" th:text="${cita.especialidad.nombre}">ESPECIALIDAD</div>
+                    <div class="result-title" th:text="'Consulta de ' + ${cita.especialidad.nombre}">Consulta</div>
                     <div class="result-meta">
-                        <i class="bi bi-calendar3"></i> 12 de Mayo, 2024 • Dr. Alberto Valdivia
+                        <i class="bi bi-calendar3"></i> <span th:text="${#temporals.format(cita.fecha, 'dd MMMM, yyyy')}"></span> • Dr. <span th:text="${cita.medico.usuario.nombre} + ' ' + ${cita.medico.usuario.apellido}"></span>
                     </div>
                 </div>
                 <div class="result-actions">
-                    <span class="status-badge status-ready">Listo para descargar</span>
-                    <a href="#" class="btn-action btn-action-primary"><i class="bi bi-eye"></i> Ver Resultado</a>
+                    <span th:if="${cita.estado.name() == 'COMPLETADA'}" class="status-badge status-ready">Listo para descargar</span>
+                    <a th:if="${cita.estado.name() == 'COMPLETADA'}" href="#" class="btn-action btn-action-primary" data-bs-toggle="modal" th:data-bs-target="'#detalleResultado' + ${cita.id}">
+                        <i class="bi bi-eye"></i> Ver Resultado
+                    </a>
+
+                    <span th:if="${cita.estado.name() == 'PENDIENTE' or cita.estado.name() == 'CONFIRMADA'}" class="status-badge status-process">En proceso</span>
+                    <a th:if="${cita.estado.name() == 'PENDIENTE' or cita.estado.name() == 'CONFIRMADA'}" href="#" class="btn-action btn-action-disabled" tabindex="-1">
+                        <i class="bi bi-dash-circle"></i> No disponible
+                    </a>
                 </div>
             </div>
-
-            <!-- Result 3 -->
-            <div class="result-card type-cardio">
-                <div class="icon-circle">
-                    <i class="bi bi-heart-pulse"></i>
-                </div>
-                <div class="result-info">
-                    <div class="result-category">CARDIOLOGÍA</div>
-                    <div class="result-title">Electrocardiograma de Esfuerzo</div>
-                    <div class="result-meta">
-                        <i class="bi bi-calendar3"></i> 18 de Mayo, 2024 • Dra. Elena García
+            
+            <!-- Modals for details -->
+            <div th:each="cita : ${resultados}" th:if="${cita.estado.name() == 'COMPLETADA'}">
+                <div class="modal fade" th:id="'detalleResultado' + ${cita.id}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content" style="border-radius: 1rem; border: none;">
+                            <div class="modal-header" style="border-bottom: 1px dashed #e0e0e0; padding: 1.5rem;">
+                                <h5 class="modal-title fs-5 fw-bold text-primary">Resultado Médico</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" style="padding: 1.5rem;">
+                                <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Doctor</h6>
+                                <p class="mb-3" th:text="'Dr. ' + ${cita.medico.usuario.nombre} + ' ' + ${cita.medico.usuario.apellido} + ' - ' + ${cita.especialidad.nombre}"></p>
+                                
+                                <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Observaciones del Médico</h6>
+                                <div class="p-3" style="background-color: #f8f9fa; border-radius: 0.5rem; border-left: 4px solid var(--sisol-primary);">
+                                    <p class="mb-0" th:text="${cita.observaciones != null and !cita.observaciones.isEmpty() ? cita.observaciones : 'El médico no dejó observaciones adicionales en el sistema.'}"></p>
+                                </div>
+                                
+                                <div th:if="${cita.archivos != null and !cita.archivos.isEmpty()}">
+                                    <h6 class="text-muted fw-bold mt-4 mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Documentos Adjuntos</h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-6" th:each="archivo : ${cita.archivos}">
+                                            <div class="d-flex align-items-center p-2 border rounded-3 bg-white" style="cursor: pointer;" data-bs-toggle="modal" th:data-bs-target="'#previewAdjunto' + ${archivo.id}">
+                                                <div class="me-3 fs-3" style="color: var(--sisol-primary);">
+                                                    <i th:if="${archivo.tipoContenido.startsWith('image/')}" class="fa-regular fa-file-image"></i>
+                                                    <i th:unless="${archivo.tipoContenido.startsWith('image/')}" class="fa-regular fa-file-pdf"></i>
+                                                </div>
+                                                <div style="overflow: hidden;">
+                                                    <div class="fw-bold text-truncate" style="font-size: 0.85rem;" th:text="${archivo.nombreArchivo}"></div>
+                                                    <div class="text-muted" style="font-size: 0.75rem;" th:text="${archivo.tipoContenido.startsWith('image/') ? 'Imagen' : 'Documento PDF'}"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer" style="border-top: none; padding: 1.5rem;">
+                                <button type="button" class="btn btn-outline-dark btn-pill fw-bold w-100" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="result-actions">
-                    <span class="status-badge status-process">En proceso</span>
-                    <a href="#" class="btn-action btn-action-disabled" tabindex="-1"><i class="bi bi-dash-circle"></i> No disponible</a>
-                </div>
-            </div>
-
-            <!-- Result 4 -->
-            <div class="result-card type-lab">
-                <div class="icon-circle">
-                    <i class="bi bi-eyedropper"></i>
-                </div>
-                <div class="result-info">
-                    <div class="result-category">LABORATORIO CLÍNICO</div>
-                    <div class="result-title">Examen de Glucosa Post-Prandial</div>
-                    <div class="result-meta">
-                        <i class="bi bi-calendar3"></i> 05 de Mayo, 2024 • Dr. Ricardo Palma
+                
+                <!-- Preview Modals for Files -->
+                <div th:if="${cita.archivos != null and !cita.archivos.isEmpty()}" th:each="archivo : ${cita.archivos}">
+                    <div class="modal fade" th:id="'previewAdjunto' + ${archivo.id}" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+                        <div class="modal-dialog modal-xl modal-dialog-centered">
+                            <div class="modal-content" style="border-radius: 1rem; border: none; overflow: hidden;">
+                                <div class="modal-header bg-light">
+                                    <h5 class="modal-title fs-5 fw-bold" th:text="${archivo.nombreArchivo}"></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-0 text-center" style="background-color: #e9ecef;">
+                                    <img th:if="${archivo.tipoContenido.startsWith('image/')}" th:src="${archivo.datosBase64}" style="max-width: 100%; max-height: 80vh; height: auto;">
+                                    <iframe th:unless="${archivo.tipoContenido.startsWith('image/')}" th:src="${archivo.datosBase64}" style="width: 100%; height: 80vh;" frameborder="0"></iframe>
+                                </div>
+                                <div class="modal-footer bg-light p-2">
+                                    <a th:href="${archivo.datosBase64}" th:download="${archivo.nombreArchivo}" class="btn btn-primary fw-bold">
+                                        <i class="fa-solid fa-download me-2"></i> Descargar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="result-actions">
-                    <span class="status-badge status-ready">Listo para descargar</span>
-                    <a href="#" class="btn-action btn-action-primary"><i class="bi bi-download"></i> Descargar PDF</a>
                 </div>
             </div>
         </div>
 
-        <!-- Bottom Section -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-6">
-                <div class="help-card shadow-sm">
-                    <i class="bi bi-clipboard2-pulse help-card-icon"></i>
-                    <h4 class="mb-3" style="position: relative; z-index: 1;">¿Necesitas ayuda con tus resultados?</h4>
-                    <p class="mb-4" style="color: rgba(255,255,255,0.8); position: relative; z-index: 1;">Agenda una teleconsulta inmediata con un médico general para la interpretación de tus exámenes.</p>
-                    <a href="#" class="btn-white shadow-sm">Hablar con un médico</a>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="security-card">
-                    <h4 class="security-title">Información de Seguridad</h4>
-                    <ul class="security-list">
-                        <li>
-                            <i class="bi bi-check-circle"></i>
-                            Tus datos están protegidos bajo la ley de protección de datos personales.
-                        </li>
-                        <li>
-                            <i class="bi bi-check-circle"></i>
-                            Los resultados solo pueden ser visualizados por usted y su médico tratante.
-                        </li>
-                        <li>
-                            <i class="bi bi-check-circle"></i>
-                            Disponibilidad de descarga de PDF durante 2 años desde la fecha de emisión.
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
 
     </div>
 </body>

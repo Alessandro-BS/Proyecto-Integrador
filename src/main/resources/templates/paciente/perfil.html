@@ -297,13 +297,6 @@
                         <i class="bi bi-bell"></i> Notificaciones
                     </a>
                 </div>
-
-                <div class="help-card shadow-sm">
-                    <i class="bi bi-lock help-card-icon"></i>
-                    <h5 class="mb-2 fw-bold" style="position: relative; z-index: 1;">Need help?</h5>
-                    <p class="small mb-3" style="color: rgba(255,255,255,0.8); position: relative; z-index: 1;">Our support team is available 24/7 for medical assistance.</p>
-                    <a href="#" class="btn-white shadow-sm">Contact Support</a>
-                </div>
             </div>
 
             <!-- Content -->
@@ -315,23 +308,27 @@
                         <h2 class="page-title mb-1">Editar Perfil</h2>
                         <p class="text-muted mb-4 pb-3 border-bottom">Actualiza tus datos personales y cómo te ven los demás en el portal.</p>
 
-                        <form th:action="@{/paciente/perfil/actualizar}" method="post">
-                            
-                            <!-- Profile Photo -->
+                        <!-- Profile Photo Form -->
+                        <form th:action="@{/paciente/perfil/foto}" method="post" enctype="multipart/form-data">
                             <div class="profile-photo-box">
                                 <div class="profile-img-container">
-                                    <img th:src="${usuario != null} ? 'https://ui-avatars.com/api/?name=' + ${usuario.nombre} + '+' + ${usuario.apellido} + '&background=random&size=150' : 'https://ui-avatars.com/api/?name=Usuario&background=random&size=150'" alt="Profile Photo" class="profile-img">
-                                    <div class="camera-icon"><i class="bi bi-camera"></i></div>
+                                    <img th:if="${usuario != null && usuario.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" alt="Profile Photo" class="profile-img">
+                                    <img th:unless="${usuario != null && usuario.fotoPerfil != null}" th:src="${usuario != null} ? 'https://ui-avatars.com/api/?name=' + ${usuario.nombre} + '+' + ${usuario.apellido} + '&background=random&size=150' : 'https://ui-avatars.com/api/?name=Usuario&background=random&size=150'" alt="Profile Photo" class="profile-img">
+                                    <div class="camera-icon" onclick="document.getElementById('fotoInput').click()" style="cursor: pointer;"><i class="bi bi-camera"></i></div>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold mb-1">Profile Photo</h6>
-                                    <p class="text-muted small mb-3">JPG, GIF or PNG. Max size of 2MB.</p>
-                                    <div class="d-flex gap-2">
-                                        <button type="button" class="btn-save" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Upload New Photo</button>
-                                        <button type="button" class="btn-cancel" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Remove</button>
+                                    <h6 class="fw-bold mb-1">Foto de Perfil</h6>
+                                    <p class="text-muted small mb-3">JPG, GIF o PNG. Max 2MB.</p>
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <input type="file" id="fotoInput" name="foto" style="display: none;" onchange="this.form.submit()" accept="image/png, image/jpeg, image/gif">
+                                        <button type="button" class="btn-save" style="padding: 0.4rem 1rem; font-size: 0.85rem;" onclick="document.getElementById('fotoInput').click()">Subir nueva foto</button>
+                                        <a th:href="@{/paciente/perfil/foto/eliminar}" class="btn-cancel" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Eliminar</a>
                                     </div>
                                 </div>
                             </div>
+                        </form>
+
+                        <form th:action="@{/paciente/perfil/actualizar}" method="post">
 
                             <!-- Basic Info -->
                             <div class="row">
@@ -413,27 +410,27 @@
                     <div class="settings-content">
                         <h5 class="fw-bold mb-4"><i class="bi bi-arrow-clockwise me-2"></i> Cambiar Contraseña</h5>
                         
-                        <form action="#" method="post">
+                        <form th:action="@{/paciente/perfil/seguridad}" method="post">
                             <div class="row">
                                 <div class="col-md-4">
                                     <label class="form-label-custom">Contraseña Actual</label>
-                                    <input type="password" class="form-control-custom" value="12345678" readonly>
+                                    <input type="password" class="form-control-custom" name="actual" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label-custom">Nueva Contraseña</label>
-                                    <input type="password" class="form-control-custom" value="12345678" readonly>
+                                    <input type="password" class="form-control-custom" name="nueva" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label-custom">Confirmar Nueva Contraseña</label>
-                                    <input type="password" class="form-control-custom" value="12345678" readonly>
+                                    <input type="password" class="form-control-custom" name="confirmar" required>
                                 </div>
                             </div>
                             <p class="text-muted small fst-italic">La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula y un número.</p>
+                            
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn-save" style="padding: 0.8rem 2.5rem;">Guardar Cambios</button>
+                            </div>
                         </form>
-                    </div>
-
-                    <div class="d-flex justify-content-end mt-4">
-                        <button type="button" class="btn-save" style="padding: 0.8rem 2.5rem;">Guardar Cambios</button>
                     </div>
                 </div>
 
@@ -477,20 +474,6 @@
                         </a>
                     </div>
 
-                    <!-- Bottom blocks -->
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="notif-banner">
-                                <h4 class="fw-bold m-0">Tu bienestar, digitalizado</h4>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="notif-quote-box">
-                                <p class="fst-italic text-muted mb-2">"Mantenerte informado es el primer paso para una vida más saludable."</p>
-                                <span style="color: var(--sisol-primary); font-size: 0.75rem; font-weight: 800; letter-spacing: 1px;">EQUIPO MÉDICO SISOL</span>
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
 

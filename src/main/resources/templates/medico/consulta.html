@@ -351,10 +351,7 @@
                             <span class="patient-label">DNI</span>
                             <span class="stat-val" th:text="${usuarioPaciente.dni}">12345678</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="patient-label">Sangre</span>
-                            <span class="stat-val" th:text="${paciente.grupoSanguineo ?: 'No reg.'}">O+</span>
-                        </div>
+
                         <div class="stat-item">
                             <span class="patient-label">Motivo</span>
                             <span class="stat-val" th:text="${cita.motivoConsulta ?: 'Control'}">Follow-up</span>
@@ -363,7 +360,7 @@
                 </div>
 
                 <!-- Formularios -->
-                <form th:action="@{/panel-medico/consulta/finalizar}" method="post" id="consultaForm">
+                <form th:action="@{/panel-medico/consulta/finalizar}" method="post" id="consultaForm" enctype="multipart/form-data">
                     <input type="hidden" name="citaId" th:value="${cita.id}">
                     
                     <div class="row g-4">
@@ -388,15 +385,17 @@
                         <i class="fa-regular fa-file-lines"></i> Resultados y Recetas
                     </h3>
                     
-                    <div class="upload-zone">
+                    <label class="upload-zone" for="archivosAdjuntos" style="display: block; width: 100%;">
                         <div class="upload-icon">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                         </div>
                         <div class="upload-text">Adjuntar Archivos</div>
-                        <div class="upload-desc">Suelte aquí o explore exámenes, placas o recetas digitales</div>
-                    </div>
+                        <div class="upload-desc">Explore exámenes, placas o recetas digitales (PDF, Imágenes)</div>
+                        <input type="file" id="archivosAdjuntos" name="archivos" accept=".pdf,image/*" multiple style="display: none;">
+                    </label>
                     
-                    <div class="files-header">Documentos Adjuntos (0)</div>
+                    <div class="files-header" id="filesHeader">Documentos Adjuntos (0)</div>
+                    <div id="fileListContainer" class="d-flex flex-column gap-2 mb-3"></div>
                 </div>
 
                 <!-- Tarjeta Acciones Finales -->
@@ -420,6 +419,112 @@
 
         </div>
 
+        <!-- Preview Modal -->
+        <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content" style="border-radius: 1rem; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title headline" id="previewModalLabel" style="color: #4b0004;">Vista Previa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body py-4 text-center" id="previewModalBody">
+                        <!-- Content injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const fileInput = document.getElementById('archivosAdjuntos');
+                const fileListContainer = document.getElementById('fileListContainer');
+                const filesHeader = document.getElementById('filesHeader');
+                let selectedFiles = [];
+                
+                fileInput.addEventListener('change', function() {
+                    const newFiles = Array.from(this.files);
+                    selectedFiles = [...selectedFiles, ...newFiles];
+                    renderFiles();
+                });
+                
+                function updateFileInput() {
+                    const dataTransfer = new DataTransfer();
+                    selectedFiles.forEach(f => dataTransfer.items.add(f));
+                    fileInput.files = dataTransfer.files;
+                }
+                
+                function renderFiles() {
+                    filesHeader.textContent = `Documentos Adjuntos (${selectedFiles.length})`;
+                    fileListContainer.innerHTML = '';
+                    updateFileInput();
+                    
+                    selectedFiles.forEach((file, index) => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        
+                        let iconClass = 'fa-file-lines';
+                        if (file.type.startsWith('image/')) {
+                            iconClass = 'fa-file-image';
+                        } else if (file.type === 'application/pdf') {
+                            iconClass = 'fa-file-pdf';
+                        }
+                        
+                        let sizeStr = (file.size / 1024).toFixed(2) + ' KB';
+                        if (file.size > 1024 * 1024) {
+                            sizeStr = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                        }
+                        
+                        fileItem.innerHTML = `
+                            <div class="file-icon">
+                                <i class="fa-regular ${iconClass}"></i>
+                            </div>
+                            <div class="file-info" style="flex-grow: 1;">
+                                <div class="file-name">${file.name}</div>
+                                <div class="file-size">${sizeStr}</div>
+                            </div>
+                            <div class="file-actions">
+                                <button type="button" class="btn btn-sm btn-outline-secondary btn-preview" title="Visualizar" style="border: none; color: #6b1515;">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger btn-delete" title="Eliminar" style="border: none; color: #ba1a1a;">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        `;
+                        
+                        // Add preview event
+                        const previewBtn = fileItem.querySelector('.btn-preview');
+                        previewBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            const fileURL = URL.createObjectURL(file);
+                            
+                            document.getElementById('previewModalLabel').textContent = file.name;
+                            const modalBody = document.getElementById('previewModalBody');
+                            modalBody.innerHTML = '';
+                            
+                            if (file.type.startsWith('image/')) {
+                                modalBody.innerHTML = '<img src="' + fileURL + '" style="max-width: 100%; max-height: 70vh; height: auto;">';
+                            } else {
+                                modalBody.innerHTML = '<iframe src="' + fileURL + '" style="width: 100%; height: 75vh;" frameborder="0"></iframe>';
+                            }
+                            
+                            const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+                            previewModal.show();
+                        });
+                        
+                        // Add delete event
+                        const deleteBtn = fileItem.querySelector('.btn-delete');
+                        deleteBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            selectedFiles.splice(index, 1);
+                            renderFiles();
+                        });
+                        
+                        fileListContainer.appendChild(fileItem);
+                    });
+                }
+            });
+        </script>
     </div>
 </body>
 </html>

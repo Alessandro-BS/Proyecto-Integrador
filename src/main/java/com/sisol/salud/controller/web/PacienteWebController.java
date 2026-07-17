@@ -23,6 +23,7 @@ public class PacienteWebController {
     private final com.sisol.salud.repository.DisponibilidadMedicaRepository disponibilidadMedicaRepository;
     private final com.sisol.salud.service.NotificacionService notificacionService;
     private final com.sisol.salud.repository.NotificacionRepository notificacionRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @GetMapping("/dashboard")
     @PreAuthorize("hasRole('PACIENTE')")
@@ -222,7 +223,24 @@ public class PacienteWebController {
 
     @GetMapping("/resultados")
     @PreAuthorize("hasRole('PACIENTE')")
-    public String resultadosMedicos(Model model) {
+    public String resultadosMedicos(java.security.Principal principal, Model model) {
+        if (principal != null) {
+            String email = principal.getName();
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+            if (usuario != null) {
+                com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findByUsuarioId(usuario.getId()).orElse(null);
+                if (paciente != null) {
+                    java.util.List<com.sisol.salud.model.entity.Cita> citas = citaRepository.findByPacienteId(paciente.getId());
+                    java.util.List<com.sisol.salud.model.entity.Cita> resultados = citas.stream()
+                        .filter(c -> c.getEstado() == com.sisol.salud.model.enums.EstadoCita.COMPLETADA || 
+                                     c.getEstado() == com.sisol.salud.model.enums.EstadoCita.PENDIENTE || 
+                                     c.getEstado() == com.sisol.salud.model.enums.EstadoCita.CONFIRMADA)
+                        .sorted(java.util.Comparator.comparing(com.sisol.salud.model.entity.Cita::getFecha).reversed())
+                        .collect(java.util.stream.Collectors.toList());
+                    model.addAttribute("resultados", resultados);
+                }
+            }
+        }
         model.addAttribute("title", "Resultados Médicos");
         return "paciente/resultados";
     }
@@ -290,5 +308,123 @@ public class PacienteWebController {
         }
         redirectAttributes.addFlashAttribute("mensajeExito", "Perfil actualizado correctamente");
         return "redirect:/paciente/perfil";
+    }
+
+    @PostMapping("/cita/cancelar")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String cancelarCita(
+            @org.springframework.web.bind.annotation.RequestParam("citaId") Long citaId,
+            @org.springframework.web.bind.annotation.RequestParam(value = "origen", defaultValue = "dashboard") String origen,
+            java.security.Principal principal,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        
+        if (principal != null) {
+            String email = principal.getName();
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+            if (usuario != null) {
+                com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findByUsuarioId(usuario.getId()).orElse(null);
+                if (paciente != null) {
+                    com.sisol.salud.model.entity.Cita cita = citaRepository.findById(citaId).orElse(null);
+                    
+                    if (cita != null && cita.getPaciente().getId().equals(paciente.getId()) && 
+                        (cita.getEstado() == com.sisol.salud.model.enums.EstadoCita.PENDIENTE || 
+                         cita.getEstado() == com.sisol.salud.model.enums.EstadoCita.CONFIRMADA)) {
+                        
+                        cita.setEstado(com.sisol.salud.model.enums.EstadoCita.CANCELADA);
+                        citaRepository.save(cita);
+                        redirectAttributes.addFlashAttribute("mensajeExito", "La cita ha sido cancelada correctamente.");
+                    } else {
+                        redirectAttributes.addFlashAttribute("mensajeError", "No se pudo cancelar la cita. Es posible que ya no esté disponible para cancelación.");
+                    }
+                }
+            }
+        }
+        
+        if ("miscitas".equals(origen)) {
+            return "redirect:/paciente/mis-citas";
+        }
+        return "redirect:/paciente/dashboard";
+    }
+
+    @PostMapping("/perfil/foto")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String subirFotoPerfil(
+            @org.springframework.web.bind.annotation.RequestParam("foto") org.springframework.web.multipart.MultipartFile foto,
+            java.security.Principal principal,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        
+        if (principal != null && !foto.isEmpty()) {
+            try {
+                String contentType = foto.getContentType();
+                if (contentType != null && contentType.startsWith("image/")) {
+                    byte[] bytes = foto.getBytes();
+                    String base64Image = "data:" + contentType + ";base64," + java.util.Base64.getEncoder().encodeToString(bytes);
+                    
+                    com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(principal.getName()).orElse(null);
+                    if (usuario != null) {
+                        usuario.setFotoPerfil(base64Image);
+                        usuarioRepository.save(usuario);
+                        redirectAttributes.addFlashAttribute("mensajeExito", "Foto de perfil actualizada correctamente");
+                    }
+                } else {
+                    redirectAttributes.addFlashAttribute("mensajeError", "El archivo debe ser una imagen");
+                }
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("mensajeError", "Error al procesar la imagen");
+            }
+        }
+        return "redirect:/paciente/perfil";
+    }
+
+    @GetMapping("/perfil/foto/eliminar")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String eliminarFotoPerfil(
+            java.security.Principal principal,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        
+        if (principal != null) {
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(principal.getName()).orElse(null);
+            if (usuario != null) {
+                usuario.setFotoPerfil(null);
+                usuarioRepository.save(usuario);
+                redirectAttributes.addFlashAttribute("mensajeExito", "Foto de perfil eliminada correctamente");
+            }
+        }
+        return "redirect:/paciente/perfil";
+    }
+
+    @PostMapping("/perfil/seguridad")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String cambiarPassword(
+            @org.springframework.web.bind.annotation.RequestParam("actual") String actual,
+            @org.springframework.web.bind.annotation.RequestParam("nueva") String nueva,
+            @org.springframework.web.bind.annotation.RequestParam("confirmar") String confirmar,
+            java.security.Principal principal,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        
+        if (principal != null) {
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(principal.getName()).orElse(null);
+            if (usuario != null) {
+                if (!passwordEncoder.matches(actual, usuario.getPassword())) {
+                    redirectAttributes.addFlashAttribute("mensajeSeguridadError", "La contraseña actual es incorrecta");
+                    return "redirect:/paciente/perfil?activeTab=seguridad";
+                }
+                
+                if (!nueva.equals(confirmar)) {
+                    redirectAttributes.addFlashAttribute("mensajeSeguridadError", "Las nuevas contraseñas no coinciden");
+                    return "redirect:/paciente/perfil?activeTab=seguridad";
+                }
+                
+                if (nueva.length() < 8) {
+                    redirectAttributes.addFlashAttribute("mensajeSeguridadError", "La contraseña debe tener al menos 8 caracteres");
+                    return "redirect:/paciente/perfil?activeTab=seguridad";
+                }
+                
+                usuario.setPassword(passwordEncoder.encode(nueva));
+                usuarioRepository.save(usuario);
+                redirectAttributes.addFlashAttribute("mensajeSeguridadExito", "Contraseña actualizada correctamente");
+            }
+        }
+        return "redirect:/paciente/perfil?activeTab=seguridad";
     }
 }

@@ -300,7 +300,8 @@
                 </div>
                 <div class="summary-text">
                     <h2 th:text="'Tienes ' + ${citasHoyCount != null ? citasHoyCount : 0} + ' citas hoy'">Tienes 5 citas hoy</h2>
-                    <p>Tu agenda está completa hasta las 04:00 PM.</p>
+                    <p th:if="${horaFinAgenda != null}" th:text="'Tu agenda está ocupada hasta las ' + ${#temporals.format(horaFinAgenda, 'hh:mm a')} + '.'">Tu agenda está completa hasta las 04:00 PM.</p>
+                    <p th:if="${horaFinAgenda == null}">Tu agenda de hoy está libre.</p>
                 </div>
             </div>
             <div>
@@ -339,7 +340,7 @@
                             <div class="patient-tags">
                                 <span class="tag">Paciente Regular</span>
                             </div>
-                            <a th:href="@{/panel-medico/consulta}" class="btn-maroon text-decoration-none px-4 py-3">Iniciar Consulta</a>
+                            <a th:href="@{/panel-medico/consulta(citaId=${proximaCita.id})}" class="btn-maroon text-decoration-none px-4 py-3">Iniciar Consulta</a>
                         </div>
                     </div>
                 </div>
@@ -356,7 +357,7 @@
                                 </div>
                                 <div class="stat-trend"><i class="fa-solid fa-arrow-trend-up"></i> +12%</div>
                             </div>
-                            <div class="stat-value headline">124</div>
+                            <div class="stat-value headline" th:text="${pacientesAtendidosMes}">124</div>
                             <div class="stat-label">Pacientes atendidos este mes</div>
                         </div>
                     </div>
@@ -366,51 +367,16 @@
                                 <div class="stat-icon">
                                     <i class="fa-solid fa-file-medical"></i>
                                 </div>
-                                <div class="stat-trend warning">Atención Urgente</div>
+                                <div class="stat-trend warning">Atención al Día</div>
                             </div>
-                            <div class="stat-value headline">08</div>
-                            <div class="stat-label">Resultados Pendientes</div>
+                            <div class="stat-value headline" th:text="${citasCompletadasHoy}">08</div>
+                            <div class="stat-label">Citas Completadas Hoy</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Bottom Grid -->
-        <div class="row g-4">
-            <!-- Recordatorios -->
-            <div class="col-lg-8">
-                <div class="card-soft h-100">
-                    <h3 class="headline mb-4" style="font-size: 1.25rem;">Recordatorios Médicos</h3>
-
-                    <div class="reminder-item">
-                        <div class="reminder-title">
-                            <span class="dot red"></span> Sesión Clínica Semanal
-                        </div>
-                        <div class="reminder-time">Hoy, 02:00 PM</div>
-                    </div>
-
-                    <div class="reminder-item">
-                        <div class="reminder-title">
-                            <span class="dot yellow"></span> Renovar Certificados Médicos
-                        </div>
-                        <div class="reminder-time">Mañana</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Capacitación -->
-            <div class="col-lg-4">
-                <div class="training-card">
-                    <div class="training-icon">
-                        <i class="fa-solid fa-chalkboard-user"></i>
-                    </div>
-                    <h4 class="headline">Capacitación SISOL</h4>
-                    <p>Nuevos protocolos de atención cardiovascular disponibles.</p>
-                    <a href="#" class="btn-training">Acceder al curso</a>
-                </div>
-            </div>
-        </div>
 
         <script>
             // Script para la fecha de hoy

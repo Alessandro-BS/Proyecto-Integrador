@@ -266,25 +266,26 @@
         <div class="medico-nav">
             <a th:href="@{/panel-medico/dashboard}"
                 th:classappend="${title != null and title.contains('Panel')} ? 'active' : ''" class="medico-nav-item">
-                <i class="fa-solid fa-table-cells-large"></i> Dashboard
+                <i class="fa-solid fa-table-cells-large"></i> Panel Principal
             </a>
             <a th:href="@{/panel-medico/citas-hoy}"
                 th:classappend="${title != null and title.contains('Citas')} ? 'active' : ''" class="medico-nav-item">
-                <i class="fa-regular fa-calendar"></i> Schedule
+                <i class="fa-regular fa-calendar"></i> Mi Agenda
             </a>
             <a th:href="@{/panel-medico/disponibilidad}"
                 th:classappend="${title != null and title.contains('Disponibilidad')} ? 'active' : ''"
                 class="medico-nav-item">
-                <i class="fa-regular fa-user"></i> Profile
+                <i class="fa-regular fa-user"></i> Mi Disponibilidad
             </a>
         </div>
 
         <div class="medico-profile-container">
             <div class="medico-profile-widget">
-                <img src="https://ui-avatars.com/api/?name=Medico&background=ffffff&color=4b0004" alt="Doctor Profile">
+                <img th:if="${usuario != null && usuario.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" alt="Doctor Profile">
+                <img th:unless="${usuario != null && usuario.fotoPerfil != null}" th:src="${usuario != null} ? 'https://ui-avatars.com/api/?name=' + ${usuario.nombre} + '+' + ${usuario.apellido} + '&background=ffffff&color=4b0004' : 'https://ui-avatars.com/api/?name=Medico&background=ffffff&color=4b0004'" alt="Doctor Profile">
                 <div class="medico-profile-info">
-                    <span class="medico-profile-name">Dr. Ricardo M.</span>
-                    <span class="medico-profile-role">Cardiólogo</span>
+                    <span class="medico-profile-name" th:text="${usuario != null ? 'Dr(a). ' + usuario.nombre + ' ' + usuario.apellido : 'Dr. Médico'}">Dr. Ricardo M.</span>
+                    <span class="medico-profile-role" th:text="${medico != null && medico.especialidades != null && !medico.especialidades.isEmpty() ? medico.especialidades.iterator().next().nombre : 'Especialista'}">Cardiólogo</span>
                 </div>
             </div>
             <a href="#" class="btn-logout" data-bs-toggle="modal" data-bs-target="#logoutModal">
@@ -299,7 +300,7 @@
         <div class="medico-content-inner" layout:fragment="content"></div>
 
         <footer class="medico-footer">
-            <div>&copy; 2024 SISOL Salud. Sistema Interno de Gestión de Citas.</div>
+            <div>&copy; 2026 SISOL Salud. Sistema Interno de Gestión de Citas.</div>
             <div class="medico-footer-links">
                 <a href="#">Soporte Técnico</a>
                 <a href="#">Política de Privacidad</a>

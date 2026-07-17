@@ -29,6 +29,7 @@ public class DataSeeder implements CommandLineRunner {
     private final MedicoRepository medicoRepository;
     private final PacienteRepository pacienteRepository;
     private final EspecialidadRepository especialidadRepository;
+    private final com.sisol.salud.repository.DisponibilidadMedicaRepository disponibilidadMedicaRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -80,7 +81,22 @@ public class DataSeeder implements CommandLineRunner {
                         .numeroColegiatura("CMP-9990" + i)
                         .especialidades(Set.of(esp))
                         .build();
-                medicoRepository.save(medico);
+                medico = medicoRepository.save(medico);
+
+                // Crear horario de trabajo por defecto (Lunes a Viernes de 8:00 AM a 5:00 PM)
+                for (com.sisol.salud.model.enums.DiaSemana dia : com.sisol.salud.model.enums.DiaSemana.values()) {
+                    if (dia != com.sisol.salud.model.enums.DiaSemana.SABADO && dia != com.sisol.salud.model.enums.DiaSemana.DOMINGO) {
+                        com.sisol.salud.model.entity.DisponibilidadMedica disp = com.sisol.salud.model.entity.DisponibilidadMedica.builder()
+                                .medico(medico)
+                                .diaSemana(dia)
+                                .horaInicio(java.time.LocalTime.of(8, 0))
+                                .horaFin(java.time.LocalTime.of(17, 0))
+                                .duracionConsultaMin(30)
+                                .activo(true)
+                                .build();
+                        disponibilidadMedicaRepository.save(disp);
+                    }
+                }
             }
 
             // Crear 2 Pacientes

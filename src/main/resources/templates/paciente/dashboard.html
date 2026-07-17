@@ -150,7 +150,8 @@
                 <div class="card shadow-whisper border-0 rounded-2xl mb-4 text-center" style="background-color: white;">
                     <div class="card-body p-4">
                         <div class="profile-img-container mb-3">
-                            <img src="https://ui-avatars.com/api/?name=Usuario&background=random&size=150"
+                            <img th:if="${usuario != null && usuario.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" alt="Profile Photo" class="profile-img rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                            <img th:unless="${usuario != null && usuario.fotoPerfil != null}" src="https://ui-avatars.com/api/?name=Usuario&background=random&size=150"
                                 th:src="${usuario != null} ? 'https://ui-avatars.com/api/?name=' + ${usuario.nombre} + '+' + ${usuario.apellido} + '&background=random&size=150' : 'https://ui-avatars.com/api/?name=Usuario&background=random&size=150'"
                                 alt="Profile Photo" class="profile-img rounded-circle">
                             <div class="edit-photo-btn" title="Cambiar foto de perfil">
@@ -257,22 +258,67 @@
                                     <i class="bi bi-three-dots-vertical"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="#">Ver detalle</a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">Cancelar</a></li>
+                                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" th:data-bs-target="'#detalleModal' + ${cita.id}">Ver detalle</button></li>
+                                    <li><button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" th:data-bs-target="'#cancelarModal' + ${cita.id}">Cancelar</button></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Banner -->
-                <div class="banner-historial shadow-whisper">
-                    <h3 class="fw-bold mb-2">Tu historial médico digital</h3>
-                    <p class="mb-4" style="max-width: 400px;">Accede a tus recetas y resultados de laboratorio en
-                        cualquier momento.</p>
-                    <a th:href="@{/paciente/mis-citas}" class="btn btn-light btn-pill fw-bold text-dark">Ver
-                        Historial</a>
+                <!-- Modales para Próximas Citas -->
+                <div th:each="cita : ${proximasCitas}">
+                    <!-- Modal Detalle Cita -->
+                    <div class="modal fade" th:id="'detalleModal' + ${cita.id}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content" style="border-radius: 1rem; border: none;">
+                                <div class="modal-header" style="border-bottom: 1px dashed #e0e0e0; padding: 1.5rem;">
+                                    <h5 class="modal-title fs-5 fw-bold text-primary">Detalle de la Cita</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" style="padding: 1.5rem;">
+                                    <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Doctor</h6>
+                                    <p class="mb-3" th:text="'Dr. ' + ${cita.medico.usuario.nombre} + ' ' + ${cita.medico.usuario.apellido} + ' - ' + ${cita.especialidad.nombre}"></p>
+                                    
+                                    <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Fecha y Hora</h6>
+                                    <p class="mb-3" th:text="${#temporals.format(cita.fecha, 'dd MMMM, yyyy')} + ' a las ' + ${#temporals.format(cita.horaInicio, 'hh:mm a')}"></p>
+                                    
+                                    <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Motivo de Consulta</h6>
+                                    <p class="mb-0" th:text="${cita.motivoConsulta ?: 'No especificado'}"></p>
+                                </div>
+                                <div class="modal-footer" style="border-top: none; padding: 1.5rem;">
+                                    <button type="button" class="btn btn-outline-dark btn-pill fw-bold w-100" data-bs-dismiss="modal">Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Cancelar Cita -->
+                    <div class="modal fade" th:id="'cancelarModal' + ${cita.id}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content" style="border-radius: 1rem; border: none;">
+                                <div class="modal-header" style="border-bottom: 1px dashed #e0e0e0; padding: 1.5rem;">
+                                    <h5 class="modal-title fs-5 fw-bold text-danger">Cancelar Cita</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form th:action="@{/paciente/cita/cancelar}" method="post">
+                                    <div class="modal-body" style="padding: 1.5rem;">
+                                        <p>¿Estás seguro de que deseas cancelar tu cita con el <strong>Dr. <span th:text="${cita.medico.usuario.nombre} + ' ' + ${cita.medico.usuario.apellido}"></span></strong> para el <strong><span th:text="${#temporals.format(cita.fecha, 'dd/MM/yyyy')}"></span></strong> a las <strong><span th:text="${#temporals.format(cita.horaInicio, 'hh:mm a')}"></span></strong>?</p>
+                                        <p class="text-muted small">Esta acción no se puede deshacer.</p>
+                                        <input type="hidden" name="citaId" th:value="${cita.id}">
+                                        <input type="hidden" name="origen" value="dashboard">
+                                    </div>
+                                    <div class="modal-footer" style="border-top: none; padding: 1.5rem;">
+                                        <button type="button" class="btn btn-outline-dark btn-pill fw-bold" data-bs-dismiss="modal">Mantener Cita</button>
+                                        <button type="submit" class="btn btn-danger btn-pill fw-bold">Sí, Cancelar Cita</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+
 
             </div>
         </div>
