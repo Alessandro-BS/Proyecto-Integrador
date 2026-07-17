@@ -78,8 +78,8 @@ public class AdminWebController {
             
         long medicosActivos = medicoRepository.count();
         
-        long nuevasReservasHoy = todasLasCitas.stream()
-            .filter(c -> c.getCreatedAt() != null && c.getCreatedAt().toLocalDate().equals(LocalDate.now()))
+        long citasCompletadas = citasFiltradas.stream()
+            .filter(c -> c.getEstado() == EstadoCita.COMPLETADA)
             .count();
 
         // Obtener últimas 10 citas para la tabla
@@ -91,7 +91,7 @@ public class AdminWebController {
         model.addAttribute("totalCitas", totalCitas);
         model.addAttribute("pacientesAtendidos", pacientesAtendidos);
         model.addAttribute("medicosActivos", medicosActivos);
-        model.addAttribute("nuevasReservasHoy", nuevasReservasHoy);
+        model.addAttribute("citasCompletadas", citasCompletadas);
         model.addAttribute("ultimasCitas", ultimasCitas);
         model.addAttribute("period", period);
         model.addAttribute("title", "Panel de Administración");
