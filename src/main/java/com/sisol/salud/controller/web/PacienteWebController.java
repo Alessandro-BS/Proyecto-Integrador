@@ -24,6 +24,7 @@ public class PacienteWebController {
     private final com.sisol.salud.service.NotificacionService notificacionService;
     private final com.sisol.salud.repository.NotificacionRepository notificacionRepository;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+    private final com.sisol.salud.service.PdfReportService pdfReportService;
 
     @GetMapping("/dashboard")
     @PreAuthorize("hasRole('PACIENTE')")
@@ -243,6 +244,34 @@ public class PacienteWebController {
         }
         model.addAttribute("title", "Resultados Médicos");
         return "paciente/resultados";
+    }
+    
+    @GetMapping("/informe/{id}")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public org.springframework.http.ResponseEntity<byte[]> descargarInformePdf(@org.springframework.web.bind.annotation.PathVariable Long id, java.security.Principal principal) {
+        if (principal != null) {
+            String email = principal.getName();
+            com.sisol.salud.model.entity.Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+            if (usuario != null) {
+                com.sisol.salud.model.entity.Paciente paciente = pacienteRepository.findByUsuarioId(usuario.getId()).orElse(null);
+                if (paciente != null) {
+                    com.sisol.salud.model.entity.Cita cita = citaRepository.findById(id).orElse(null);
+                    // Validar que la cita pertenece al paciente y está completada
+                    if (cita != null && cita.getPaciente().getId().equals(paciente.getId()) && cita.getEstado() == com.sisol.salud.model.enums.EstadoCita.COMPLETADA) {
+                        
+                        byte[] pdfBytes = pdfReportService.generarInformeCita(cita);
+                        
+                        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+                        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+                        headers.setContentDispositionFormData("attachment", "informe_cita_" + id + ".pdf");
+                        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+                        
+                        return new org.springframework.http.ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
+                    }
+                }
+            }
+        }
+        return new org.springframework.http.ResponseEntity<>(org.springframework.http.HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/perfil")

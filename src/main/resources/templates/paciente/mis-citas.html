@@ -371,7 +371,7 @@
                 </div>
                 <div class="action-buttons">
                     <button type="button" class="btn-cita btn-outline-primary-custom" data-bs-toggle="modal" th:data-bs-target="'#detalleModal' + ${cita.id}">Ver Detalles</button>
-                    <a th:if="${cita.estado.name() == 'COMPLETADA'}" href="#" class="btn-cita btn-primary-custom"><i class="bi bi-download me-2"></i> Descargar Informe</a>
+                    <a th:if="${cita.estado.name() == 'COMPLETADA'}" th:href="@{/paciente/informe/{id}(id=${cita.id})}" class="btn-cita btn-primary-custom"><i class="bi bi-download me-2"></i> Descargar Informe</a>
                 </div>
             </div>
 
